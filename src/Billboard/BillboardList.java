@@ -1,4 +1,7 @@
 package Billboard;
 
-public class BillboardList {
+import java.util.ArrayList;
+
+public class BillboardList extends ArrayList<Billboard> {
+    private ArrayList<Billboard> list;
 }
