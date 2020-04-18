@@ -3,6 +3,7 @@ package Billboard;
 import java.util.ArrayList;
 
 public class User {
+
     private String userName;
     private String passWord;
     private ArrayList<String> permission;
@@ -34,6 +35,8 @@ public class User {
         this.passWord = passWord;
     }
 
+    public boolean checkPassword(String enteredPass) {return enteredPass == passWord; }
+
     public ArrayList<String> getPermission() {
         return permission;
     }
@@ -46,6 +49,9 @@ public class User {
         return privilege;
     }
 
+    /* To update the user's privilege
+    * @param acquired privilege
+    */
     public void setPrivilege(String privilege) {
         this.privilege = privilege;
     }
