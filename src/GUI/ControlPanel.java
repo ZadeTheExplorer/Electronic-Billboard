@@ -11,10 +11,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JPanel pnlMenu;
     private JPanel pnlCenter;
     private JLabel lblName;
-    private JLabel lblBillboard;
-    private JLabel lblSchedule;
-    private JLabel lblNewBillBoard;
-    private JLabel lblUserManagement;
+    private JButton btnBillboard;
+    private JButton btnSchedule;
+    private JButton btnNewBillBoard;
+    private JButton btnUserManagement;
 
     private ControlPanel(String title){
         super(title);
@@ -27,23 +27,50 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
         pnlMenu = createPanel(Color.GRAY);
         pnlCenter = createPanel(Color.WHITE);
-        lblBillboard = createLabel(Color.BLUE, "BillBoard");
-        lblSchedule = createLabel(Color.BLUE, "Schedule");
-        lblNewBillBoard = createLabel(Color.BLUE, "New Billboard");
-        lblUserManagement = createLabel(Color.BLUE, "User Management");
+        btnBillboard = createButton("BillBoard");
+        btnSchedule = createButton("Schedule");
+        btnNewBillBoard = createButton("New Billboard");
+        btnUserManagement = createButton("User Management");
 
         //Adjust the label in Center
-        lblName.setPreferredSize(new Dimension( 900,50));
+        lblName.setPreferredSize(new Dimension( 900,100));
         lblName.setForeground(Color.BLACK);
         lblName.setHorizontalAlignment(JLabel.CENTER);
         lblName.setVerticalTextPosition(JLabel.CENTER);
         lblName.setFont(new Font("Serif", Font.PLAIN, 34));
 
         //Adjust the label in main menu
-        lblBillboard.setFont(new Font("Serif", Font.PLAIN, 18));
-        lblSchedule.setFont(new Font("Serif", Font.PLAIN, 18));
-        lblNewBillBoard.setFont(new Font("Serif", Font.PLAIN, 18));
-        lblUserManagement.setFont(new Font("Serif", Font.PLAIN, 18));
+        btnBillboard.setPreferredSize(new Dimension(200,100));
+        btnBillboard.setBackground(Color.GRAY);
+        btnBillboard.setBorderPainted(false);
+        btnBillboard.setFont(new Font("Serif", Font.PLAIN, 18));
+        btnBillboard.setContentAreaFilled(false);
+        btnBillboard.setFocusPainted(false);
+        //btnBillboard.setIcon(new ImageIcon(Class.class.getResource("")));
+
+        btnSchedule.setPreferredSize(new Dimension(200,100));
+        btnSchedule.setBackground(Color.GRAY);
+        btnSchedule.setBorderPainted(false);
+        btnSchedule.setFont(new Font("Serif", Font.PLAIN, 18));
+        btnSchedule.setContentAreaFilled(false);
+        btnSchedule.setFocusPainted(false);
+        //btnSchedule.setIcon(new ImageIcon(Class.class.getResource("")));
+
+        btnNewBillBoard.setPreferredSize(new Dimension(200,100));
+        btnNewBillBoard.setBackground(Color.GRAY);
+        btnNewBillBoard.setBorderPainted(false);
+        btnNewBillBoard.setFont(new Font("Serif", Font.PLAIN, 18));
+        btnNewBillBoard.setContentAreaFilled(false);
+        btnNewBillBoard.setFocusPainted(false);
+        //btnNewBillBoard.setIcon(new ImageIcon(Class.class.getResource("")));
+
+        btnUserManagement.setPreferredSize(new Dimension(200,100));
+        btnUserManagement.setBackground(Color.GRAY);
+        btnUserManagement.setBorderPainted(false);
+        btnUserManagement.setFont(new Font("Serif", Font.PLAIN, 18));
+        btnUserManagement.setContentAreaFilled(false);
+        btnUserManagement.setFocusPainted(false);
+        //btnUserManagement.setIcon(new ImageIcon(Class.class.getResource("")));
         setLayout(new BorderLayout());
 
 
@@ -64,10 +91,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         constraints.weighty = 100;
         //Panel related code will go here
 
-        addToPanel(pnlMenu, lblBillboard, constraints,2,0,3,1);
-        addToPanel(pnlMenu, lblSchedule,constraints,2,1,3,1);
-        addToPanel(pnlMenu, lblNewBillBoard,constraints,2,2,3,1);
-        addToPanel(pnlMenu, lblUserManagement,constraints,2,3,3,1);
+        addToPanel(pnlMenu, btnBillboard, constraints,2,0,3,1);
+        addToPanel(pnlMenu, btnSchedule,constraints,2,1,3,1);
+        addToPanel(pnlMenu, btnNewBillBoard,constraints,2,2,3,1);
+        addToPanel(pnlMenu, btnUserManagement,constraints,2,3,3,1);
 
     }
 
