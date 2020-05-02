@@ -8,11 +8,9 @@ import java.awt.event.ActionListener;
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
     public static final int WIDTH = 900;
     public static final int HEIGHT = 600;
-    private JPanel pnlOne;
-    private JPanel pnlTwo;
     private JPanel pnlBtn;
-    private JPanel pnlFour;
     private JPanel pnlFive;
+    private JLabel lblName;
 
     private ControlPanel(String title){
         super(title);
@@ -22,20 +20,20 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setVisible(true);
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pnlOne = createPanel(Color.LIGHT_GRAY);
-        pnlTwo = createPanel(Color.LIGHT_GRAY);
-        pnlBtn = createPanel(Color.BLUE);
-        pnlFour = createPanel(Color.LIGHT_GRAY);
+        lblName = createLabel(Color.BLACK,"Bill Board Control Panel");
+        pnlBtn = createPanel(Color.GRAY);
         pnlFive = createPanel(Color.WHITE);
 
+        lblName.setPreferredSize(new Dimension( 900,100));
+        lblName.setForeground(Color.BLACK);
+        lblName.setHorizontalAlignment(JLabel.CENTER);
+        lblName.setVerticalTextPosition(JLabel.CENTER);
+        lblName.setFont(new Font("Serif", Font.PLAIN, 34));
         setLayout(new BorderLayout());
 
 
-
-        this.getContentPane().add(pnlOne,BorderLayout.SOUTH);
-        this.getContentPane().add(pnlTwo,BorderLayout.EAST);
+        this.getContentPane().add(lblName,BorderLayout.NORTH);
         this.getContentPane().add(pnlBtn,BorderLayout.WEST);
-        this.getContentPane().add(pnlFour,BorderLayout.NORTH);
         this.getContentPane().add(pnlFive,BorderLayout.CENTER);
 
         pnlBtn.setLayout(new GridBagLayout());
@@ -83,6 +81,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         jp.add(c, constraints);
     }
 
+    private JLabel createLabel(Color c, String text){
+        JLabel lbl = new JLabel();
+        lbl.setBackground(c);
+        lbl.setText(text);
+        return lbl;
+    }
     private JPanel createPanel(Color c) {
         //Create a JPanel object and store it in a local var
         JPanel jp = new JPanel();
