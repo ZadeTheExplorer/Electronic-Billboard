@@ -8,9 +8,13 @@ import java.awt.event.ActionListener;
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
     public static final int WIDTH = 900;
     public static final int HEIGHT = 600;
-    private JPanel pnlBtn;
-    private JPanel pnlFive;
+    private JPanel pnlMenu;
+    private JPanel pnlCenter;
     private JLabel lblName;
+    private JLabel lblBillboard;
+    private JLabel lblSchedule;
+    private JLabel lblNewBillBoard;
+    private JLabel lblUserManagement;
 
     private ControlPanel(String title){
         super(title);
@@ -20,29 +24,40 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setVisible(true);
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        lblName = createLabel(Color.BLACK,"Bill Board Control Panel");
-        pnlBtn = createPanel(Color.GRAY);
-        pnlFive = createPanel(Color.WHITE);
+        lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
+        pnlMenu = createPanel(Color.GRAY);
+        pnlCenter = createPanel(Color.WHITE);
+        lblBillboard = createLabel(Color.BLUE, "BillBoard");
+        lblSchedule = createLabel(Color.BLUE, "Schedule");
+        lblNewBillBoard = createLabel(Color.BLUE, "New Billboard");
+        lblUserManagement = createLabel(Color.BLUE, "User Management");
 
-        lblName.setPreferredSize(new Dimension( 900,100));
+        //Adjust the label in Center
+        lblName.setPreferredSize(new Dimension( 900,50));
         lblName.setForeground(Color.BLACK);
         lblName.setHorizontalAlignment(JLabel.CENTER);
         lblName.setVerticalTextPosition(JLabel.CENTER);
         lblName.setFont(new Font("Serif", Font.PLAIN, 34));
+
+        //Adjust the label in main menu
+        lblBillboard.setFont(new Font("Serif", Font.PLAIN, 18));
+        Icon billboardIcon = new ImageIcon();
+        lblSchedule.setFont(new Font("Serif", Font.PLAIN, 18));
+        Icon ScheduleIcon = new ImageIcon();
+        lblNewBillBoard.setFont(new Font("Serif", Font.PLAIN, 18));
+        Icon NewBillBoardIcon = new ImageIcon();
+        lblUserManagement.setFont(new Font("Serif", Font.PLAIN, 18));
+        Icon UserManagementIcon = new ImageIcon();
         setLayout(new BorderLayout());
 
 
         this.getContentPane().add(lblName,BorderLayout.NORTH);
-        this.getContentPane().add(pnlBtn,BorderLayout.WEST);
-        this.getContentPane().add(pnlFive,BorderLayout.CENTER);
+        this.getContentPane().add(pnlMenu,BorderLayout.WEST);
+        this.getContentPane().add(pnlCenter,BorderLayout.CENTER);
 
-        pnlBtn.setLayout(new GridBagLayout());
+        pnlMenu.setLayout(new GridBagLayout());
 
-        JButton btnLoad = createButton("Load");
-        JButton btnUnload = createButton("Unload");
-        JButton btnFind = createButton("Find");
-        JButton btnSwitch = createButton("Switch");
-        pnlBtn.setPreferredSize(new Dimension(200, 40));
+        pnlMenu.setPreferredSize(new Dimension(200, 40));
 
         //add components to grid
         GridBagConstraints constraints = new GridBagConstraints();
@@ -53,10 +68,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         constraints.weighty = 100;
         //Panel related code will go here
 
-        addToPanel(pnlBtn, btnLoad,constraints,2,0,3,1);
-        addToPanel(pnlBtn, btnUnload,constraints,2,1,3,1);
-        addToPanel(pnlBtn, btnFind,constraints,2,2,3,1);
-        addToPanel(pnlBtn, btnSwitch,constraints,2,3,3,1);
+        addToPanel(pnlMenu, lblBillboard, constraints,2,0,3,1);
+        addToPanel(pnlMenu, lblSchedule,constraints,2,1,3,1);
+        addToPanel(pnlMenu, lblNewBillBoard,constraints,2,2,3,1);
+        addToPanel(pnlMenu, lblUserManagement,constraints,2,3,3,1);
 
     }
 
@@ -87,6 +102,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         lbl.setText(text);
         return lbl;
     }
+
     private JPanel createPanel(Color c) {
         //Create a JPanel object and store it in a local var
         JPanel jp = new JPanel();
