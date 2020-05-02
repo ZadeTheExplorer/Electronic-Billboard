@@ -6,8 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
-    public static final int WIDTH = 300;
-    public static final int HEIGHT = 200;
+    public static final int WIDTH = 900;
+    public static final int HEIGHT = 600;
     private JPanel pnlOne;
     private JPanel pnlTwo;
     private JPanel pnlBtn;
@@ -24,7 +24,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pnlOne = createPanel(Color.LIGHT_GRAY);
         pnlTwo = createPanel(Color.LIGHT_GRAY);
-        pnlBtn = createPanel(Color.LIGHT_GRAY);
+        pnlBtn = createPanel(Color.BLUE);
         pnlFour = createPanel(Color.LIGHT_GRAY);
         pnlFive = createPanel(Color.WHITE);
 
@@ -32,9 +32,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
 
 
-        this.getContentPane().add(pnlOne,BorderLayout.WEST);
+        this.getContentPane().add(pnlOne,BorderLayout.SOUTH);
         this.getContentPane().add(pnlTwo,BorderLayout.EAST);
-        this.getContentPane().add(pnlBtn,BorderLayout.SOUTH);
+        this.getContentPane().add(pnlBtn,BorderLayout.WEST);
         this.getContentPane().add(pnlFour,BorderLayout.NORTH);
         this.getContentPane().add(pnlFive,BorderLayout.CENTER);
 
