@@ -41,13 +41,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
         //Adjust the label in main menu
         lblBillboard.setFont(new Font("Serif", Font.PLAIN, 18));
-        Icon billboardIcon = new ImageIcon();
         lblSchedule.setFont(new Font("Serif", Font.PLAIN, 18));
-        Icon ScheduleIcon = new ImageIcon();
         lblNewBillBoard.setFont(new Font("Serif", Font.PLAIN, 18));
-        Icon NewBillBoardIcon = new ImageIcon();
         lblUserManagement.setFont(new Font("Serif", Font.PLAIN, 18));
-        Icon UserManagementIcon = new ImageIcon();
         setLayout(new BorderLayout());
 
 
