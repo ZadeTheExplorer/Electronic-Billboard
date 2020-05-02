@@ -6,45 +6,74 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
-    public static final int WIDTH = 900;
-    public static final int HEIGHT = 600;
-    private JPanel pnl1;
-    private JButton btn1;
+    public static final int WIDTH = 300;
+    public static final int HEIGHT = 200;
+    private JPanel pnlOne;
+    private JPanel pnlTwo;
+    private JPanel pnlBtn;
+    private JPanel pnlFour;
+    private JPanel pnlFive;
 
-    public ControlPanel(String title) throws HeadlessException {
+    private ControlPanel(String title){
         super(title);
     }
 
-    private void createGUI(){
+    private void createGUI() {
         setVisible(true);
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        pnl1 = createPanel(Color.BLACK);
-        btn1 = createButton("add");
-        pnl1.setLayout(new GridBagLayout());
-        pnl1.add(btn1, BorderLayout.NORTH);
-        this.getContentPane().add(pnl1,BorderLayout.WEST);
+        pnlOne = createPanel(Color.LIGHT_GRAY);
+        pnlTwo = createPanel(Color.LIGHT_GRAY);
+        pnlBtn = createPanel(Color.LIGHT_GRAY);
+        pnlFour = createPanel(Color.LIGHT_GRAY);
+        pnlFive = createPanel(Color.WHITE);
+
+        setLayout(new BorderLayout());
+
+
+
+        this.getContentPane().add(pnlOne,BorderLayout.WEST);
+        this.getContentPane().add(pnlTwo,BorderLayout.EAST);
+        this.getContentPane().add(pnlBtn,BorderLayout.SOUTH);
+        this.getContentPane().add(pnlFour,BorderLayout.NORTH);
+        this.getContentPane().add(pnlFive,BorderLayout.CENTER);
+
+        pnlBtn.setLayout(new GridBagLayout());
+
+        JButton btnLoad = createButton("Load");
+        JButton btnUnload = createButton("Unload");
+        JButton btnFind = createButton("Find");
+        JButton btnSwitch = createButton("Switch");
+
+
+        //add components to grid
         GridBagConstraints constraints = new GridBagConstraints();
+//Defaults
         constraints.fill = GridBagConstraints.NONE;
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.weightx = 100;
         constraints.weighty = 100;
+        //Panel related code will go here
 
-
-
-
-        pnl1.setPreferredSize(new Dimension(200, 40));
-
-
-        addToPanel(pnl1, btn1,constraints,0,0,2,1);
-//        addToPanel(pnl1, btnUnload,constraints,3,0,2,1);
-//        addToPanel(pnl1, btnFind,constraints,0,2,2,1);
-//        addToPanel(pnl1, btnSwitch,constraints,3,2,2,1);
-
+        addToPanel(pnlBtn, btnLoad,constraints,0,0,2,1);
+        addToPanel(pnlBtn, btnUnload,constraints,3,0,2,1);
+        addToPanel(pnlBtn, btnFind,constraints,0,2,2,1);
+        addToPanel(pnlBtn, btnSwitch,constraints,3,2,2,1);
 
     }
 
-
+    /**
+     *
+     * A convenience method to add a component to given grid bag
+     * layout locations. Code due to Cay Horstmann
+     *
+     * @param c the component to add
+     * @param constraints the grid bag constraints to use
+     * @param x the x grid position
+     * @param y the y grid position
+     * @param w the grid width of the component
+     * @param h the grid height of the component
+     */
     private void addToPanel(JPanel jp,Component c, GridBagConstraints
             constraints,int x, int y, int w, int h) {
         constraints.gridx = x;
@@ -55,9 +84,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     private JPanel createPanel(Color c) {
-        JPanel jPanel = new JPanel();
-        jPanel.setBackground(c);
-        return jPanel;
+        //Create a JPanel object and store it in a local var
+        JPanel jp = new JPanel();
+        jp.setBackground(c);
+        return jp;
+        //set the background colour to that passed in c
+        //Return the JPanel object
     }
 
     private JButton createButton(String text){
@@ -67,16 +99,16 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return jButton;
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
 
     @Override
     public void run() {
         createGUI();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
