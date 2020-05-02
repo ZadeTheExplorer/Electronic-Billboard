@@ -44,7 +44,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         JButton btnUnload = createButton("Unload");
         JButton btnFind = createButton("Find");
         JButton btnSwitch = createButton("Switch");
-
+        pnlBtn.setPreferredSize(new Dimension(200, 40));
 
         //add components to grid
         GridBagConstraints constraints = new GridBagConstraints();
@@ -55,10 +55,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         constraints.weighty = 100;
         //Panel related code will go here
 
-        addToPanel(pnlBtn, btnLoad,constraints,0,0,2,1);
-        addToPanel(pnlBtn, btnUnload,constraints,3,0,2,1);
-        addToPanel(pnlBtn, btnFind,constraints,0,2,2,1);
-        addToPanel(pnlBtn, btnSwitch,constraints,3,2,2,1);
+        addToPanel(pnlBtn, btnLoad,constraints,2,0,3,1);
+        addToPanel(pnlBtn, btnUnload,constraints,2,1,3,1);
+        addToPanel(pnlBtn, btnFind,constraints,2,2,3,1);
+        addToPanel(pnlBtn, btnSwitch,constraints,2,3,3,1);
 
     }
 
