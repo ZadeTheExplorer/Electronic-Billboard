@@ -27,10 +27,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
         pnlMenu = createPanel(Color.LIGHT_GRAY);
         pnlCenter = createPanel(Color.WHITE);
-        btnBillboard = createButton("  BillBoard");
-        btnSchedule = createButton("  Schedule");
-        btnNewBillBoard = createButton("  New Billboard");
-        btnUserManagement = createButton(" UserManagement");
+        btnBillboard = createButton("BillBoard");
+        btnSchedule = createButton("Schedule");
+        btnNewBillBoard = createButton("New Billboard");
+        btnUserManagement = createButton("User Management");
 
         //Adjust the label in Center
         lblName.setPreferredSize(new Dimension( 900,100));
@@ -44,6 +44,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnBillboard.setFont(new Font("Serif", Font.PLAIN, 18));
         btnBillboard.setContentAreaFilled(false);
         btnBillboard.setFocusPainted(false);
+        btnBillboard.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnBillboard.setHorizontalTextPosition(SwingConstants.CENTER);
         btnBillboard.setIcon(new ImageIcon(getClass().getResource("/resources/billboardIcon.png")));
 
         btnSchedule.setPreferredSize(new Dimension(200,100));
@@ -52,6 +54,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnSchedule.setContentAreaFilled(false);
         btnSchedule.setFocusPainted(false);
         btnSchedule.setIcon(new ImageIcon(getClass().getResource("/resources/scheIcon.png")));
+        btnSchedule.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnSchedule.setHorizontalTextPosition(SwingConstants.CENTER);
 
         btnNewBillBoard.setPreferredSize(new Dimension(200,100));
         btnNewBillBoard.setBorderPainted(false);
@@ -59,6 +63,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnNewBillBoard.setContentAreaFilled(false);
         btnNewBillBoard.setFocusPainted(false);
         btnNewBillBoard.setIcon(new ImageIcon(getClass().getResource("/resources/newbbIcon.png")));
+        btnNewBillBoard.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnNewBillBoard.setHorizontalTextPosition(SwingConstants.CENTER);
 
         btnUserManagement.setPreferredSize(new Dimension(200,100));
         btnUserManagement.setBorderPainted(false);
@@ -66,6 +72,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserManagement.setContentAreaFilled(false);
         btnUserManagement.setFocusPainted(false);
         btnUserManagement.setIcon(new ImageIcon(getClass().getResource("/resources/userIcon.png")));
+        btnUserManagement.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnUserManagement.setHorizontalTextPosition(SwingConstants.CENTER);
 
         setLayout(new BorderLayout());
 
@@ -75,12 +83,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         this.getContentPane().add(pnlCenter,BorderLayout.CENTER);
 
         pnlMenu.setLayout(new GridBagLayout());
-
         pnlMenu.setPreferredSize(new Dimension(200, 40));
 
         //add components to grid
         GridBagConstraints constraints = new GridBagConstraints();
-//Defaults
+        //Defaults
         constraints.fill = GridBagConstraints.NONE;
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.weightx = 100;
