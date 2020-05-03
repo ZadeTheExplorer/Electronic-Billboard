@@ -25,52 +25,48 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
-        pnlMenu = createPanel(Color.GRAY);
+        pnlMenu = createPanel(Color.LIGHT_GRAY);
         pnlCenter = createPanel(Color.WHITE);
-        btnBillboard = createButton("BillBoard");
-        btnSchedule = createButton("Schedule");
-        btnNewBillBoard = createButton("New Billboard");
-        btnUserManagement = createButton("User Management");
+        btnBillboard = createButton("  BillBoard");
+        btnSchedule = createButton("  Schedule");
+        btnNewBillBoard = createButton("  New Billboard");
+        btnUserManagement = createButton(" UserManagement");
 
         //Adjust the label in Center
         lblName.setPreferredSize(new Dimension( 900,100));
-        lblName.setForeground(Color.BLACK);
         lblName.setHorizontalAlignment(JLabel.CENTER);
         lblName.setVerticalTextPosition(JLabel.CENTER);
         lblName.setFont(new Font("Serif", Font.PLAIN, 34));
 
         //Adjust the label in main menu
         btnBillboard.setPreferredSize(new Dimension(200,100));
-        btnBillboard.setBackground(Color.GRAY);
         btnBillboard.setBorderPainted(false);
         btnBillboard.setFont(new Font("Serif", Font.PLAIN, 18));
         btnBillboard.setContentAreaFilled(false);
         btnBillboard.setFocusPainted(false);
-        //btnBillboard.setIcon(new ImageIcon(Class.class.getResource("")));
+        btnBillboard.setIcon(new ImageIcon(getClass().getResource("/resources/billboardIcon.png")));
 
         btnSchedule.setPreferredSize(new Dimension(200,100));
-        btnSchedule.setBackground(Color.GRAY);
         btnSchedule.setBorderPainted(false);
         btnSchedule.setFont(new Font("Serif", Font.PLAIN, 18));
         btnSchedule.setContentAreaFilled(false);
         btnSchedule.setFocusPainted(false);
-        //btnSchedule.setIcon(new ImageIcon(Class.class.getResource("")));
+        btnSchedule.setIcon(new ImageIcon(getClass().getResource("/resources/scheIcon.png")));
 
         btnNewBillBoard.setPreferredSize(new Dimension(200,100));
-        btnNewBillBoard.setBackground(Color.GRAY);
         btnNewBillBoard.setBorderPainted(false);
         btnNewBillBoard.setFont(new Font("Serif", Font.PLAIN, 18));
         btnNewBillBoard.setContentAreaFilled(false);
         btnNewBillBoard.setFocusPainted(false);
-        //btnNewBillBoard.setIcon(new ImageIcon(Class.class.getResource("")));
+        btnNewBillBoard.setIcon(new ImageIcon(getClass().getResource("/resources/newbbIcon.png")));
 
         btnUserManagement.setPreferredSize(new Dimension(200,100));
-        btnUserManagement.setBackground(Color.GRAY);
         btnUserManagement.setBorderPainted(false);
         btnUserManagement.setFont(new Font("Serif", Font.PLAIN, 18));
         btnUserManagement.setContentAreaFilled(false);
         btnUserManagement.setFocusPainted(false);
-        //btnUserManagement.setIcon(new ImageIcon(Class.class.getResource("")));
+        btnUserManagement.setIcon(new ImageIcon(getClass().getResource("/resources/userIcon.png")));
+
         setLayout(new BorderLayout());
 
 
@@ -90,6 +86,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         constraints.weightx = 100;
         constraints.weighty = 100;
         //Panel related code will go here
+
 
         addToPanel(pnlMenu, btnBillboard, constraints,2,0,3,1);
         addToPanel(pnlMenu, btnSchedule,constraints,2,1,3,1);
