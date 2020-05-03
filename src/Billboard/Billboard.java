@@ -1,19 +1,21 @@
 package Billboard;
 
 public class Billboard {
-    private String description;
+    private String topText;
+    private String bottomDescription;
     private String img_url;
-    public Billboard(String description, String img_url){
-        this.description = description;
+    public Billboard(String text, String description, String img_url){
+        this.bottomDescription = description;
         this.img_url = img_url;
+        this.topText = text;
     }
 
     public String getDescription() {
-        return description;
+        return bottomDescription;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.bottomDescription = description;
     }
 
     public String getImg_url() {
