@@ -6,7 +6,6 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 
 public class User {
-
     private String userName;
     private String passWord;
     private ArrayList<String> permission;
@@ -41,6 +40,18 @@ public class User {
     public boolean checkPassword(String enteredPass) {return enteredPass == passWord; }
 
     public ArrayList<String> getPermission() {
+        if(privilege == "Create Billboards"){
+
+        }
+        else if(privilege == "Edit All Billboards"){
+
+        }
+        else if(privilege == "Schedual Billboards"){
+
+        }
+        else if(privilege == "Edit User"){
+
+        }
         return permission;
     }
 

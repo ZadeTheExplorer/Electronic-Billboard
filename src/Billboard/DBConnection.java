@@ -6,7 +6,7 @@ public class DBConnection {
     Connection conn = null;
     try{
         Class.forName("");
-        conn = DriverManager.getConnection();
+        conn = DriverManager.getConnection("");
 
         JOptionPane.showMessageDialog(null, "Success Login..");
         return conn;

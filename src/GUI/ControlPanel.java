@@ -16,7 +16,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnNewBillBoard;
     private JButton btnUserManagement;
 
-    private ControlPanel(String title){
+    public ControlPanel(String title){
         super(title);
     }
 
@@ -24,6 +24,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setVisible(true);
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
         pnlMenu = createPanel(Color.LIGHT_GRAY);
         pnlCenter = createPanel(Color.WHITE);
@@ -146,10 +147,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return jButton;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
 
     @Override
     public void run() {
@@ -159,5 +156,40 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == btnBillboard){
+            btnBillboard.setContentAreaFilled(true);
+            btnNewBillBoard.setContentAreaFilled(false);
+            btnSchedule.setContentAreaFilled(false);
+            btnUserManagement.setContentAreaFilled(false);
+            //pnlCenter.add();
+        }
+        else if(e.getSource() == btnNewBillBoard){
+            btnBillboard.setContentAreaFilled(false);
+            btnNewBillBoard.setContentAreaFilled(true);
+            btnSchedule.setContentAreaFilled(false);
+            btnUserManagement.setContentAreaFilled(false);
+            //pnlCenter.add();
+
+        }
+
+        else if(e.getSource() == btnSchedule){
+            btnBillboard.setContentAreaFilled(false);
+            btnNewBillBoard.setContentAreaFilled(false);
+            btnSchedule.setContentAreaFilled(true);
+            btnUserManagement.setContentAreaFilled(false);
+            //pnlCenter.add();
+
+        }
+        else if(e.getSource() == btnUserManagement){
+            btnBillboard.setContentAreaFilled(false);
+            btnNewBillBoard.setContentAreaFilled(false);
+            btnSchedule.setContentAreaFilled(false);
+            btnUserManagement.setContentAreaFilled(true);
+            //pnlCenter.add();
+        }
     }
 }
