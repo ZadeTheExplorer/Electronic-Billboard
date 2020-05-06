@@ -21,7 +21,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnSchedule;
     private JButton btnNewBillBoard;
     private JButton btnUserManagement;
-    private JButton button;
 
     public ControlPanel(String title){
         super(title);
@@ -194,7 +193,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             btnNewBillBoard.setContentAreaFilled(false);
             btnSchedule.setContentAreaFilled(false);
             btnUserManagement.setContentAreaFilled(false);
-            pnlBillboard.setVisible(true);
             ;
             //pnlCenter.add();
         }
@@ -204,9 +202,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             btnNewBillBoard.setContentAreaFilled(true);
             btnSchedule.setContentAreaFilled(false);
             btnUserManagement.setContentAreaFilled(false);
-            //pnlCenter.add();
-            pnlNewBillBoard.setVisible(true);
 
+            pnlNewBillBoard.setVisible(true);
         }
 
         else if(e.getSource() == btnSchedule){
