@@ -20,7 +20,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnSchedule;
     private JButton btnNewBillBoard;
     private JButton btnUserManagement;
-    private JButton button;
 
     public ControlPanel(String title){
         super(title);
@@ -86,6 +85,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserManagement.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnUserManagement.setHorizontalTextPosition(SwingConstants.CENTER);
 
+
+
+
         setLayout(new BorderLayout());
 
 
@@ -108,7 +110,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlNewBillBoard.setPreferredSize(new Dimension(680, 460));
         pnlSchedule.setPreferredSize(new Dimension(680, 460));
         pnlUserManagement.setPreferredSize(new Dimension(680, 460));
-        
 
         addToPanel(pnlCenter, pnlNewBillBoard,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlSchedule,constraints,0,0,1,1 );
@@ -185,7 +186,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             btnNewBillBoard.setContentAreaFilled(false);
             btnSchedule.setContentAreaFilled(false);
             btnUserManagement.setContentAreaFilled(false);
-            ;
             //pnlCenter.add();
         }
         else if(e.getSource() == btnNewBillBoard){
@@ -194,9 +194,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             btnNewBillBoard.setContentAreaFilled(true);
             btnSchedule.setContentAreaFilled(false);
             btnUserManagement.setContentAreaFilled(false);
-            //pnlCenter.add();
-            pnlNewBillBoard.setVisible(true);
 
+            pnlNewBillBoard.setVisible(true);
         }
 
         else if(e.getSource() == btnSchedule){
