@@ -16,7 +16,7 @@ public class User {
         passWord = password;
         this.permission = new ArrayList<>(permission.size());
         for(int i = 0 ; i < permission.size(); i++){
-            this.permission.set(i, permission.get(i));
+            this.permission.add(permission.get(i));
         }
         this.privilege = privilege;
     }

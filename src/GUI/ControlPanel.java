@@ -112,6 +112,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlSchedule.setPreferredSize(new Dimension(680, 460));
         pnlUserManagement.setPreferredSize(new Dimension(680, 460));
 
+        pnlBillboard.setVisible(true);
+        pnlNewBillBoard.setVisible(true);
+        pnlUserManagement.setVisible(true);
+        pnlSchedule.setVisible(true);
+
         addToPanel(pnlCenter, pnlBillboard,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlNewBillBoard,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlSchedule,constraints,0,0,1,1 );

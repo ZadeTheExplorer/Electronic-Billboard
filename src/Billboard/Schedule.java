@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Schedule {
     private Date date;
-    private String importantInfor;
+    private String importantInfo;
     public Schedule(Date date){
         this.date = date;
     }
