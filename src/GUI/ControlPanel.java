@@ -16,6 +16,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JPanel pnlSchedule;
     private JPanel pnlUserManagement;
     private JPanel pnlNewBillBoard;
+    private JPanel pnlBillboard;
     private JButton btnBillboard;
     private JButton btnSchedule;
     private JButton btnNewBillBoard;
@@ -35,6 +36,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlSchedule = createPanel(Color.GREEN);
         pnlUserManagement = createPanel(Color.BLUE);
         pnlNewBillBoard = createPanel(Color.YELLOW);
+        pnlBillboard = createPanel(Color.BLACK);
         pnlCenter = createPanel(Color.WHITE);
         btnBillboard = createButton("BillBoard");
         btnSchedule = createButton("Schedule");
@@ -85,9 +87,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserManagement.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnUserManagement.setHorizontalTextPosition(SwingConstants.CENTER);
 
-
-
-
         setLayout(new BorderLayout());
 
 
@@ -107,10 +106,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         constraints.weightx = 100;
         constraints.weighty = 100;
         //Panel related code will go here
+        pnlBillboard.setPreferredSize(new Dimension(680, 460));
         pnlNewBillBoard.setPreferredSize(new Dimension(680, 460));
         pnlSchedule.setPreferredSize(new Dimension(680, 460));
         pnlUserManagement.setPreferredSize(new Dimension(680, 460));
 
+        addToPanel(pnlCenter, pnlBillboard,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlNewBillBoard,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlSchedule,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlUserManagement,constraints,0,0,1,1 );
@@ -182,10 +183,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == btnBillboard){
+            clearScreen();
             btnBillboard.setContentAreaFilled(true);
             btnNewBillBoard.setContentAreaFilled(false);
             btnSchedule.setContentAreaFilled(false);
             btnUserManagement.setContentAreaFilled(false);
+            ;
             //pnlCenter.add();
         }
         else if(e.getSource() == btnNewBillBoard){
@@ -223,5 +226,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlNewBillBoard.setVisible(false);
         pnlUserManagement.setVisible(false);
         pnlSchedule.setVisible(false);
+        pnlBillboard.setVisible(false);
     }
 }
