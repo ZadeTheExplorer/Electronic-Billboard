@@ -11,14 +11,16 @@ public class User {
     private ArrayList<String> permission;
     private String privilege;
 
-    public User(String name, String password, ArrayList<String> permission, String privilege){
+    public User(String name, String password, ArrayList<String> permission, String privilege) throws Exception{
         userName = name;
         passWord = password;
         this.permission = new ArrayList<>(permission.size());
         for(int i = 0 ; i < permission.size(); i++){
             this.permission.add(permission.get(i));
         }
-        this.privilege = privilege;
+        if(privilege == "" || privilege == null){
+            throw new Exception("User must have privilege");
+        }this.privilege = privilege;
     }
 
     public String getUserName() {
@@ -40,16 +42,16 @@ public class User {
     public boolean checkPassword(String enteredPass) {return enteredPass == passWord; }
 
     public ArrayList<String> getPermission() {
-        if(privilege == "Create Billboards"){
+        if(privilege.toUpperCase() == "CREATE BILLBOARDS"){
 
         }
-        else if(privilege == "Edit All Billboards"){
+        else if(privilege.toUpperCase() == "EDIT ALL BILLBOARDS"){
 
         }
-        else if(privilege == "Schedual Billboards"){
+        else if(privilege.toUpperCase() == "SCHEDULE BILLBOARD"){
 
         }
-        else if(privilege == "Edit User"){
+        else if(privilege.toUpperCase() == "EDIT USER"){
 
         }
         return permission;

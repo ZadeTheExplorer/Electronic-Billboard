@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserTest {
     User user;
     @BeforeEach
-     void createUser(){
+     void createUser() throws Exception {
         ArrayList<String> permission = new ArrayList<>();
         permission.add("write");
         user = new User("user","password",permission,"user");
