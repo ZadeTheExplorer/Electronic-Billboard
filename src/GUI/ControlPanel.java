@@ -21,6 +21,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnSchedule;
     private JButton btnNewBillBoard;
     private JButton btnUserManagement;
+    private JButton btnDeleteBb;
+    private JButton btnCreate;
 
     public ControlPanel(String title){
         super(title);
@@ -36,12 +38,18 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlSchedule = createPanel(Color.GREEN);
         pnlUserManagement = createPanel(Color.BLUE);
         pnlNewBillBoard = createPanel(Color.YELLOW);
-        pnlBillboard = createPanel(Color.BLACK);
+        pnlBillboard = createPanel(Color.WHITE);
         pnlCenter = createPanel(Color.WHITE);
         btnBillboard = createButton("BillBoard");
         btnSchedule = createButton("Schedule");
         btnNewBillBoard = createButton("Creating Billboard");
         btnUserManagement = createButton("User Management");
+
+        ///Components in specific button click
+        //Billboard
+        btnDeleteBb = createButton("Delete");
+        //Creating billboard
+        btnCreate = createButton("Create");
 
         //Adjust the label in Center
         lblName.setPreferredSize(new Dimension( 900,100));
@@ -87,6 +95,23 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserManagement.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnUserManagement.setHorizontalTextPosition(SwingConstants.CENTER);
 
+        btnDeleteBb.setPreferredSize(new Dimension(100,40));
+        btnDeleteBb.setBorderPainted(true);
+        btnDeleteBb.setFont(new Font("Serif", Font.PLAIN, 15));
+        btnDeleteBb.setContentAreaFilled(false);
+        btnDeleteBb.setFocusPainted(false);
+        btnDeleteBb.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnDeleteBb.setHorizontalTextPosition(SwingConstants.CENTER);
+
+        btnCreate.setPreferredSize(new Dimension(100,40));
+        btnCreate.setBorderPainted(true);
+        btnCreate.setFont(new Font("Serif", Font.PLAIN, 15));
+        btnCreate.setContentAreaFilled(false);
+        btnCreate.setFocusPainted(false);
+        btnCreate.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnCreate.setHorizontalTextPosition(SwingConstants.CENTER);
+
+
         setLayout(new BorderLayout());
 
 
@@ -127,6 +152,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlMenu, btnSchedule,constraints,2,1,3,1);
         addToPanel(pnlMenu, btnNewBillBoard,constraints,2,2,3,1);
         addToPanel(pnlMenu, btnUserManagement,constraints,2,3,3,1);
+
+
+        addToPanel(pnlBillboard,btnDeleteBb,constraints,7,8,3,1);
+
+
+        addToPanel(pnlNewBillBoard,btnCreate,constraints,7,8,3,1);
 
     }
 
@@ -193,6 +224,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             btnNewBillBoard.setContentAreaFilled(false);
             btnSchedule.setContentAreaFilled(false);
             btnUserManagement.setContentAreaFilled(false);
+            pnlBillboard.setVisible(true);
             ;
             //pnlCenter.add();
         }
