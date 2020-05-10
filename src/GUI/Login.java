@@ -1,9 +1,14 @@
 package GUI;
 
+import Billboard.DBConnection;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -70,9 +75,27 @@ public class Login extends JFrame implements Runnable{
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Login successfully");
-                SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
-                dispose();
+                try{
+                    Connection conn = DBConnection.mariaDBConn();
+                    String sql = "SELECT * FROM Users\n" +
+                            "WHERE Username=? AND Password=?";
+                    PreparedStatement ps = conn.prepareStatement(sql);
+                    ps.setString(1, tfUser.getText());
+                    ps.setString(2,tfPass.getText());
+
+                    ResultSet rs = ps.executeQuery();
+                    if(rs.next()){
+                        JOptionPane.showMessageDialog(null, "Login successfully");
+                        SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
+                        dispose();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,"The ID or Password you've entered is incorrect;");
+                    }
+                }catch(Exception E){
+                    System.out.println(E);
+                }
+
             }
         });
 
