@@ -23,6 +23,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnUserManagement;
     private JButton btnDeleteBb;
     private JButton btnCreate;
+    private JTable jTable;
 
     public ControlPanel(String title){
         super(title);
@@ -44,7 +45,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnSchedule = createButton("Schedule");
         btnNewBillBoard = createButton("Creating Billboard");
         btnUserManagement = createButton("User Management");
-
+        //jTable = createTable();
         ///Components in specific button click
         //Billboard
         btnDeleteBb = createButton("Delete");
@@ -146,7 +147,15 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlCenter, pnlSchedule,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlUserManagement,constraints,0,0,1,1 );
 
-
+        String[] columns = {"ID","Name","Title","Creator","Schedule"};
+        Object[][] data = {
+                {1,"Billboard A","Advertisement","Jaden","TimeStamp"},
+                {2,"Billboard B","Advertisement","Jaden","TimeStamp"},
+                {3,"Billboard C","Advertisement","Jaden","TimeStamp"},
+                {4,"Billboard D","Advertisement","Jaden","TimeStamp"},
+                {5,"Billboard E","Advertisement","Jaden","TimeStamp"},
+        };
+        addToPanel(pnlBillboard, createTable(columns,data), constraints,1,1,1,1 );
 
         addToPanel(pnlMenu, btnBillboard, constraints,2,0,3,1);
         addToPanel(pnlMenu, btnSchedule,constraints,2,1,3,1);
@@ -154,7 +163,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlMenu, btnUserManagement,constraints,2,3,3,1);
 
 
-        addToPanel(pnlBillboard,btnDeleteBb,constraints,7,8,3,1);
+        addToPanel(pnlBillboard,btnDeleteBb,constraints,7,1,3,1);
 
 
         addToPanel(pnlNewBillBoard,btnCreate,constraints,7,8,3,1);
@@ -196,6 +205,16 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return jp;
         //set the background colour to that passed in c
         //Return the JPanel object
+    }
+
+    private JScrollPane createTable(String[] columns, Object[][] data){
+        JTable table;
+        table = new JTable(data,columns);
+        table.setPreferredScrollableViewportSize(new Dimension(500,100));
+        table.setPreferredSize(new Dimension(500,300));
+        JScrollPane jScrollPane = new JScrollPane(table);
+        jScrollPane.setPreferredSize(new Dimension(500,100));
+        return jScrollPane;
     }
 
     private JButton createButton(String text){
