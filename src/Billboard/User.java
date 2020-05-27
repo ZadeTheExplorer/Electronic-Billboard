@@ -15,10 +15,8 @@ public class User {
         userName = name;
         passWord = password;
         this.permission = new ArrayList<>(permission.size());
-        for(int i = 0 ; i < permission.size(); i++){
-            this.permission.add(permission.get(i));
-        }
-        if(privilege == "" || privilege == null){
+        this.permission.addAll(permission);
+        if(privilege.compareTo("") == 0 || privilege == null){
             throw new Exception("User must have privilege");
         }this.privilege = privilege;
     }

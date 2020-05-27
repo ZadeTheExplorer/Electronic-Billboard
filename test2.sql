@@ -1,35 +1,34 @@
-CREATE DATABASE IF NOT EXISTS electronicBB;
-
 USE electronicBB;
 
 --DROP TABLE IF EXISTS `electronicBB`.`users`;
 
-CREATE TABLE  IF NOT EXISTS `electronicBB`.`users` (
+CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedule` (
   `id` int(3) unsigned NOT NULL default '0',
-  `name` varchar(45) NOT NULL default '',
-  `username` varchar(30) NOT NULL default 'username',
-  `password` varchar(50) NOT NULL default 'password',
-  `privilege` VARCHAR(50) default 'edit user, edit schedule, edit billboard',
+  `billboard_id` int(3) NOT NULL,
+  `user_id` int(45) NOT NULL,
+  -- SELECT TIMEDIFF("13:10:11", "13:10:10"); CHECK THE FUKDISOUT
+   --Timestamp and date
+  --`background_color` varchar(7) default '#FFFFFF',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`display` $$
-CREATE PROCEDURE `electronicBB`.`display` ()
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayAllBillboards` $$
+CREATE PROCEDURE `electronicBB`.`displayAllBillboards` ()
 BEGIN
-  SELECT * FROM users;
+  SELECT * FROM billboards;
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`addUser` $$
-CREATE PROCEDURE `electronicBB`.`addUser` (IN id int(3), IN name varchar(45),
+DROP PROCEDURE IF EXISTS `electronicBB`.`addBillboard` $$
+CREATE PROCEDURE `electronicBB`.`addBillboard` (IN id int(3), IN name varchar(45),
                                             IN username varchar(45), IN password varchar(45),IN privilege VARCHAR(50))
 BEGIN
   INSERT INTO users VALUES(id, name, username, password, privilege);
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`deletePerson` $$
-CREATE PROCEDURE `electronicBB`.`deletePerson` (IN id int(10))
+DROP PROCEDURE IF EXISTS `electronicBB`.`deleteBillboard` $$
+CREATE PROCEDURE `electronicBB`.`deleteBillboard` (IN id int(10))
 
 BEGIN
   DELETE FROM users WHERE users.id=id;
