@@ -37,19 +37,19 @@ public class User {
         this.passWord = passWord;
     }
 
-    public boolean checkPassword(String enteredPass) {return enteredPass == passWord; }
+    public boolean checkPassword(String enteredPass) {return enteredPass.compareTo(passWord) == 0; }
 
     public ArrayList<String> getPermission() {
-        if(privilege.toUpperCase() == "CREATE BILLBOARDS"){
+        if(privilege.toUpperCase().compareTo("CREATE BILLBOARDS") == 0){
 
         }
-        else if(privilege.toUpperCase() == "EDIT ALL BILLBOARDS"){
+        else if(privilege.toUpperCase().compareTo("EDIT ALL BILLBOARDS") == 0){
 
         }
-        else if(privilege.toUpperCase() == "SCHEDULE BILLBOARD"){
+        else if(privilege.toUpperCase().compareTo("SCHEDULE BILLBOARD") == 0){
 
         }
-        else if(privilege.toUpperCase() == "EDIT USER"){
+        else if(privilege.toUpperCase().compareTo("EDIT USER") == 0){
 
         }
         return permission;

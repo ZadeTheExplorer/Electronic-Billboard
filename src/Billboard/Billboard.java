@@ -7,7 +7,7 @@ public class Billboard {
     public Billboard(String message, String information, String img_url){
         this.information = information;
         this.img_url = img_url;
-        this.message = text;
+        this.message = message;
     }
 
     public String getInformation() {
@@ -34,10 +34,13 @@ public class Billboard {
         this.message = message;
     }
 
+
     public void delete(int id){
 
     }
-    public void exportXML() {
 
+    //TODO: XMLFile.create(Billboard billboard)
+    public void exportXML() {
+        XMLFile.create(this);
     }
 }

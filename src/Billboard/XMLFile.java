@@ -12,12 +12,13 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class CreateXMLFile {
-    public static final String xmlFilePath = "E:\\Users\\Desktop\\JavaProject\\xmlfile.xml";
-
-    public static void main(String argv[]) {
-
+public class XMLFile {
+    public static final String xmlFilePath = System.getProperty("user.dir").toString() + "src\\Billboard\\exportedXML.xml";
+    public XMLFile(){};
+    //TODO: Implement NULL input for element
+    public static void create(Billboard billboard){
         try {
+            //TODO: import billboard elements to the XML file
 
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
 
@@ -70,4 +71,11 @@ public class CreateXMLFile {
             pce.printStackTrace();
         }
     }
+
+    //TODO: Java SAX Parser
+    // Implement Reader with simple api for XML
+    // This method read line by line and based on opening and closing tag
+    // suitable for this project
+    public static void read(File file){}
+
 }
