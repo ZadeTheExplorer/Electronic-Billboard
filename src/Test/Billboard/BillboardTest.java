@@ -9,14 +9,14 @@ class BillboardTest {
     @Test
     void getDescription() {
         Billboard bb = new Billboard("Test","testing","www.test.com");
-        assertEquals("testing",bb.getDescription());
+        assertEquals("testing",bb.getInformation());
     }
 
     @Test
     void setDescription() {
         Billboard bb = new Billboard("Test","testing","www.test.com");
-        bb.setDescription("another test");
-        assertEquals("another test",bb.getDescription());
+        bb.setInformation("another test");
+        assertEquals("another test",bb.getInformation());
     }
 
     @Test
