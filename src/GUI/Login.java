@@ -76,7 +76,7 @@ public class Login extends JFrame implements Runnable{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try{
-                    Connection conn = DBConnection.mariaDBConn();
+                    Connection conn = DBConnection.getInstance();
                     String sql = "SELECT * FROM Users\n" +
                             "WHERE Username=? AND Password=?";
                     PreparedStatement ps = conn.prepareStatement(sql);
@@ -102,7 +102,6 @@ public class Login extends JFrame implements Runnable{
 
 
     }
-
 
 
     public static void main(String[] args) {
