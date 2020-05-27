@@ -1,21 +1,21 @@
 package Billboard;
 
 public class Billboard {
-    private String topText;
-    private String bottomDescription;
+    private String message;
+    private String information;
     private String img_url;
-    public Billboard(String text, String description, String img_url){
-        this.bottomDescription = description;
+    public Billboard(String message, String information, String img_url){
+        this.information = information;
         this.img_url = img_url;
-        this.topText = text;
+        this.message = text;
     }
 
-    public String getDescription() {
-        return bottomDescription;
+    public String getInformation() {
+        return information;
     }
 
-    public void setDescription(String description) {
-        this.bottomDescription = description;
+    public void setInformation(String information) {
+        this.information = information;
     }
 
     public String getImg_url() {
@@ -26,4 +26,18 @@ public class Billboard {
         this.img_url = img_url;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void delete(int id){
+
+    }
+    public void exportXML() {
+
+    }
 }
