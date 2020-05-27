@@ -6,11 +6,9 @@ CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedule` (
   `id` int(3) unsigned NOT NULL default '0',
   `billboard_id` int(3) NOT NULL,
   `user_id` int(45) NOT NULL,
-  `start_time` TIME (0) NOT NULL,
-  `end_time` TIME (0) NOT NULL,
-  `weekdays` int(1) NOT NULL default WEEKDAY(CURRENT())
-  FOREIGN KEY (billboard_id) REFERENCES billboards.id (billboard_id),
-  FOREIGN KEY (user_id) REFERENCES users.id (user_id)
+  -- SELECT TIMEDIFF("13:10:11", "13:10:10"); CHECK THE FUKDISOUT
+   --Timestamp and date
+  --`background_color` varchar(7) default '#FFFFFF',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
