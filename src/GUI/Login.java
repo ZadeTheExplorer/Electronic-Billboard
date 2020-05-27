@@ -93,7 +93,7 @@ public class Login extends JFrame implements Runnable{
                         JOptionPane.showMessageDialog(null,"The ID or Password you've entered is incorrect;");
                     }
                 }catch(Exception E){
-                    System.out.println(E);
+                    JOptionPane.showMessageDialog(null, "Username and Password is missing!");
                 }
 
             }

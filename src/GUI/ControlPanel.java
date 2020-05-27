@@ -3,6 +3,9 @@ package GUI;
 import Billboard.BillboardList;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,17 +16,25 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JPanel pnlMenu;
     private JPanel pnlCenter;
     private JLabel lblName;
+    private JLabel lblBillboardID;
+    private JLabel lblBillboardName;
+    private JLabel lblBillboardTitle;
+    private JLabel lblBillboardCreator;
+    private JLabel lblBillboardSchedule;
     private JPanel pnlSchedule;
     private JPanel pnlUserManagement;
     private JPanel pnlNewBillBoard;
+    private JPanel pnlBillboardInformation;
     private JPanel pnlBillboard;
+    private JPanel pnlBillboardButton;
     private JButton btnBillboard;
     private JButton btnSchedule;
     private JButton btnNewBillBoard;
     private JButton btnUserManagement;
     private JButton btnDeleteBb;
+    private JButton btnEditBb;
+    private JButton btnExportBb;
     private JButton btnCreate;
-    private JTable jTable;
 
     public ControlPanel(String title){
         super(title);
@@ -35,11 +46,18 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
+        lblBillboardID = createLabel(Color.WHITE,null);
+        lblBillboardName = createLabel(Color.WHITE,null);
+        lblBillboardTitle = createLabel(Color.WHITE,null);
+        lblBillboardCreator = createLabel(Color.WHITE,null);
+        lblBillboardSchedule = createLabel(Color.WHITE,null);
         pnlMenu = createPanel(Color.LIGHT_GRAY);
         pnlSchedule = createPanel(Color.GREEN);
+        pnlBillboardInformation = createPanel(Color.WHITE);
         pnlUserManagement = createPanel(Color.BLUE);
         pnlNewBillBoard = createPanel(Color.YELLOW);
         pnlBillboard = createPanel(Color.WHITE);
+        pnlBillboardButton = createPanel(Color.WHITE);
         pnlCenter = createPanel(Color.WHITE);
         btnBillboard = createButton("BillBoard");
         btnSchedule = createButton("Schedule");
@@ -49,6 +67,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         ///Components in specific button click
         //Billboard
         btnDeleteBb = createButton("Delete");
+        btnDeleteBb.setBackground(Color.RED);
+        btnEditBb = createButton("Edit");
+        btnEditBb.setBackground(Color.YELLOW);
+        btnExportBb = createButton("Export");
+        btnExportBb.setBackground(Color.GREEN);
         //Creating billboard
         btnCreate = createButton("Create");
 
@@ -96,13 +119,13 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserManagement.setVerticalTextPosition(SwingConstants.BOTTOM);
         btnUserManagement.setHorizontalTextPosition(SwingConstants.CENTER);
 
-        btnDeleteBb.setPreferredSize(new Dimension(100,40));
-        btnDeleteBb.setBorderPainted(true);
-        btnDeleteBb.setFont(new Font("Serif", Font.PLAIN, 15));
-        btnDeleteBb.setContentAreaFilled(false);
-        btnDeleteBb.setFocusPainted(false);
-        btnDeleteBb.setVerticalTextPosition(SwingConstants.BOTTOM);
-        btnDeleteBb.setHorizontalTextPosition(SwingConstants.CENTER);
+//        btnDeleteBb.setPreferredSize(new Dimension(100,40));
+//        btnDeleteBb.setBorderPainted(true);
+//        btnDeleteBb.setFont(new Font("Serif", Font.PLAIN, 15));
+//        btnDeleteBb.setContentAreaFilled(false);
+//        btnDeleteBb.setFocusPainted(false);
+//        btnDeleteBb.setVerticalTextPosition(SwingConstants.BOTTOM);
+//        btnDeleteBb.setHorizontalTextPosition(SwingConstants.CENTER);
 
         btnCreate.setPreferredSize(new Dimension(100,40));
         btnCreate.setBorderPainted(true);
@@ -147,6 +170,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlCenter, pnlSchedule,constraints,0,0,1,1 );
         addToPanel(pnlCenter, pnlUserManagement,constraints,0,0,1,1 );
 
+        pnlBillboard.setLayout(new GridLayout(0,1,2,2));
+
         String[] columns = {"ID","Name","Title","Creator","Schedule"};
         Object[][] data = {
                 {1,"Billboard A","Advertisement","Jaden","TimeStamp"},
@@ -155,15 +180,42 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 {4,"Billboard D","Advertisement","Jaden","TimeStamp"},
                 {5,"Billboard E","Advertisement","Jaden","TimeStamp"},
         };
+        pnlBillboardInformation = new JPanel(new GridLayout(0,5,0,2));
+        pnlBillboardInformation.setOpaque(true);
+        pnlBillboardInformation.setBorder(BorderFactory.createTitledBorder("Billboard Information"));
+
+        pnlBillboardButton = new JPanel(new GridLayout(0,3,2,2));
+        pnlBillboardButton.setOpaque(true);
+        pnlBillboardButton.setBorder(BorderFactory.createTitledBorder("Command Panel"));
+
+        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"ID"), constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Name"), constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Title"), constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Creator"), constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Schedule"), constraints,1,1,1,1 );
+
+        addToPanel(pnlBillboardInformation, lblBillboardID, constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, lblBillboardName, constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, lblBillboardTitle, constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, lblBillboardCreator, constraints,1,1,1,1 );
+        addToPanel(pnlBillboardInformation, lblBillboardSchedule, constraints,1,1,1,1 );
+
+
+        addToPanel(pnlBillboardButton,btnDeleteBb,constraints,7,1,3,1);
+        addToPanel(pnlBillboardButton,btnEditBb,constraints,7,1,3,1);
+        addToPanel(pnlBillboardButton,btnExportBb,constraints,7,1,3,1);
+
+        pnlBillboardButton.setPreferredSize(new Dimension(100,100));
+
         addToPanel(pnlBillboard, createTable(columns,data), constraints,1,1,1,1 );
+        addToPanel(pnlBillboard, pnlBillboardInformation,constraints,1,1,1,1);
+        addToPanel(pnlBillboard, pnlBillboardButton,constraints,1,1,1,1);
+
 
         addToPanel(pnlMenu, btnBillboard, constraints,2,0,3,1);
         addToPanel(pnlMenu, btnSchedule,constraints,2,1,3,1);
         addToPanel(pnlMenu, btnNewBillBoard,constraints,2,2,3,1);
         addToPanel(pnlMenu, btnUserManagement,constraints,2,3,3,1);
-
-
-        addToPanel(pnlBillboard,btnDeleteBb,constraints,7,1,3,1);
 
 
         addToPanel(pnlNewBillBoard,btnCreate,constraints,7,8,3,1);
@@ -209,11 +261,37 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     private JScrollPane createTable(String[] columns, Object[][] data){
         JTable table;
-        table = new JTable(data,columns);
+        table = new JTable(data,columns){
+            @Override
+            public Class<?> getColumnClass(int column) {
+                return getValueAt(0, column).getClass();
+            }
+        };
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+        for(int i = 0; i < columns.length; i++){
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+        table.getColumnModel().getColumn(0).setPreferredWidth(20);
         table.setPreferredScrollableViewportSize(new Dimension(500,100));
         table.setPreferredSize(new Dimension(500,300));
+        table.setSelectionBackground(Color.CYAN);
+        table.setShowGrid(false);
         JScrollPane jScrollPane = new JScrollPane(table);
-        jScrollPane.setPreferredSize(new Dimension(500,100));
+        jScrollPane.setPreferredSize(new Dimension(500,200));
+        table.setDefaultEditor(Object.class, null);
+        table.setRowHeight(30);
+        ListSelectionModel modelTable = table.getSelectionModel();
+        modelTable.addListSelectionListener(new ListSelectionListener(){
+            public void valueChanged(ListSelectionEvent e) {
+                lblBillboardID.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+                lblBillboardName.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+                lblBillboardTitle.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+                lblBillboardCreator.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+                lblBillboardSchedule.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
+            }
+        });
         return jScrollPane;
     }
 
