@@ -37,32 +37,14 @@ public class Database {
 
         String[] tempsArray = temps.toArray(new String[0]);
         Statement statement = connection.createStatement();
-        statement.execute("CREATE DATABASE IF NOT EXISTS electronicBB;");
-        statement.execute("USE electronicBB;");
-        statement.execute("CREATE TABLE  IF NOT EXISTS `electronicBB`.`users`(`id` int(3) unsigned NOT NULL default '0',`name` varchar(45) NOT NULL default '',\n" +
-                "  `username` varchar(30) NOT NULL default 'username',\n" +
-                "  `password` varchar(50) NOT NULL default 'password',\n" +
-                "  `privilege` VARCHAR(50) default 'edit user, edit schedule, edit billboard',\n" +
-                "  PRIMARY KEY  (`id`)\n" +
-                ") ENGINE=MyISAM DEFAULT CHARSET=latin1;");
-        //TODO: Implement stored procedure
-        statement.execute("DROP PROCEDURE IF EXISTS `electronicBB`.`displayUsers`\n" +
-                "CREATE PROCEDURE `electronicBB`.`displayUsers` ()\n" +
-                "BEGIN\n" +
-                "  SELECT * FROM users;\n" +
-                "END");
-//        String[] statementARR = {
-//                "CREATE DATABASE IF NOT EXISTS electronicBB;"
-//                "USE electronicBB;"
-//        };
 
-//        for (String s : tempsArray) {
-//            ResultSet rs = statement.executeQuery(s + "$$");
-//            rs.next();
-//        }
+        for (String s : tempsArray) {
+            statement.execute(s);
+        }
         statement.close();
     }
-
+    //TODO: RUN THIS VOID MAIN TO INITIALISE DATABASE.
+    // WHEN APPLY TO PROGRAM REMOVE THIS AND ADD TO BILLBOARD SERVER
     public static void main(String[] args) throws FileNotFoundException, SQLException {
         Database.init();
     }
