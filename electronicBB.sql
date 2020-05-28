@@ -2,11 +2,7 @@ CREATE DATABASE IF NOT EXISTS electronicBB;
 
 USE electronicBB;
 
---DROP TABLE IF EXISTS `electronicBB`.`users`;
-
-CREATE TABLE  IF NOT EXISTS `electronicBB`.`users` (
-  `id` int(3) unsigned NOT NULL default '0',
-  `name` varchar(45) NOT NULL default '',
+CREATE TABLE  IF NOT EXISTS `electronicBB`.`users`(`id` int(3) unsigned NOT NULL default '0',`name` varchar(45) NOT NULL default '',
   `username` varchar(30) NOT NULL default 'username',
   `password` varchar(50) NOT NULL default 'password',
   `privilege` VARCHAR(50) default 'edit user, edit schedule, edit billboard',
@@ -15,8 +11,8 @@ CREATE TABLE  IF NOT EXISTS `electronicBB`.`users` (
 
 DELIMITER $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`display` $$
-CREATE PROCEDURE `electronicBB`.`display` ()
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayUsers` $$
+CREATE PROCEDURE `electronicBB`.`displayUsers` ()
 BEGIN
   SELECT * FROM users;
 END $$
@@ -28,8 +24,8 @@ BEGIN
   INSERT INTO users VALUES(id, name, username, password, privilege);
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`deletePerson` $$
-CREATE PROCEDURE `electronicBB`.`deletePerson` (IN id int(10))
+DROP PROCEDURE IF EXISTS `electronicBB`.`deleteUser` $$
+CREATE PROCEDURE `electronicBB`.`deleteUser` (IN id int(10))
 
 BEGIN
   DELETE FROM users WHERE users.id=id;
@@ -42,12 +38,14 @@ BEGIN
 END $$
 
 DELIMITER ;
-
-call addUser(1, 'Patrick', 'user', 'password', 'edit user');
+call deleteUser(1);
+call deleteUser(2);
+call deleteUser(3);
+call deleteUser(4);
+call addUser(1, 'Patrick', 'user1', 'password', 'edit user');
 call addUser(2, 'Edward','user2','password','edit user');
+call addUser(3, 'Jaden', 'user3', 'password', null);
 
-
---DROP TABLE IF EXISTS `electronicBB`.`users`;
 
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`billboards` (
   `id` int(3) unsigned NOT NULL default '0',
@@ -87,10 +85,10 @@ BEGIN
 END $$
 
 DELIMITER ;
-
+call deleteBillboard(1);
 call addBillboard(1, 'COVID-19', 1, 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!');
 
---DROP TABLE IF EXISTS `electronicBB`.`schedules`;
+
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedules` (
   `id` int(3) unsigned NOT NULL default '0',
   `billboard_id` int(3) NOT NULL,
@@ -122,7 +120,7 @@ DROP PROCEDURE IF EXISTS `electronicBB`.`deleteSchedule` $$
 CREATE PROCEDURE `electronicBB`.`deleteSchedule` (IN id int(3))
 
 BEGIN
-  DELETE FROM schedule WHERE schedules.id=id;
+  DELETE FROM schedules WHERE schedules.id=id;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`updateStart` $$
@@ -144,4 +142,5 @@ END $$
 DELIMITER ;
 -- TIME: HH:MM:SS or HHH:MM:SS if >24hrs
 -- OR: HHMMSS
+call deleteSchedule(1);
 call addSchedule(1, 1, 1, '08:00:00','10:00:00', 'Monday');
