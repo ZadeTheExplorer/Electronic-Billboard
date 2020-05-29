@@ -1,6 +1,7 @@
 package GUI;
 
 import Billboard.BillboardList;
+import Billboard.DBConnection;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -9,6 +10,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
     public static final int WIDTH = 900;
@@ -40,7 +44,13 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnExportBb;
     private JButton btnCreate;
 
-    public ControlPanel(String title){
+
+    //TODO:REMOVE THIS WHEN SERVER IS CREATED
+    Connection connection = DBConnection.getInstance();
+    CallableStatement st = connection.prepareStatement("call userDisplay");
+
+
+    public ControlPanel(String title) throws SQLException {
         super(title);
     }
 

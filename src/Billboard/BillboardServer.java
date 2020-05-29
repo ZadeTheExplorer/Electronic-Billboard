@@ -19,9 +19,7 @@ public class BillboardServer {
     public BillboardServer() {
         connection = DBConnection.getInstance();
         try {
-            select = connection.prepareCall("call display()");
-
-
+            select = connection.prepareCall("call userDisplay()");
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -33,7 +31,6 @@ public class BillboardServer {
             select.close();
             insert.close();
             deletePerson.close();
-            // Close connection
             connection.close();
         } catch (SQLException ex) {
             ex.printStackTrace();
