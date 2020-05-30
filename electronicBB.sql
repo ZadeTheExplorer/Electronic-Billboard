@@ -13,6 +13,11 @@ CREATE PROCEDURE `electronicBB`.`displayUsers` ()
 BEGIN
   SELECT * FROM users;
 END $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnId`; $$
+CREATE PROCEDURE `electronicBB`.`displayUserColumnId` ()
+BEGIN
+  SELECT id FROM users;
+END $$
 DROP PROCEDURE IF EXISTS `electronicBB`.`addUser`; $$
 CREATE PROCEDURE `electronicBB`.`addUser` (IN id int(3), IN name varchar(45),
                                             IN username varchar(45), IN password varchar(45),IN privilege VARCHAR(50))

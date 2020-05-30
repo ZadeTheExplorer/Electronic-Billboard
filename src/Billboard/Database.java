@@ -5,15 +5,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 public class Database {
-    public Database() {};
-    public static void init() throws FileNotFoundException, SQLException {
-        Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
+    static Connection connection;
 
-        // // read KeyWestTemp.txt
+
+
+
+    public Database() throws SQLException {};
+    public static void init() throws FileNotFoundException, SQLException {
+               // // read KeyWestTemp.txt
 
         // create token
         String token1 = "";
@@ -43,9 +47,30 @@ public class Database {
         }
         statement.close();
     }
+    public static String[] displayUserColumn(Statement st, String columnName) throws SQLException {
+        String[] columnId;
+        // get all current entries
+        ResultSet rs = st.executeQuery("Call DisplayUserColumnId()");
+
+        // use metadata to get the number of columns
+        int columnCount = rs.getMetaData().getColumnCount();
+        columnId = new String[rs.getMetaData().getColumnDisplaySize(1)];
+        int i=0;
+        // output each row
+        while (rs.next()) {
+            columnId[i] = rs.getString(1);
+            i++;
+        }
+        System.out.println(Arrays.toString(columnId));
+        return columnId;
+    }
     //TODO: RUN THIS VOID MAIN TO INITIALISE DATABASE.
     // WHEN APPLY TO PROGRAM REMOVE THIS AND ADD TO BILLBOARD SERVER
     public static void main(String[] args) throws FileNotFoundException, SQLException {
+
+        connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
+        Statement statement = connection.createStatement();
         Database.init();
+        Database.displayUserColumn(statement, "id");
     }
 }
