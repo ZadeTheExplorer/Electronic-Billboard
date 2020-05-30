@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
@@ -27,6 +28,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JTextField tfBillboardTitle;
     private JTextField tfBillboardCreator;
     private JTextField tfBillboardSchedule;
+    private JTextField tfNewBillboardID;
+    private JTextField tfNewBillboardName;
+    private JTextField tfNewBillboardTitle;
+    private JTextField tfNewBillboardCreator;
+    private JTextField tfNewBillboardSchedule;
     private JPanel pnlSchedule;
     private JPanel pnlUserManagement;
     private JPanel pnlNewBillBoard;
@@ -46,8 +52,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
 
     //TODO:REMOVE THIS WHEN SERVER IS CREATED
-    Connection connection = DBConnection.getInstance();
-    CallableStatement st = connection.prepareStatement("call userDisplay");
+//    Connection connection = DBConnection.getInstance();
+//    CallableStatement st = connection.prepareCall("call usersDisplay()");
+//    ResultSet result = st.executeQuery();
 
 
     public ControlPanel(String title) throws SQLException {
@@ -87,6 +94,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfBillboardCreator.setEditable(false);
         tfBillboardSchedule = new JTextField();
         tfBillboardSchedule.setEditable(false);
+
+        tfNewBillboardID = new JTextField();
+        tfNewBillboardName = new JTextField();
+        tfNewBillboardTitle = new JTextField();
+        tfNewBillboardCreator = new JTextField();
+        tfNewBillboardSchedule = new JTextField();
 
         pnlMenu = createPanel(Color.LIGHT_GRAY);
         pnlSchedule = createPanel(Color.GREEN);
@@ -178,13 +191,13 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 //        btnDeleteBb.setVerticalTextPosition(SwingConstants.BOTTOM);
 //        btnDeleteBb.setHorizontalTextPosition(SwingConstants.CENTER);
 
-//        btnCreate.setPreferredSize(new Dimension(100,40));
-//        btnCreate.setBorderPainted(true);
-//        btnCreate.setFont(new Font("Serif", Font.PLAIN, 15));
-//        btnCreate.setContentAreaFilled(false);
-//        btnCreate.setFocusPainted(false);
-//        btnCreate.setVerticalTextPosition(SwingConstants.BOTTOM);
-//        btnCreate.setHorizontalTextPosition(SwingConstants.CENTER);
+        btnCreate.setPreferredSize(new Dimension(100,40));
+        btnCreate.setBorderPainted(true);
+        btnCreate.setFont(new Font("Serif", Font.PLAIN, 15));
+        btnCreate.setContentAreaFilled(false);
+        btnCreate.setFocusPainted(false);
+        btnCreate.setVerticalTextPosition(SwingConstants.BOTTOM);
+        btnCreate.setHorizontalTextPosition(SwingConstants.CENTER);
 
 
         setLayout(new BorderLayout());
@@ -266,11 +279,31 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlBillboard, pnlBillboardInformation,constraints,1,1,1,1);
         addToPanel(pnlBillboard, pnlBillboardButton,constraints,1,2,1,1);
 
-        GridBagConstraints createBillboard = new GridBagConstraints();
-        createBillboard.fill = GridBagConstraints.NONE;
+        GridBagConstraints constrainNewBillboard = new GridBagConstraints();
+        constrainNewBillboard.fill = GridBagConstraints.NONE;
+        constrainNewBillboard.anchor = GridBagConstraints.LINE_START;
+        constrainNewBillboard.weightx = 10;
+        constrainNewBillboard.weighty = 10;
 
-        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard name"),createBillboard,0,0,1,1);
-        addToPanel(pnlNewBillBoard,new JTextField(),createBillboard,1, 0 , 1 , 1);
+        tfNewBillboardID.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardName.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardTitle.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardCreator.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardSchedule.setPreferredSize(new Dimension(200,20));
+
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK,"Billboard Registration:"),constrainNewBillboard,0,0,1,1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard ID"),constrainNewBillboard,1,1,1,1);
+        addToPanel(pnlNewBillBoard,tfNewBillboardID,constrainNewBillboard,2, 1 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Name"),constrainNewBillboard,1,2,1,1);
+        addToPanel(pnlNewBillBoard,tfNewBillboardName,constrainNewBillboard,2, 2 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Title"),constrainNewBillboard,1,3,1,1);
+        addToPanel(pnlNewBillBoard,tfNewBillboardTitle,constrainNewBillboard,2, 3 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Creator"),constrainNewBillboard,1,4,1,1);
+        addToPanel(pnlNewBillBoard,tfNewBillboardCreator,constrainNewBillboard,2, 4 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Schedule"),constrainNewBillboard,1,5,1,1);
+        addToPanel(pnlNewBillBoard,tfNewBillboardSchedule,constrainNewBillboard,2, 5 , 1 , 1);
+
+        addToPanel(pnlNewBillBoard,btnCreate,constrainNewBillboard,3,3,1,1);
 
         addToPanel(pnlMenu, btnBillboard, constraints,2,0,3,1);
         addToPanel(pnlMenu, btnSchedule,constraints,2,1,3,1);
@@ -278,7 +311,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlMenu, btnUserManagement,constraints,2,3,3,1);
 
 
-        addToPanel(pnlNewBillBoard,btnCreate,constraints,7,8,3,1);
+
 
     }
 
@@ -358,8 +391,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
+//        Connection connection = DBConnection.getInstance();
+//        CallableStatement st = connection.prepareCall("call usersDisplay()");
+//        ResultSet result = st.executeQuery();
+//        result.getArray("name");
     }
 
     @Override
