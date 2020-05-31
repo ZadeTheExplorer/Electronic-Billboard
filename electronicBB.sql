@@ -18,6 +18,31 @@ CREATE PROCEDURE `electronicBB`.`displayUserColumnId` ()
 BEGIN
   SELECT id FROM users;
 END $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayBillBoardColumnId`; $$
+CREATE PROCEDURE `electronicBB`.`displayBillBoardColumnId` ()
+BEGIN
+    SELECT id FROM billboards;
+END $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnName`; $$
+CREATE PROCEDURE `electronicBB`.`displayUserColumnName` ()
+BEGIN
+    SELECT name FROM users where name IS NOT NULL ;
+END $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserName`; $$
+CREATE PROCEDURE `electronicBB`.`displayUserColumnUserName` ()
+BEGIN
+    SELECT username FROM users;
+END $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserPassword`; $$
+CREATE PROCEDURE `electronicBB`.`displayUserColumnUserPassword` ()
+BEGIN
+    SELECT password FROM users;
+END $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserPrivilege`; $$
+CREATE PROCEDURE `electronicBB`.`displayUserColumnUserPrivilege` ()
+BEGIN
+    SELECT privilege FROM users;
+END $$
 DROP PROCEDURE IF EXISTS `electronicBB`.`addUser`; $$
 CREATE PROCEDURE `electronicBB`.`addUser` (IN id int(3), IN name varchar(45),
                                             IN username varchar(45), IN password varchar(45),IN privilege VARCHAR(50))
