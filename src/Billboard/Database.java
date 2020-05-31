@@ -1,6 +1,5 @@
 package Billboard;
 
-import java.awt.dnd.DragSourceDragEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
@@ -12,16 +11,19 @@ import java.util.Scanner;
 public class Database {
     static Connection connection;
 
-
-
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    };
 
     public Database() throws SQLException {};
     public static void init() throws FileNotFoundException, SQLException {
-               // // read KeyWestTemp.txt
 
         // create token
-        String token1 = "";
-
+        String token = "";
         // for-each loop for calculating heat index of May - October
 
         // create script Scanner
@@ -34,8 +36,8 @@ public class Database {
         // while loop
         while (scriptScanner.hasNext()) {
             // find next line
-            token1 = scriptScanner.next();
-            temps.add(token1);
+            token = scriptScanner.next();
+            temps.add(token);
         }
         scriptScanner.close();
 
@@ -47,7 +49,7 @@ public class Database {
         }
         statement.close();
     }
-    public static String[] displayUserColumn(Statement st, String columnName) throws SQLException {
+    public static String[] getUserColumnId(Statement st, String columnName) throws SQLException {
         String[] columnId;
         // get all current entries
         ResultSet rs = st.executeQuery("Call DisplayUserColumnId()");
@@ -68,9 +70,8 @@ public class Database {
     // WHEN APPLY TO PROGRAM REMOVE THIS AND ADD TO BILLBOARD SERVER
     public static void main(String[] args) throws FileNotFoundException, SQLException {
 
-        connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
         Statement statement = connection.createStatement();
         Database.init();
-        Database.displayUserColumn(statement, "id");
+        Database.getUserColumnId(statement, "id");
     }
 }

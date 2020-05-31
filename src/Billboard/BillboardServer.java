@@ -18,11 +18,6 @@ public class BillboardServer {
 
     public BillboardServer() {
         connection = DBConnection.getInstance();
-        try {
-            select = connection.prepareCall("call userDisplay()");
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public void close() {
@@ -43,7 +38,8 @@ public class BillboardServer {
         ServerSocket serverSocket = new ServerSocket(1234);
         System.out.println("[SERVER] Waiting for client connection...");
         Database.init();
-        for(;;){
+        //TODO: https://www.youtube.com/watch?v=Cx3cAJl-OEo&feature=emb_logo
+        while(true){
             Socket socket = serverSocket.accept();
             System.out.println("[SERVER] Connected to client!");
 
@@ -53,7 +49,6 @@ public class BillboardServer {
 
             socket.close();
         }
-
 
     }
 }
