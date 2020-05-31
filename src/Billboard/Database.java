@@ -49,29 +49,37 @@ public class Database {
         }
         statement.close();
     }
-    public static String[] getUserColumnId(Statement st, String columnName) throws SQLException {
-        String[] columnId;
+    public static String[] RetrieveColumn(Statement st, String query) throws SQLException {
+        String[] column;
         // get all current entries
-        ResultSet rs = st.executeQuery("Call DisplayUserColumnId()");
+        ResultSet rs = st.executeQuery(query);
 
         // use metadata to get the number of columns
-        int columnCount = rs.getMetaData().getColumnCount();
-        columnId = new String[rs.getMetaData().getColumnDisplaySize(1)];
-        int i=0;
+        column = new String[rs.getMetaData().getColumnDisplaySize(1)];
+        int pointer=0;
         // output each row
         while (rs.next()) {
-            columnId[i] = rs.getString(1);
-            i++;
+            column[pointer] = rs.getString(1);
+            if(column[pointer] != null){
+                pointer++;
+            }
         }
-        System.out.println(Arrays.toString(columnId));
-        return columnId;
+        String[] result = new String[pointer];
+        for(int i = 0; i < column.length; i ++){
+            if(column[i] != null){
+                result[i] = column[i];
+            }
+        }
+        System.out.println(Arrays.toString(result));
+        return column;
     }
+
     //TODO: RUN THIS VOID MAIN TO INITIALISE DATABASE.
     // WHEN APPLY TO PROGRAM REMOVE THIS AND ADD TO BILLBOARD SERVER
     public static void main(String[] args) throws FileNotFoundException, SQLException {
-
+        connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
         Statement statement = connection.createStatement();
         Database.init();
-        Database.getUserColumnId(statement, "id");
+        Database.RetrieveColumn(statement, "Call DisplayUserColumnName()");
     }
 }
