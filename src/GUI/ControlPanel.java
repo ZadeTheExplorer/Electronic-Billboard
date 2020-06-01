@@ -17,6 +17,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JPanel pnlMenu;
     private JPanel pnlCenter;
     private JLabel lblName;
+    private JLabel testLabel2;
     private JTextField tfBillboardID;
     private JTextField tfBillboardName;
     private JTextField tfBillboardTitle;
@@ -34,6 +35,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JTextField tfUserPrivilege;
     private JTextField tfScheduleBillBoard;
     private JTextField tfScheduleTimestamp;
+    private JTextField tfTest;
     private JPanel pnlSchedule;
     private JPanel pnlUserManagement;
     private JPanel pnlNewBillBoard;
@@ -55,6 +57,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnUserCreate;
     private JButton btnDeleteSchedule;
     private JButton btnEditSchedule;
+    private JButton testButton;
 
 
     //TODO:REMOVE THIS WHEN SERVER IS CREATED
@@ -318,9 +321,37 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         });
 
         addToPanel(pnlBillBoardList, billBoardListScrollPane, constraints,1,0,1,1 );
-        addToPanel(pnlBillboard, pnlBillBoardList,constraints,1,0,1,1);
-        addToPanel(pnlBillboard, pnlBillboardInformation,constraints,1,1,1,1);
-        addToPanel(pnlBillboard, pnlBillboardButton,constraints,1,2,1,1);
+//        addToPanel(pnlBillboard, pnlBillBoardList,constraints,1,0,1,1);
+//        addToPanel(pnlBillboard, pnlBillboardInformation,constraints,1,1,1,1);
+//        addToPanel(pnlBillboard, pnlBillboardButton,constraints,1,2,1,1);
+        JPanel testPanel = createPanel(Color.WHITE);
+        testPanel.setLayout(new FlowLayout());
+        testPanel.setOpaque(true);
+        testPanel.setBorder(BorderFactory.createTitledBorder("TEST 1"));
+        testPanel.setPreferredSize(new Dimension(200,200));
+        JLabel testLabel = createLabel(Color.WHITE,"Testing 1");
+
+        JPanel testPanel2 = createPanel(Color.WHITE);
+        testPanel2.setOpaque(true);
+        testPanel2.setBorder(BorderFactory.createTitledBorder("TEST 2"));
+        testPanel2.setLayout(new FlowLayout());
+        testPanel2.setPreferredSize(new Dimension(200,200));
+        testLabel2 = new JLabel();
+        testLabel2.setVisible(false);
+        testButton = createButton("Print output");
+        testButton.setFocusPainted(false);
+        tfTest = new JTextField();
+        tfTest.setPreferredSize(new Dimension(100,20));
+
+        //testLabel.setText("set this string as an object to change the value of the lable");
+
+        addToPanel(testPanel,testLabel,constraints,3,2,1,1);
+        addToPanel(pnlBillboard,testPanel,constraints,1,0,1,1);
+
+        addToPanel(testPanel2,tfTest,constraints,1,0,1,1);
+        addToPanel(testPanel2,testButton,constraints,1,1,1,1);
+        addToPanel(testPanel2,testLabel2,constraints,1,1,1,1);
+        addToPanel(pnlBillboard,testPanel2,constraints,1,1,1,1);
 
         GridBagConstraints constrainNewBillboard = new GridBagConstraints();
         constrainNewBillboard.fill = GridBagConstraints.NONE;
@@ -642,6 +673,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 editSchedule(false);
                 btnEditSchedule.setText("Edit");
             }
+        }
+        else if(e.getSource() == testButton){
+            testLabel2.setText(tfTest.getText());
+            testLabel2.setVisible(true);
         }
     }
 
