@@ -329,6 +329,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         testPanel.setOpaque(true);
         testPanel.setBorder(BorderFactory.createTitledBorder("TEST 1"));
         testPanel.setPreferredSize(new Dimension(200,200));
+        JLabel testLabel = createLabel(Color.WHITE,"Testingwefewfewfewfewfewf 1");
 
         JPanel testPanel2 = createPanel(Color.WHITE);
         testPanel2.setOpaque(true);
@@ -573,19 +574,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 //        CallableStatement st = connection.prepareCall("call displayAllBillboards()");
 //        ResultSet result = st.executeQuery();
 //        result.next();
-
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ControlPanel frame = new ControlPanel("BillboardControlPanel");
-                    frame.setVisible(true);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
     @Override
