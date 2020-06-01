@@ -26,7 +26,7 @@ END $$
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnName`; $$
 CREATE PROCEDURE `electronicBB`.`displayUserColumnName` ()
 BEGIN
-    SELECT name FROM users where name IS NOT NULL ;
+    SELECT name FROM users where name IS NOT NULL;
 END $$
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserName`; $$
 CREATE PROCEDURE `electronicBB`.`displayUserColumnUserName` ()
