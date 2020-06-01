@@ -544,6 +544,18 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 //        ResultSet result = st.executeQuery();
 //        result.next();
 
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ControlPanel frame = new ControlPanel("BillboardControlPanel");
+                    frame.setVisible(true);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override

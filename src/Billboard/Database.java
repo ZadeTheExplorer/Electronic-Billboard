@@ -1,6 +1,5 @@
 package Billboard;
 
-import java.awt.dnd.DragSourceDragEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
@@ -12,16 +11,19 @@ import java.util.Scanner;
 public class Database {
     static Connection connection;
 
-
-
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    };
 
     public Database() throws SQLException {};
     public static void init() throws FileNotFoundException, SQLException {
-               // // read KeyWestTemp.txt
 
         // create token
-        String token1 = "";
-
+        String token = "";
         // for-each loop for calculating heat index of May - October
 
         // create script Scanner
@@ -34,8 +36,8 @@ public class Database {
         // while loop
         while (scriptScanner.hasNext()) {
             // find next line
-            token1 = scriptScanner.next();
-            temps.add(token1);
+            token = scriptScanner.next();
+            temps.add(token);
         }
         scriptScanner.close();
 
@@ -47,13 +49,14 @@ public class Database {
         }
         statement.close();
     }
-    public static String[] RetrieveColumn(Statement st, String query) throws SQLException {
+    public static String[] RetrieveData(Statement st, String query) throws SQLException {
         String[] column;
         // get all current entries
         ResultSet rs = st.executeQuery(query);
 
         // use metadata to get the number of columns
         column = new String[rs.getMetaData().getColumnDisplaySize(1)];
+
         int pointer=0;
         // output each row
         while (rs.next()) {
@@ -62,6 +65,7 @@ public class Database {
                 pointer++;
             }
         }
+
         String[] result = new String[pointer];
         for(int i = 0; i < column.length; i ++){
             if(column[i] != null){
@@ -78,6 +82,6 @@ public class Database {
         connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
         Statement statement = connection.createStatement();
         Database.init();
-        Database.RetrieveColumn(statement, "Call DisplayUserColumnName()");
+        String [] array = Database.RetrieveData(statement, "Call DisplayUserColumnName()");
     }
 }

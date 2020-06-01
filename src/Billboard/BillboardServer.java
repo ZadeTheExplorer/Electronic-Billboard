@@ -1,11 +1,5 @@
 package Billboard;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.*;
@@ -18,11 +12,6 @@ public class BillboardServer {
 
     public BillboardServer() {
         connection = DBConnection.getInstance();
-        try {
-            select = connection.prepareCall("call userDisplay()");
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public void close() {
@@ -39,21 +28,25 @@ public class BillboardServer {
 
 
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
         ServerSocket serverSocket = new ServerSocket(1234);
         System.out.println("[SERVER] Waiting for client connection...");
         Database.init();
-        for(;;){
+
+        while(true){
             Socket socket = serverSocket.accept();
+            System.out.println("Connected to " + socket.getInetAddress());
             System.out.println("[SERVER] Connected to client!");
 
-            InputStream inputStream = socket.getInputStream();
-            BufferedInputStream input = new BufferedInputStream(inputStream);
-            input.read();
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
+
+            Object o = objectInputStream.readObject();
+            System.out.println("Received from client: " + o);
+            objectOutputStream.close();
             socket.close();
         }
-
 
     }
 }
