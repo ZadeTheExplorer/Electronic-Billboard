@@ -329,7 +329,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         testPanel.setOpaque(true);
         testPanel.setBorder(BorderFactory.createTitledBorder("TEST 1"));
         testPanel.setPreferredSize(new Dimension(200,200));
-        JLabel testLabel = createLabel(Color.WHITE,"Testing 1");
 
         JPanel testPanel2 = createPanel(Color.WHITE);
         testPanel2.setOpaque(true);
