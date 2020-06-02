@@ -15,6 +15,7 @@ import java.util.Date;
 public class ViewerHandler extends Thread{
         DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
         DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
+
         ObjectInputStream ois;
         ObjectOutputStream oos;
         Socket s;
@@ -31,7 +32,7 @@ public class ViewerHandler extends Thread{
         @Override
         public void run() {
             Object received;
-            Object toreturn;
+            Object toReturn;
 
             // Ask user what he wants
             try {
@@ -65,11 +66,13 @@ public class ViewerHandler extends Thread{
             }
             // closing resources
             try {
+                System.out.println("Closing stream IO at " + s);
                 this.ois.close();this.oos.close();
+                System.out.println("Closed Viewer");
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-
+            System.out.println("Viewer End");
         }
 }

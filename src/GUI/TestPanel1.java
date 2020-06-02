@@ -8,6 +8,9 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +19,7 @@ public class TestPanel1 extends JFrame implements ActionListener, Runnable{
     public static final int WIDTH = 500;
     public static final int HEIGHT = 150;
     public static JLabel testLabel;
+    static DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
     public TestPanel1(String title) throws SQLException {
         super(title);
     }
@@ -73,7 +77,9 @@ public class TestPanel1 extends JFrame implements ActionListener, Runnable{
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 
-
+        oos.writeObject("TestPanel1");
+        oos.flush();
+        System.out.println("Identified!");
         RequestTimer request = new RequestTimer(socket, oos);
         Timer timer = new Timer(true);
         timer.scheduleAtFixedRate(request, 0, 3000);
@@ -83,10 +89,10 @@ public class TestPanel1 extends JFrame implements ActionListener, Runnable{
                 // printing date or time as requested by client
                 Object received = ois.readObject();
                 System.out.println(received);
-                testLabel.setText(received.toString());
+                testLabel.setText(received.toString() + " at: " + fortime.format(new Date()));
+
             }
         } finally {
-
             ois.close();
             oos.close();
         }

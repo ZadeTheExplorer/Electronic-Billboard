@@ -25,6 +25,8 @@ public class ClientTest {
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
 
+            oos.writeObject("Client1");
+            oos.flush();
             // the following loop performs the exchange of
             // information between client and client handler
             while (true)
@@ -48,13 +50,10 @@ public class ClientTest {
                 System.out.println(received.toString());
             }
 
-            // closing resources
-            scn.close();
-            ois.close();
-            oos.close();
         }catch(Exception e){
             e.printStackTrace();
         }
+        System.out.println("END");
 
     }
 }

@@ -20,6 +20,8 @@ public class Database {
     };
 
     public Database() throws SQLException {};
+
+    //TODO: INIT THE DATABASE
     public static void init() throws FileNotFoundException, SQLException {
 
         // create token
@@ -49,7 +51,8 @@ public class Database {
         }
         statement.close();
     }
-    public static String[] RetrieveData(Statement st, String query) throws SQLException {
+    //TODO: USE THIS WHEN RETURN ONLY 1 COLUMN DATA
+    public static String[] RetrieveColumnData(Statement st, String query) throws SQLException {
         String[] column;
         // get all current entries
         ResultSet rs = st.executeQuery(query);
@@ -75,6 +78,64 @@ public class Database {
         System.out.println(Arrays.toString(result));
         return column;
     }
+    //TODO: USE THIS WHEN SELECT * FROM A TABLE OR MULTI COLs
+    // Return List<String[]> : List of rows (rows is String[])
+    public static ArrayList<String[]> RetrieveData(Statement st, String query) throws SQLException {
+        // get all current entries
+        ResultSet rs = st.executeQuery(query);
+
+        // use metadata to get the number of columns
+
+        int columnCount = rs.getMetaData().getColumnCount();
+//        colNames = new String[rowCount+1][columnCount];
+        String[] colNames = new String[columnCount];
+        for (int i=0; i< columnCount; i++){
+            colNames[i] = rs.getMetaData().getColumnName(i + 1);
+        }
+        ArrayList<String[]> table = new ArrayList<>();
+        table.add(colNames);
+        while( rs.next()) {
+            String[] row = new String[columnCount];
+            for( int iCol = 1; iCol <= columnCount; iCol++ ){
+                Object obj = rs.getObject( iCol );
+                row[iCol-1] = (obj == null) ?null:obj.toString();
+            }
+            table.add(row);
+        }
+
+        //print result
+        for( String[] row: table ){
+            for( String s: row ){
+                System.out.print( " " + s );
+            }
+            System.out.println();
+        }
+        return table;
+    }
+    //TODO: USE THIS WHEN PRINT RETURN OF A STATEMENT's EXECUTION
+    private static void displayContents(Statement st, String query) throws SQLException {
+
+        // get all current entries
+        ResultSet rs = st.executeQuery(query);
+
+        // use metadata to get the number of columns
+        int columnCount = rs.getMetaData().getColumnCount();
+
+        // output the column names
+        for (int i = 0; i < columnCount; i++) {
+            System.out.printf("%-20s", rs.getMetaData().getColumnName(i + 1));
+        }
+        System.out.printf("%n");
+
+        // output each row
+        while (rs.next()) {
+            for (int i = 0; i < columnCount; i++) {
+                System.out.printf("%-20s", rs.getString(i + 1));
+            }
+            System.out.printf("%n");
+        }
+        System.out.printf("%n");
+    }
 
     //TODO: RUN THIS VOID MAIN TO INITIALISE DATABASE.
     // WHEN APPLY TO PROGRAM REMOVE THIS AND ADD TO BILLBOARD SERVER
@@ -82,6 +143,12 @@ public class Database {
         connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
         Statement statement = connection.createStatement();
         Database.init();
-        String [] array = Database.RetrieveData(statement, "Call DisplayUserColumnName()");
+        statement.execute("Call AddUser('Patrick Ha', 'username1', 'password', 'Edit User')");
+        String [] array = Database.RetrieveColumnData(statement, "Call DisplayUsers()");
+        String [] array2 = Database.RetrieveColumnData(statement, "Call getScheduleIdByBillboardId(8)");
+        ArrayList<String[]> arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
+        ArrayList<String[]> arrayList2 = Database.RetrieveData(statement, "Call getScheduleInfo(1)");
+
+
     }
 }

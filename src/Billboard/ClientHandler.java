@@ -27,6 +27,7 @@ public class ClientHandler extends Thread {
     {
         Object received;
         Object toreturn;
+        outer:
         while (true)
         {
             try {
@@ -40,9 +41,9 @@ public class ClientHandler extends Thread {
                 {
                     System.out.println("[C] " + this.s + " sends exit...");
                     System.out.println("Closing this connection.");
-                    this.s.close();
+
                     System.out.println("Connection closed");
-                    break;
+                    break outer;
                 }
 
                 // creating Date object
@@ -76,12 +77,14 @@ public class ClientHandler extends Thread {
 
         try
         {
+            s.close();
             // closing resources
             this.ois.close();
             this.oos.close();
-
+            System.out.println("Closed IO.");
         }catch(IOException e){
             e.printStackTrace();
         }
+        System.out.println("Client Handler end.");
     }
 }

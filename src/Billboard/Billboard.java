@@ -1,29 +1,50 @@
 package Billboard;
 
+//TODO: CHANGE UNIT TEST FOR BILLBOARD
 public class Billboard {
+    private String name;
+    private int creatorId;
+    private String backgroundColor;
     private String message;
+    private String messageColor;
+    private String picture;
     private String information;
-    private String img_url;
-    public Billboard(String message, String information, String img_url){
-        this.information = information;
-        this.img_url = img_url;
+    private String informationColor;
+    public Billboard(String billboardName,int creatorId,String backgroundColor,String message,
+                     String messageColor,String picture,String information,String informationColor){
+        this.name = billboardName;
+        this.creatorId = creatorId;
+        this.backgroundColor = backgroundColor;
         this.message = message;
-    }
-
-    public String getInformation() {
-        return information;
-    }
-
-    public void setInformation(String information) {
+        this.messageColor = messageColor;
+        this.picture = picture;
         this.information = information;
+        this.informationColor = informationColor;
     }
 
-    public String getImg_url() {
-        return img_url;
+
+    public String getName() {
+        return name;
     }
 
-    public void setImg_url(String img_url) {
-        this.img_url = img_url;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public String getMessage() {
@@ -34,8 +55,44 @@ public class Billboard {
         this.message = message;
     }
 
+    public String getMessageColor() {
+        return messageColor;
+    }
 
-    public void delete(int id){
+    public void setMessageColor(String messageColor) {
+        this.messageColor = messageColor;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public String getInformation() {
+        return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
+    }
+
+    public String getInformationColor() {
+        return informationColor;
+    }
+
+    public void setInformationColor(String informationColor) {
+        this.informationColor = informationColor;
+    }
+
+
+
+
+
+
+    public void delete(int name){
 
     }
 
