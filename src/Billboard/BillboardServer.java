@@ -28,24 +28,42 @@ public class BillboardServer {
 
 
 
-    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
         ServerSocket serverSocket = new ServerSocket(1234);
         System.out.println("[SERVER] Waiting for client connection...");
         Database.init();
 
         while(true){
-            Socket socket = serverSocket.accept();
-            System.out.println("Connected to " + socket.getInetAddress());
-            System.out.println("[SERVER] Connected to client!");
+            Socket socket1 = null;
+            Socket socket2 = null;
+            try{
+                socket1 = serverSocket.accept();
+                System.out.println("Connected to " + socket1.getInetAddress() + ", at: " + socket1.getPort());
 
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream objectInputStream = new ObjectInputStream(socket1.getInputStream());
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket1.getOutputStream());
 
+                System.out.println("Start new thread for this client");
 
-            Object o = objectInputStream.readObject();
-            System.out.println("Received from client: " + o);
-            objectOutputStream.close();
-            socket.close();
+                Thread t = new ClientHandler(socket1, objectInputStream, objectOutputStream);
+                t.start();
+                System.out.println("start Client");
+
+                socket2 = serverSocket.accept();
+                System.out.println("Connected to " + socket2.getInetAddress() + ", at: " + socket2.getPort());
+
+                ObjectInputStream ois = new ObjectInputStream(socket2.getInputStream());
+                ObjectOutputStream oos = new ObjectOutputStream(socket2.getOutputStream());
+                Thread panel1Thread = new ViewerHandler(socket2, ois, oos);
+                System.out.println("Start new thread for panel");
+
+                panel1Thread.start();
+                System.out.println("Start Panel");
+                t.join();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

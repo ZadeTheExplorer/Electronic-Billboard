@@ -69,6 +69,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
     }
 
     public static void main(String[] args) throws SQLException {
-        SwingUtilities.invokeLater(new TestPanel2("BillboardControlPanel"));
+        TestPanel2 panel = new TestPanel2("BillboardControlPanel");
+        panel.run();
     }
 }
