@@ -126,16 +126,16 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
         Socket socket = new Socket("localhost", 1234);
         // obtaining input and out streams
 
-        oos = new ObjectOutputStream(socket.getOutputStream());
-        ois = new ObjectInputStream(socket.getInputStream());
-
-        oos.writeObject("TestPanel2");
-        oos.flush();
-        System.out.println("Identified!");
-        System.out.println(ois.readObject());
-        TestPanel2 panel = new TestPanel2("Test Panel2");
-        panel.run();
-        panel.repaint();
+//        oos = new ObjectOutputStream(socket.getOutputStream());
+//        ois = new ObjectInputStream(socket.getInputStream());
+//
+//        oos.writeObject("TestPanel2");
+//        oos.flush();
+//        System.out.println("Identified!");
+//        System.out.println(ois.readObject());
+//        TestPanel2 panel = new TestPanel2("Test Panel2");
+//        panel.run();
+//        panel.repaint();
 
     }
 }

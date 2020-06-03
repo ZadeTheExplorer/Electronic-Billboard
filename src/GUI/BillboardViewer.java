@@ -1,4 +1,6 @@
 package GUI;
+import Billboard.Request.DisplayBillboardRequest;
+
 import javax.swing.*;
 import javax.sql.*;
 import java.awt.*;
@@ -8,12 +10,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Timer;
 
 public class BillboardViewer extends JFrame implements Runnable, ActionListener {
     public static final int WIDTH = 900;
     public static final int HEIGHT = 600;
+    private Color backgroundColor;
+    private Color titleColor;
+    private Color descriptionColor;
     private JPanel billboard;
     private JTextArea titleBox;
     private JTextArea descriptionBox;
@@ -31,12 +37,15 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         //setExtendedState(JFrame.MAXIMIZED_BOTH);
+        backgroundColor = Color.LIGHT_GRAY;
+        descriptionColor = Color.BLACK;
+        titleColor = Color.WHITE;
         title = "This is a billboard advertisement";
         description = "This billboard is advertising about the food commercial! Hamburger is yummy";
-        titleBox = createTextBox(title, Color.WHITE, WIDTH/30, WIDTH*2/3);
+        titleBox = createTextBox(title, titleColor, WIDTH/30, WIDTH*2/3);
         billboardImage = new JLabel();
         billboardImage.setIcon(new ImageIcon(new ImageIcon(currentDir+"\\src\\resources\\bitcoin.jpg").getImage().getScaledInstance(400, 300, Image.SCALE_DEFAULT)));
-        descriptionBox = createTextBox(description, Color.GREEN, WIDTH/44, WIDTH*2/3);
+        descriptionBox = createTextBox(description, descriptionColor, WIDTH/44, WIDTH*2/3);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.NONE;
@@ -45,7 +54,7 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         constraints.weighty = 2;
 
         billboard = new JPanel(new GridBagLayout());
-        billboard.setBackground(Color.BLACK);
+        billboard.setBackground(backgroundColor);
 
         addToPanel(billboard, titleBox,constraints,0,1,1,1);
         addToPanel(billboard, billboardImage,constraints,0,2,1,1);
@@ -86,26 +95,24 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
+        //SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
         Socket BillboardViewerSocket = new Socket("localhost", 1234);
         // obtaining input and out streams
 
         ObjectOutputStream oos = new ObjectOutputStream(BillboardViewerSocket.getOutputStream());
         ObjectInputStream ois = new ObjectInputStream(BillboardViewerSocket.getInputStream());
 
-        oos.writeObject("Billboard Viewer");
-        oos.flush();
         System.out.println("Identified!");
-        RequestTimer request = new RequestTimer(BillboardViewerSocket, oos);
-        java.util.Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(request, 0, 15000);
-        System.out.println(ois.readObject().toString());
+//        RequestTimer request = new RequestTimer(BillboardViewerSocket, oos);
+//        java.util.Timer timer = new Timer(true);
+//        timer.scheduleAtFixedRate(request, 0, 15000);
+//        System.out.println(ois.readObject().toString());
         try{
-            while(true){
-                // printing date or time as requested by client
-                Object received = ois.readObject();
-                System.out.println(received);
-            }
+            oos.writeObject(new DisplayBillboardRequest());
+            oos.flush();
+            Object o = ois.readObject();
+            String[][] table = (String[][]) o;
+            System.out.println(Arrays.deepToString(table));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
