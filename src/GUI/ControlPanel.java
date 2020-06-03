@@ -31,6 +31,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JTextField tfBillboardBGColor;
     private JTextField tfBillboardTitleColor;
     private JTextField tfBillboardURL;
+    private JTextField tfBillboardTitle;
+    private JTextField tfBillboardDescription;
     private JTextField tfNewBillboardID;
     private JTextField tfNewBillboardName;
     private JTextField tfNewBillboardTitle;
@@ -109,6 +111,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfBillboardTitleColor.setEditable(false);
         tfBillboardURL = new JTextField();
         tfBillboardURL.setEditable(false);
+        tfBillboardTitle= new JTextField();
+        tfBillboardTitle.setEditable(false);
+        tfBillboardDescription = new JTextField();
+        tfBillboardDescription.setEditable(false);
 
         tfNewBillboardID = new JTextField();
         tfNewBillboardName = new JTextField();
@@ -297,6 +303,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlBillboardInformation, tfBillboardBGColor, constraints,0,0,1,1 );
         addToPanel(pnlBillboardInformation, tfBillboardTitleColor, constraints,0,0,1,1 );
         addToPanel(pnlBillboardInformation, tfBillboardURL, constraints,0,0,1,1 );
+        addToPanel(pnlBillboardInformation, tfBillboardTitle, constraints,0,0,1,1 );
+        addToPanel(pnlBillboardInformation, tfBillboardDescription, constraints,0,0,1,1 );
 
 
         addToPanel(pnlBillboardButton,btnDeleteBb,constraints,1,0,1,1);
@@ -553,19 +561,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         output.flush();
         System.out.println("Identified!");
         System.out.println(input.readObject());
-        try {
-            output.writeObject(new DisplayBillboardRequest());
-            output.flush();
-            Object list = input.readObject();
-            String[][] table = (String[][]) list;
-            System.out.println(Arrays.deepToString(table));
-            billBoardData = new Object[table.length - 1][table[0].length];
-            for(int i = 0; i < table.length - 1; i++){
-                billBoardData[i] = table[i+1];
-            }
-        } catch (IOException | ClassNotFoundException ioException) {
-            System.out.println("ERROR");
-        }
+        getBillboardData();
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
 
 
@@ -663,6 +659,22 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    public static void getBillboardData(){
+        try{
+            output.writeObject(new DisplayBillboardRequest());
+            output.flush();
+            Object list = input.readObject();
+            String[][] table = (String[][]) list;
+            System.out.println(Arrays.deepToString(table));
+            billBoardData = new Object[table.length - 1][table[0].length];
+            for(int i = 0; i < table.length - 1; i++){
+                billBoardData[i] = table[i+1];
+            }
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
+    }
+
     public void clearScreen(){
         pnlNewBillBoard.setVisible(false);
         pnlUserManagement.setVisible(false);
@@ -676,6 +688,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfBillboardUserID.setEditable(bool);
         tfBillboardURL.setEditable(bool);
         tfBillboardBGColor.setEditable(bool);
+        tfBillboardTitle.setEditable(bool);
+        tfBillboardDescription.setEditable(bool);
     }
 
     public void editUser(boolean bool){
@@ -698,6 +712,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfBillboardBGColor.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
         tfBillboardTitleColor.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
         tfBillboardURL.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
+        tfBillboardTitle.setText(table.getValueAt(table.getSelectedRow(), 5).toString());
+        tfBillboardDescription.setText(table.getValueAt(table.getSelectedRow(), 6).toString());
         btnEditBb.setText("Edit");
         editBillBoard(false);
     }
