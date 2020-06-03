@@ -4,6 +4,8 @@ import javax.sql.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.Socket;
 import java.util.Date;
@@ -51,6 +53,11 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         addToPanel(billboard, descriptionBox,constraints,0,3,1,1);
 
         this.getContentPane().add(billboard, BorderLayout.CENTER);
+        billboard.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e){
+                System.exit(0);
+            }
+        });
 
     }
 
@@ -80,31 +87,31 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
-        Socket BillboardViewerSocket = new Socket("localhost", 1234);
-        // obtaining input and out streams
-
-        ObjectOutputStream oos = new ObjectOutputStream(BillboardViewerSocket.getOutputStream());
-        ObjectInputStream ois = new ObjectInputStream(BillboardViewerSocket.getInputStream());
-
-        oos.writeObject("Billboard Viewer");
-        oos.flush();
-        System.out.println("Identified!");
-        RequestTimer request = new RequestTimer(BillboardViewerSocket, oos);
-        java.util.Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(request, 0, 3000);
-        System.out.println(ois.readObject().toString());
-        try{
-            while(true){
-                // printing date or time as requested by client
-                Object received = ois.readObject();
-                System.out.println(received);
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            ois.close();
-            oos.close();
-        }
+//        Socket BillboardViewerSocket = new Socket("localhost", 1234);
+//        // obtaining input and out streams
+//
+//        ObjectOutputStream oos = new ObjectOutputStream(BillboardViewerSocket.getOutputStream());
+//        ObjectInputStream ois = new ObjectInputStream(BillboardViewerSocket.getInputStream());
+//
+//        oos.writeObject("Billboard Viewer");
+//        oos.flush();
+//        System.out.println("Identified!");
+//        RequestTimer request = new RequestTimer(BillboardViewerSocket, oos);
+//        java.util.Timer timer = new Timer(true);
+//        timer.scheduleAtFixedRate(request, 0, 3000);
+//        System.out.println(ois.readObject().toString());
+//        try{
+//            while(true){
+//                // printing date or time as requested by client
+//                Object received = ois.readObject();
+//                System.out.println(received);
+//            }
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } finally {
+//            ois.close();
+//            oos.close();
+//        }
     }
 
     @Override
