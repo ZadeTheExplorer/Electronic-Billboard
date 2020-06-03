@@ -1,6 +1,6 @@
 package GUI;
 
-import Billboard.Request.DisplayBillboardRequest;
+import Billboard.Request.DisplayAllBillboardsRequest;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -661,7 +661,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void getBillboardData(){
         try{
-            output.writeObject(new DisplayBillboardRequest());
+            output.writeObject(new DisplayAllBillboardsRequest());
             output.flush();
             Object list = input.readObject();
             String[][] table = (String[][]) list;

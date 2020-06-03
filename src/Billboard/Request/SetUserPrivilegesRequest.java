@@ -1,8 +1,8 @@
 package Billboard.Request;
 
-public class GetUserPermissionRequest {
+public class SetUserPrivilegesRequest {
     private String username;
-    public GetUserPermissionRequest(String username) {
+    public SetUserPrivilegesRequest(String username) {
         this.username = username;
     }
 

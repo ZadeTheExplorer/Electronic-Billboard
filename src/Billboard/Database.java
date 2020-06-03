@@ -169,7 +169,5 @@ public class Database {
 
         String[][] arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
         String[][] arrayList2 = Database.RetrieveData(statement, "Call getScheduleInfo(1)");
-
-
     }
 }
