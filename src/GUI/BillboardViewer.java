@@ -91,7 +91,7 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         System.out.println("Identified!");
         RequestTimer request = new RequestTimer(BillboardViewerSocket, oos);
         java.util.Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(request, 0, 3000);
+        timer.scheduleAtFixedRate(request, 0, 15000);
         System.out.println(ois.readObject().toString());
         try{
             while(true){

@@ -5,10 +5,10 @@ USE electronicBB; $$
 DROP TABLE IF EXISTS `electronicBB`.`users`; $$
 
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`users`(
-  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `name` varchar(45) NOT NULL default '',
-  `username` varchar(30) NOT NULL default 'username',
-  `password` varchar(50) NOT NULL default 'password',
+  `name` varchar(45) NOT NULL default 'Full Name',
+  `user_name` varchar(30) NOT NULL PRIMARY KEY,
+  `salt` varchar(300) NOT NULL,
+  `hash` varchar(300) NOT NULL,
   `privilege` VARCHAR(50) default 'edit user, edit schedule, edit billboard'
 
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
@@ -18,13 +18,6 @@ DROP PROCEDURE IF EXISTS `electronicBB`.`displayUsers`; $$
 CREATE PROCEDURE `electronicBB`.`displayUsers` ()
 BEGIN
   SELECT * FROM users;
-END $$
-
-DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnId`; $$
-
-CREATE PROCEDURE `electronicBB`.`displayUserColumnId` ()
-BEGIN
-  SELECT id FROM users;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnName`; $$
@@ -38,14 +31,7 @@ DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserName`; $$
 
 CREATE PROCEDURE `electronicBB`.`displayUserColumnUserName` ()
 BEGIN
-    SELECT username FROM users;
-END $$
-
-DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserPassword`; $$
-
-CREATE PROCEDURE `electronicBB`.`displayUserColumnUserPassword` ()
-BEGIN
-    SELECT password FROM users;
+    SELECT user_name FROM users;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserPrivilege`; $$
@@ -57,47 +43,45 @@ END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`getUserInfo`; $$
 
-CREATE PROCEDURE `electronicBB`.`getUserInfo` (IN id int(3))
+CREATE PROCEDURE `electronicBB`.`getUserInfo` (IN user_name varchar(45))
 BEGIN
-    SELECT * FROM users WHERE users.id = id;
+    SELECT * FROM users WHERE users.user_name = user_name;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`addUser`; $$
 
 CREATE PROCEDURE `electronicBB`.`addUser` (IN name varchar(45),
-                                            IN username varchar(45), IN password varchar(45),IN privilege VARCHAR(50))
+                                            IN user_name varchar(45), IN salt varchar(300), IN hashPass varchar(300), IN privelege varchar(50))
 BEGIN
-  INSERT INTO users(name, username, password, privilege) VALUES(name, username, password, privilege);
+  INSERT INTO users VALUES(name, user_name, salt, hashPass, privilege);
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`deleteUser`; $$
 
-CREATE PROCEDURE `electronicBB`.`deleteUser` (IN id int(3))
+CREATE PROCEDURE `electronicBB`.`deleteUser` (IN user_name varchar(45))
 BEGIN
-  DELETE FROM users WHERE users.id=id;
+  DELETE FROM users WHERE users.user_name=user_name;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`updatePassword`; $$
 
-CREATE PROCEDURE `electronicBB`.`updatePassword` (IN id INT, IN newPsw VARCHAR(45))
+CREATE PROCEDURE `electronicBB`.`updatePassword` (IN user_name varchar(45), IN salt varchar(300), IN hashPass varchar(300))
 BEGIN
-  UPDATE users SET users.password=newPsw WHERE users.id=id;
+  UPDATE users SET users.salt=salt, users.hash=hashPass  WHERE users.user_name=user_name;
 END $$
 
 DROP TABLE IF EXISTS `electronicBB`.`billboards`; $$
 
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`billboards` (
-  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `name` varchar(45) NOT NULL,
-  `user_id` int(3) NOT NULL,
+  `name` varchar(45) NOT NULL PRIMARY KEY,
+  `user_name` int(3) NOT NULL,
   `background_color` varchar(7) default '#FFFFFF',
   `message_color` varchar(7) default '#ff0000',
   `information_color` varchar(7) default '#000000',
   `url` varchar(200),
   `message` varchar(100) default '',
-  `information` varchar(100) default '',
+  `information` varchar(100) default ''
 
-  FOREIGN KEY (`user_id`) REFERENCES users.id (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayAllBillboards`; $$
@@ -107,34 +91,33 @@ BEGIN
   SELECT * FROM billboards;
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`displayBillBoardColumnId`; $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`displayBillBoardColumnName`; $$
 
-CREATE PROCEDURE `electronicBB`.`displayBillBoardColumnId` ()
+CREATE PROCEDURE `electronicBB`.`displayBillBoardColumnName` ()
 BEGIN
-    SELECT id FROM billboards;
+    SELECT billboards.name FROM billboards;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`getBillboardInfo`; $$
 
-CREATE PROCEDURE `electronicBB`.`getBillboardInfo` (IN id int(3))
+CREATE PROCEDURE `electronicBB`.`getBillboardInfo` (IN name varchar(45))
 BEGIN
-    SELECT * FROM users WHERE billboards.id = id;
+    SELECT * FROM users WHERE billboards.name = name;
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`getBillboardIdByUserId`; $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`getBillboardIdByUserName`; $$
 
-CREATE PROCEDURE `electronicBB`.`getBillboardIdByUserId` (IN id int(3))
+CREATE PROCEDURE `electronicBB`.`getBillboardIdByUserName` (IN user_name varchar(45))
 BEGIN
-    SELECT id FROM billboards WHERE billboards.user_id = id;
+    SELECT billboards.name FROM billboards WHERE billboards.user_name = user_name;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`addBillboard`; $$
 
-CREATE PROCEDURE `electronicBB`.`addBillboard` (IN name varchar(45),
-                                            IN user_id int(3), IN background_color varchar(7),IN message_color VARCHAR(7),
+CREATE PROCEDURE `electronicBB`.`addBillboard` (IN name varchar(45), IN user_name varchar(45), IN background_color varchar(7),IN message_color VARCHAR(7),
                                             IN information_color varchar(7), IN url varchar(200), IN message varchar(100), IN information varchar(100))
 BEGIN
-  INSERT INTO billboards(name, user_id, background_color, message_color, information_color, url, message, information) VALUES(name, user_id, background_color, message_color, information_color, url, message, information);
+  INSERT INTO billboards VALUES(name, user_name, background_color, message_color, information_color, url, message, information);
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`deleteBillboard`; $$
@@ -143,15 +126,27 @@ CREATE PROCEDURE `electronicBB`.`deleteBillboard` (IN bbName varchar(45))
 BEGIN
   DELETE FROM billboards WHERE billboards.name=bbName;
 END $$
+
+DROP PROCEDURE IF EXISTS `electronicBB`.`editBillboard`; $$
+
+CREATE PROCEDURE `electronicBB`.`editBillboard` (IN name varchar(45), IN user_name varchar(45), IN background_color varchar(7),IN message_color VARCHAR(7),
+                                            IN information_color varchar(7), IN url varchar(200), IN message varchar(100), IN information varchar(100))
+BEGIN
+    UPDATE billboards
+    SET billboard.user_name=user_name, billboard.background_color=background_color, billboard.message_color=message_color,
+     billboard.information_color=information_color, billboard.url=url, billboard.message=message, billboard.information=information
+    WHERE billboard.name=name;
+END $$
+
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedules` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `billboard_id` int(3) NOT NULL,
-  `user_id` int(45) NOT NULL,
+  `billboard_name` varchar(45) NOT NULL,
+  `user_name` varchar(45) NOT NULL,
   `start_time` TIME NOT NULL,
   `end_time` TIME NOT NULL,
   `weekdays` VARCHAR(10) NOT NULL,
-  FOREIGN KEY (billboard_id) REFERENCES billboards.id (billboard_id),
-  FOREIGN KEY (user_id) REFERENCES users.id (user_id)
+  FOREIGN KEY (billboard_name) REFERENCES billboards.name (billboard_name),
+  FOREIGN KEY (user_name) REFERENCES users.user_name (user_name)
 
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
 
@@ -161,6 +156,7 @@ CREATE PROCEDURE `electronicBB`.`displayAllSchedules` ()
 BEGIN
   SELECT * FROM schedules;
 END $$
+
 DROP PROCEDURE IF EXISTS `electronicBB`.`getScheduleInfo`; $$
 
 CREATE PROCEDURE `electronicBB`.`getScheduleInfo` (IN id int(3))
@@ -168,26 +164,26 @@ BEGIN
     SELECT * FROM schedules WHERE schedules.id = id;
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`getScheduleIdByBillboardId`; $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`getScheduleIdByBillboardName`; $$
 
-CREATE PROCEDURE `electronicBB`.`getScheduleIdByBillboardId` (IN id int(3))
+CREATE PROCEDURE `electronicBB`.`getScheduleIdByBillboardName` (IN id int(3))
 BEGIN
-    SELECT id FROM schedules WHERE schedules.billboard_id = id;
+    SELECT id FROM schedules WHERE schedules.billboard_name = name;
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`getScheduleIdByUserId`; $$
+DROP PROCEDURE IF EXISTS `electronicBB`.`getScheduleIdByUserName`; $$
 
-CREATE PROCEDURE `electronicBB`.`getScheduleIdByUserId` (IN id int(3))
+CREATE PROCEDURE `electronicBB`.`getScheduleIdByUserName` (IN id int(3))
 BEGIN
-    SELECT id FROM schedules WHERE schedules.user_id = id;
+    SELECT id FROM schedules WHERE schedules.user_name = name;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`addSchedule`; $$
 
-CREATE PROCEDURE `electronicBB`.`addSchedule` (IN billboard_id int(3), IN user_id int(3),
+CREATE PROCEDURE `electronicBB`.`addSchedule` (IN billboard_name varchar(45), IN user_name varchar(45),
                                             IN start_time TIME, IN end_time TIME,IN weekdays VARCHAR(10))
 BEGIN
-  INSERT INTO schedules(billboard_id, user_id, start_time, end_time, weekdays) VALUES(billboard_id, user_id, start_time, end_time, weekdays);
+  INSERT INTO schedules(billboard_name, user_nname, start_time, end_time, weekdays) VALUES(billboard_id, user_id, start_time, end_time, weekdays);
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`deleteSchedule`; $$

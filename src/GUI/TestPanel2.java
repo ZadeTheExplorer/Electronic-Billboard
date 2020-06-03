@@ -116,7 +116,6 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
             }
         }
     }
-
     @Override
     public void run() {
         createGUI();

@@ -4,10 +4,13 @@ import Billboard.Billboard;
 
 import java.io.Serializable;
 
-public class AddBillboardRequest extends BillboardRequest implements Serializable {
-
+public class AddBillboardRequest implements Serializable {
+    private Billboard billboard;
     public AddBillboardRequest(Billboard billboard) {
-        super(billboard);
+        this.billboard = billboard;
     }
 
+    public Billboard getBillboard() {
+        return billboard;
+    }
 }

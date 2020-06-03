@@ -1,11 +1,18 @@
 package GUI;
 
+import Billboard.Request.CurrentBillboardRequest;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimerTask;
 
@@ -19,14 +26,13 @@ public class RequestTimer extends TimerTask {
     }
     @Override
     public void run() {
-
-        System.out.println("Start TimerTask at: " + fortime.format(new Date()));
+        LocalDateTime localDate = LocalDateTime.now();
+        System.out.println("Start TimerTask at: " + DayOfWeek.from(localDate)+", "+ localDate.toLocalTime());
         sendRequest();
-        System.out.println("End TimerTask");
     }
     public void sendRequest(){
         try{
-            oos.writeObject("Current");
+            oos.writeObject(new CurrentBillboardRequest(LocalDateTime.now()));
             oos.flush();
         } catch (IOException e) {
             e.printStackTrace();

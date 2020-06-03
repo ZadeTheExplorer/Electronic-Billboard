@@ -2,13 +2,10 @@ package Billboard.Request;
 
 import Billboard.Billboard;
 
-import java.io.Serializable;
-
-public abstract class BillboardRequest implements Serializable {
+public class EditBillboardRequest {
     private Billboard billboard;
-    public BillboardRequest(Billboard billboard) {
+    public EditBillboardRequest(Billboard billboard) {
         this.billboard = billboard;
-
     }
 
     public Billboard getBillboard() {

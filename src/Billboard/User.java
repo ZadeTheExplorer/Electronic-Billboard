@@ -73,12 +73,21 @@ public class User {
     public String saltPassWord(String passWord) throws Exception{
         String algorithm = "MD5";
         byte[] salt = createSalt();
-        return generateHash(passWord,algorithm,salt);
+        String saltData = bytesToStringHex(salt);
+        return generateHashPass(passWord,algorithm,salt);
     }
 
+    //Change password into salt hash
+    private static String generateHash(String passWord, String algorithm) throws NoSuchAlgorithmException {
+
+        MessageDigest digest = MessageDigest.getInstance(algorithm);
+        digest.reset();
+        byte[] hash = digest.digest(passWord.getBytes());
+        return bytesToStringHex(hash);
+    }
 
     //Change password into salt hash
-    private static String generateHash(String passWord, String algorithm, byte[] salt) throws NoSuchAlgorithmException {
+    private static String generateHashPass(String passWord, String algorithm, byte[] salt) throws NoSuchAlgorithmException {
 
         MessageDigest digest = MessageDigest.getInstance(algorithm);
         digest.reset();

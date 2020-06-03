@@ -49,8 +49,8 @@ public class Database {
         for (String s : tempsArray) {
             statement.execute(s);
         }
-        statement.execute("INSERT INTO billboards VALUES(1, 'COVID', 1, 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!');");
-        statement.execute("INSERT INTO billboards VALUES(2, 'Alo', 1, 'yellow', 'blue', 'green', 'https://lh3.googleusercontent.com/v5ie2VWYRjmDV2b2s_rYrgrWcpFhFiUn0aQlf97W3VkGO84kofOu8psqBir1HZIfQts', 'Say hello', 'Sayhello10times!');");
+        statement.execute("INSERT INTO billboards VALUES('COVID', 1, 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!');");
+        statement.execute("INSERT INTO billboards VALUES('Alo', 1, 'yellow', 'blue', 'green', 'https://lh3.googleusercontent.com/v5ie2VWYRjmDV2b2s_rYrgrWcpFhFiUn0aQlf97W3VkGO84kofOu8psqBir1HZIfQts', 'Say hello', 'Sayhello10times!');");
         statement.execute("call addBillboard('COVID123', 1, 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!')");
         statement.close();
     }
@@ -150,9 +150,9 @@ public class Database {
         connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
         Statement statement = connection.createStatement();
         Database.init();
-        statement.execute("Call AddUser('Patrick Ha', 'username1', 'password', 'Edit User')");
+        //statement.execute("Call AddUser('Patrick Ha', 'username1', 'password', 'Edit User')");
         String [] array = Database.RetrieveColumnData(statement, "Call DisplayUsers()");
-        String [] array2 = Database.RetrieveColumnData(statement, "Call getScheduleIdByBillboardId(8)");
+        //String [] array2 = Database.RetrieveColumnData(statement, "Call getScheduleIdByBillboardId(8)");
         String[][] arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
         String[][] arrayList2 = Database.RetrieveData(statement, "Call getScheduleInfo(1)");
 

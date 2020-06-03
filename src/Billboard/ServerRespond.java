@@ -1,6 +1,7 @@
 package Billboard;
 
 import Billboard.Request.AddBillboardRequest;
+import Billboard.Request.CurrentBillboardRequest;
 import Billboard.Request.DeleteBillboardRequest;
 import Billboard.Request.DisplayBillboardRequest;
 
@@ -10,6 +11,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ServerRespond {
@@ -39,6 +43,10 @@ public class ServerRespond {
         if(request instanceof DisplayBillboardRequest){
             displayBillboard();
         }
+        if(request instanceof CurrentBillboardRequest){
+            CurrentBillboardRequest post = (CurrentBillboardRequest) request;
+            currentBillboard(post.getTime());
+        }
     }
 
     public void addBillboard(Billboard billboard) throws SQLException {
@@ -56,5 +64,16 @@ public class ServerRespond {
         System.out.println("retrieved all billboards");
         oos.writeObject(allBillboards);
         oos.flush();
+    }
+    //TODO: Do this later on
+    public void currentBillboard(LocalDateTime time) {
+        DayOfWeek weekDay = time.getDayOfWeek();
+
+    }
+
+    public void EditBillboard(Billboard billboard) throws SQLException {
+        String query = "call editBillboard(" + billboard.getCreatorId()+billboard.getBackgroundColor()+billboard.getMessageColor()+
+                billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
+        statement.execute(query);
     }
 }
