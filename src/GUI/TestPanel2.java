@@ -13,6 +13,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class TestPanel2 extends JFrame implements ActionListener, Runnable{
     public static final int WIDTH = 500;
@@ -21,7 +24,8 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
     private JTextField tfTest;
     private JButton testButton;
     private JButton button2;
-    static ObjectOutputStream oos = null;
+    static ObjectOutputStream oos;
+    static ObjectInputStream ois;
     public TestPanel2(String title) throws SQLException {
         super(title);
     }
@@ -76,6 +80,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //Delete
         if(e.getSource() == testButton){
             testLabel2.setText(tfTest.getText());
             testLabel2.setVisible(true);
@@ -86,6 +91,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
                         "Wash your hand", "Stay at home!");
                 oos.writeObject(new DeleteBillboardRequest(billboard));
                 oos.flush();
+                System.out.println("Delete...");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
@@ -97,12 +103,16 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
 //            }
 
         }
+        //Display all billboards
         if (e.getSource() == button2){
             try {
                 oos.writeObject(new DisplayBillboardRequest());
                 oos.flush();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+                Object o = ois.readObject();
+                String[][] table = (String[][]) o;
+                System.out.println(Arrays.deepToString(table));
+            } catch (IOException | ClassNotFoundException ioException) {
+
             }
         }
     }
@@ -112,18 +122,18 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
         createGUI();
     }
 
-    public static void main(String[] args) throws SQLException, IOException, InterruptedException {
+    public static void main(String[] args) throws SQLException, IOException, InterruptedException, ClassNotFoundException {
 
         Socket socket = new Socket("localhost", 1234);
         // obtaining input and out streams
 
         oos = new ObjectOutputStream(socket.getOutputStream());
-
-        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+        ois = new ObjectInputStream(socket.getInputStream());
 
         oos.writeObject("TestPanel2");
         oos.flush();
         System.out.println("Identified!");
+        System.out.println(ois.readObject());
         TestPanel2 panel = new TestPanel2("Test Panel2");
         panel.run();
         panel.repaint();
