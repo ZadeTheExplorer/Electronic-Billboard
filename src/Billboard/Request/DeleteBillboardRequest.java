@@ -5,12 +5,12 @@ import Billboard.Billboard;
 import java.io.Serializable;
 
 public class DeleteBillboardRequest implements Serializable {
-    private Billboard billboard;
-    public DeleteBillboardRequest(Billboard billboard) {
+    private String billboard;
+    public DeleteBillboardRequest(String billboard) {
         this.billboard = billboard;
     }
 
-    public Billboard getBillboard() {
+    public String getBillboard() {
         return billboard;
     }
 }

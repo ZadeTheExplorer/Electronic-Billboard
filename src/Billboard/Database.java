@@ -146,17 +146,27 @@ public class Database {
 
     //TODO: RUN THIS VOID MAIN TO INITIALISE DATABASE.
     // WHEN APPLY TO PROGRAM REMOVE THIS AND ADD TO BILLBOARD SERVER
-    public static void main(String[] args) throws FileNotFoundException, SQLException {
+    public static void main(String[] args) throws Exception {
         connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
         Statement statement = connection.createStatement();
         Database.init();
         String username = "admin";
         String password = "password";
+        ArrayList<String> privileges = new ArrayList<>();
+        privileges.add("Edit Users");
+        privileges.add("Create Billboard");
+        privileges.add("Edit All Billboards");
+        privileges.add("Schedule Billboard");
+        User user = new User(username, password, privileges);
 
-        // User user = new User();
-        // statement.execute("Call AddUser('Patrick Ha', 'username1', 'password', 'Edit User')");
-        String [] array = Database.RetrieveColumnData(statement, "Call DisplayUsers()");
+        String addUser = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
+        System.out.println(addUser);
+        statement.execute(addUser);
+        String [] array = Database.RetrieveColumnData(statement, "Call displayUsers()");
+        String [][] userArr = Database.RetrieveData(statement, "Call displayUsers()");
+
         //String [] array2 = Database.RetrieveColumnData(statement, "Call getScheduleIdByBillboardId(8)");
+
         String[][] arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
         String[][] arrayList2 = Database.RetrieveData(statement, "Call getScheduleInfo(1)");
 

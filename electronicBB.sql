@@ -5,11 +5,10 @@ USE electronicBB; $$
 DROP TABLE IF EXISTS `electronicBB`.`users`; $$
 
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`users`(
-  `name` varchar(45) NOT NULL default 'Full Name',
   `user_name` varchar(30) NOT NULL PRIMARY KEY,
   `salt` varchar(300) NOT NULL,
-  `hash` varchar(300) NOT NULL,
-  `privilege` VARCHAR(50) default 'edit user, edit schedule, edit billboard'
+  `saltedPassword` varchar(300) NOT NULL,
+  `privilege` VARCHAR(100) NOT NULL
 
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
 
@@ -17,14 +16,7 @@ DROP PROCEDURE IF EXISTS `electronicBB`.`displayUsers`; $$
 
 CREATE PROCEDURE `electronicBB`.`displayUsers` ()
 BEGIN
-  SELECT * FROM users;
-END $$
-
-DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnName`; $$
-
-CREATE PROCEDURE `electronicBB`.`displayUserColumnName` ()
-BEGIN
-    SELECT name FROM users;
+  SELECT user_name, privilege FROM users;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayUserColumnUserName`; $$
@@ -50,10 +42,10 @@ END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`addUser`; $$
 
-CREATE PROCEDURE `electronicBB`.`addUser` (IN name varchar(45),
-                                            IN user_name varchar(45), IN salt varchar(300), IN hashPass varchar(300), IN privelege varchar(50))
+CREATE PROCEDURE `electronicBB`.`addUser` (IN user_name varchar(45), IN salt varchar(300),
+                                        IN saltedPassword varchar(300), IN privilege varchar(200))
 BEGIN
-  INSERT INTO users VALUES(name, user_name, salt, hashPass, privilege);
+  INSERT INTO users VALUES(user_name, salt, saltedPassword, privilege);
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`deleteUser`; $$
@@ -65,9 +57,9 @@ END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`updatePassword`; $$
 
-CREATE PROCEDURE `electronicBB`.`updatePassword` (IN user_name varchar(45), IN salt varchar(300), IN hashPass varchar(300))
+CREATE PROCEDURE `electronicBB`.`updatePassword` (IN user_name varchar(45), IN salt varchar(300), IN saltedPassword varchar(300))
 BEGIN
-  UPDATE users SET users.salt=salt, users.hash=hashPass  WHERE users.user_name=user_name;
+  UPDATE users SET users.salt=salt, users.saltedPassword=saltedPassword  WHERE users.user_name=user_name;
 END $$
 
 DROP TABLE IF EXISTS `electronicBB`.`billboards`; $$

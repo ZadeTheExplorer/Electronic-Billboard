@@ -1,8 +1,8 @@
 package Billboard.Request;
 
-public class DeleteUserRequest {
+public class GetUserPermissionRequest {
     private String username;
-    public DeleteUserRequest(String username) {
+    public GetUserPermissionRequest(String username) {
         this.username = username;
     }
 
