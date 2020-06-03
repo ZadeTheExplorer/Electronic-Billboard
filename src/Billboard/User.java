@@ -11,12 +11,14 @@ public class User {
     private ArrayList<String> permission;
     private String privilege;
     private String salt;
-    private String hashPass;
+    private String saltPass;
 
-    public User(String name, String hashPass, String salt, ArrayList<String> permission, String privilege) throws Exception{
+
+    public User(String name, String password, ArrayList<String> permission, String privilege) throws Exception{
         userName = name;
-        this.hashPass = hashPass;
-        this.salt = salt;
+        this.salt = createSalt();
+        String hashPass = hashedPassword(password);
+        saltPass = saltedPassword(hashPass,salt);
         this.permission = new ArrayList<>(permission.size());
         this.permission.addAll(permission);
         this.privilege = privilege;
