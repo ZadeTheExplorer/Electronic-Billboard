@@ -2,10 +2,14 @@ package GUI;
 import javax.swing.*;
 import javax.sql.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
+import java.util.Date;
+import java.util.Timer;
 
-public class BillboardViewer extends JFrame implements Runnable{
+public class BillboardViewer extends JFrame implements Runnable, ActionListener {
     public static final int WIDTH = 900;
     public static final int HEIGHT = 600;
     private JPanel billboard;
@@ -74,12 +78,37 @@ public class BillboardViewer extends JFrame implements Runnable{
         Display();
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
-//        Socket bbViewer = new Socket("host",1234);
-//        OutputStream billboard = bbViewer.getOutputStream();
-//        System.out.println("Connected to server");
-//        BufferedOutputStream content = new BufferedOutputStream(billboard);
-//        bbViewer.close();
+        Socket BillboardViewerSocket = new Socket("localhost", 1234);
+        // obtaining input and out streams
+
+        ObjectOutputStream oos = new ObjectOutputStream(BillboardViewerSocket.getOutputStream());
+        ObjectInputStream ois = new ObjectInputStream(BillboardViewerSocket.getInputStream());
+
+        oos.writeObject("Billboard Viewer");
+        oos.flush();
+        System.out.println("Identified!");
+        RequestTimer request = new RequestTimer(BillboardViewerSocket, oos);
+        java.util.Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(request, 0, 3000);
+        System.out.println(ois.readObject().toString());
+        try{
+            while(true){
+                // printing date or time as requested by client
+                Object received = ois.readObject();
+                System.out.println(received);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            ois.close();
+            oos.close();
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
     }
 }
