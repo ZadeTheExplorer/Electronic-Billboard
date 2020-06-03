@@ -67,7 +67,6 @@ public class User {
         this.privilege = privilege;
     }
 
-    //Reference the week 9
     //create a new hashed password
     public static String hashedPassword (String inputPassword) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
