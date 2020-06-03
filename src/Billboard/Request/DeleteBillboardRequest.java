@@ -2,7 +2,9 @@ package Billboard.Request;
 
 import Billboard.Billboard;
 
-public class DeleteBillboardRequest extends BillboardRequest {
+import java.io.Serializable;
+
+public class DeleteBillboardRequest extends BillboardRequest implements Serializable {
     public DeleteBillboardRequest(Billboard billboard) {
         super(billboard);
     }

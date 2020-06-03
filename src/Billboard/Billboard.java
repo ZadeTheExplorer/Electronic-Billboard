@@ -1,7 +1,9 @@
 package Billboard;
 
+import java.io.Serializable;
+
 //TODO: CHANGE UNIT TEST FOR BILLBOARD
-public class Billboard {
+public class Billboard implements Serializable {
     private String name;
     private int creatorId;
     private String backgroundColor;

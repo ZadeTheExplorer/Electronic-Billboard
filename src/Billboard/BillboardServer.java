@@ -4,16 +4,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.*;
 
+/**
+ * The type Billboard server.
+ */
 public class BillboardServer {
     private Connection connection;
     private CallableStatement deletePerson;
     private CallableStatement insert;
     private CallableStatement select;
 
+    /**
+     * Instantiates a new Billboard server.
+     */
     public BillboardServer() {
         connection = DBConnection.getInstance();
     }
 
+    /**
+     * Close.
+     */
     public void close() {
         try {
             //TODO: Close all SQL command
@@ -26,6 +35,13 @@ public class BillboardServer {
         }
     }
 
+    /**
+     * Thread handler.
+     *
+     * @param s the s
+     * @throws IOException            the io exception
+     * @throws ClassNotFoundException the class not found exception
+     */
     public static void threadHandler(Socket s) throws IOException, ClassNotFoundException {
         System.out.println("Connected to " + s.getInetAddress() + ", at: " + s.getPort());
 
@@ -53,6 +69,15 @@ public class BillboardServer {
         }
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     * @throws IOException            the io exception
+     * @throws SQLException           the sql exception
+     * @throws ClassNotFoundException the class not found exception
+     * @throws InterruptedException   the interrupted exception
+     */
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException, InterruptedException {
         ServerSocket serverSocket = new ServerSocket(1234);
         System.out.println("[SERVER] Waiting for client connection...");

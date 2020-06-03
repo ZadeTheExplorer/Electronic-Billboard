@@ -93,7 +93,7 @@ CREATE TABLE  IF NOT EXISTS `electronicBB`.`billboards` (
   `background_color` varchar(7) default '#FFFFFF',
   `message_color` varchar(7) default '#ff0000',
   `information_color` varchar(7) default '#000000',
-  `url` varchar(100),
+  `url` varchar(200),
   `message` varchar(100) default '',
   `information` varchar(100) default '',
 
@@ -132,19 +132,17 @@ DROP PROCEDURE IF EXISTS `electronicBB`.`addBillboard`; $$
 
 CREATE PROCEDURE `electronicBB`.`addBillboard` (IN name varchar(45),
                                             IN user_id int(3), IN background_color varchar(7),IN message_color VARCHAR(7),
-                                            IN information_color varchar(7), IN url varchar(100), IN message varchar(100), IN information varchar(100))
+                                            IN information_color varchar(7), IN url varchar(200), IN message varchar(100), IN information varchar(100))
 BEGIN
   INSERT INTO billboards(name, user_id, background_color, message_color, information_color, url, message, information) VALUES(name, user_id, background_color, message_color, information_color, url, message, information);
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`deleteBillboard`; $$
 
-CREATE PROCEDURE `electronicBB`.`deleteBillboard` (IN name varchar(45))
+CREATE PROCEDURE `electronicBB`.`deleteBillboard` (IN bbName varchar(45))
 BEGIN
-  DELETE FROM billboards WHERE billboards.name=name;
+  DELETE FROM billboards WHERE billboards.name=bbName;
 END $$
-INSERT INTO billboards VALUES(1, 'COVID-19', 1, 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!'); $$
-INSERT INTO billboards VALUES(2, 'Alo', 1, 'yello', 'blue', 'green', 'https://lh3.googleusercontent.com/v5ie2VWYRjmDV2b2s_rYrgrWcpFhFiUn0aQlf97W3VkGO84kofOu8psqBir1HZIfQts', 'Say hello', 'Sayhello10times!'); $$
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedules` (
   `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `billboard_id` int(3) NOT NULL,

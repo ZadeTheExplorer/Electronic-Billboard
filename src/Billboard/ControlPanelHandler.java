@@ -47,7 +47,7 @@ public class ControlPanelHandler extends Thread {
 
                 // write on output stream based on the
                 // answer from the client
-                //TODO: Basicly, we have implemented the basic transfer data with String as code commented below
+                // Basicly, we have implemented the basic transfer data with String as code commented below
                 // What we want is to make Server and TestPanel2 working with Object (In this demo situation is with Billboard, request: Add)
                 // Our idea is create a ServerRespond class for Handle all the Respond when Server receives a Request from 1 of its clients
                 // ControlPanelHandler is for handling all Request from ControlPanel (same with Viewer)

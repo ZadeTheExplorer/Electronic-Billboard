@@ -2,6 +2,7 @@ package GUI;
 
 import Billboard.Billboard;
 import Billboard.Request.DeleteBillboardRequest;
+import Billboard.Request.DisplayBillboardRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
     private JLabel testLabel2;
     private JTextField tfTest;
     private JButton testButton;
+    private JButton button2;
     static ObjectOutputStream oos = null;
     public TestPanel2(String title) throws SQLException {
         super(title);
@@ -48,12 +50,16 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
         testButton.addActionListener(this);
         testButton.setFocusPainted(false);
         System.out.println("Button Created");
+        button2 = new JButton("Display all billboards");
+        button2.addActionListener(this);
+
         tfTest = new JTextField();
         tfTest.setPreferredSize(new Dimension(100,20));
         System.out.println("Input Created");
         addToPanel(testPanel2,testLabel2,constraints,1,1,1,1);
         addToPanel(testPanel2,tfTest,constraints,1,1,1,1);
         addToPanel(testPanel2,testButton,constraints,1,1,1,1);
+        addToPanel(testPanel2, button2,constraints,1,1,1,1);
         System.out.println("Add Panel, Button, Input to Panel");
         this.getContentPane().add(testPanel2,BorderLayout.CENTER);
         System.out.println("Panel get content");
@@ -75,7 +81,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
             testLabel2.setVisible(true);
             try {
                 //TODO: DELETE FROM BILLBOARD LIST
-                Billboard billboard = new Billboard("COVID-19", 1, "white", "red",
+                Billboard billboard = new Billboard("COVID", 1, "white", "red",
                         "black", "https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg",
                         "Wash your hand", "Stay at home!");
                 oos.writeObject(new DeleteBillboardRequest(billboard));
@@ -91,6 +97,14 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
 //            }
 
         }
+        if (e.getSource() == button2){
+            try {
+                oos.writeObject(new DisplayBillboardRequest());
+                oos.flush();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -99,10 +113,6 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
     }
 
     public static void main(String[] args) throws SQLException, IOException, InterruptedException {
-        TestPanel2 panel = new TestPanel2("Test Panel2");
-        panel.run();
-
-        Thread.sleep(5000);
 
         Socket socket = new Socket("localhost", 1234);
         // obtaining input and out streams
@@ -114,6 +124,8 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
         oos.writeObject("TestPanel2");
         oos.flush();
         System.out.println("Identified!");
+        TestPanel2 panel = new TestPanel2("Test Panel2");
+        panel.run();
         panel.repaint();
 
     }
