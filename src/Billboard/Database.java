@@ -83,7 +83,7 @@ public class Database {
     }
     //TODO: USE THIS WHEN SELECT * FROM A TABLE OR MULTI COLs
     // Return List<String[]> : List of rows (rows is String[])
-    public static ArrayList<String[]> RetrieveData(Statement st, String query) throws SQLException {
+    public static String[][] RetrieveData(Statement st, String query) throws SQLException {
         // get all current entries
         ResultSet rs = st.executeQuery(query);
 
@@ -105,15 +105,19 @@ public class Database {
             }
             table.add(row);
         }
-
+        //Return this as String[][]
+        String[][] newTable = new String[table.size()][columnCount];
         //print result
-        for( String[] row: table ){
-            for( String s: row ){
+        for( int i=0; i< table.size(); i++ ){
+            for( String s: table.get(i)){
                 System.out.print( " " + s );
+
             }
+            newTable[i] = table.get(i);
             System.out.println();
         }
-        return table;
+        System.out.println(Arrays.deepToString(newTable));
+        return newTable;
     }
     //TODO: USE THIS WHEN PRINT RETURN OF A STATEMENT's EXECUTION
     private static void displayContents(Statement st, String query) throws SQLException {
@@ -149,8 +153,8 @@ public class Database {
         statement.execute("Call AddUser('Patrick Ha', 'username1', 'password', 'Edit User')");
         String [] array = Database.RetrieveColumnData(statement, "Call DisplayUsers()");
         String [] array2 = Database.RetrieveColumnData(statement, "Call getScheduleIdByBillboardId(8)");
-        ArrayList<String[]> arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
-        ArrayList<String[]> arrayList2 = Database.RetrieveData(statement, "Call getScheduleInfo(1)");
+        String[][] arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
+        String[][] arrayList2 = Database.RetrieveData(statement, "Call getScheduleInfo(1)");
 
 
     }

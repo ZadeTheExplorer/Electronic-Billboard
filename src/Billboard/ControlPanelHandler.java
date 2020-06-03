@@ -54,7 +54,7 @@ public class ControlPanelHandler extends Thread {
                 // ServerRespond will deal with database (It uses stored Mysql procedure to execute the query)
                 // TestPanel2 (Atom version of ControlPanel) will send a Request to Server when user click to its button
                 // Current obstacles are implementing the code in ServerRespond and a better strategy to transfer data within the stream.
-                ServerRespond res = new ServerRespond(received);
+                ServerRespond res = new ServerRespond(received, oos);
                 res.handle();
 //                if (received.equals("Create Billboard")) {
 //                    oos.writeObject("[S] Created a billboard!");
