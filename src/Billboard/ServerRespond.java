@@ -1,9 +1,6 @@
 package Billboard;
 
-import Billboard.Request.AddBillboardRequest;
-import Billboard.Request.CurrentBillboardRequest;
-import Billboard.Request.DeleteBillboardRequest;
-import Billboard.Request.DisplayBillboardRequest;
+import Billboard.Request.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -30,10 +27,7 @@ public class ServerRespond {
     public void handle() throws SQLException, IOException {
         if (request instanceof AddBillboardRequest){
             AddBillboardRequest post = (AddBillboardRequest) request;
-
-            Billboard billboard = post.getBillboard();
-
-
+            addBillboard(post.getBillboard());
         }
         if (request instanceof DeleteBillboardRequest){
             DeleteBillboardRequest post = (DeleteBillboardRequest) request;
@@ -47,6 +41,15 @@ public class ServerRespond {
             CurrentBillboardRequest post = (CurrentBillboardRequest) request;
             currentBillboard(post.getTime());
         }
+        if(request instanceof EditBillboardRequest) {
+            EditBillboardRequest post = (EditBillboardRequest) request;
+            EditBillboard(post.getBillboard());
+        }
+    }
+    //TODO: Do this later on
+    public void currentBillboard(LocalDateTime time) {
+        DayOfWeek weekDay = time.getDayOfWeek();
+
     }
 
     public void addBillboard(Billboard billboard) throws SQLException {
@@ -65,12 +68,6 @@ public class ServerRespond {
         oos.writeObject(allBillboards);
         oos.flush();
     }
-    //TODO: Do this later on
-    public void currentBillboard(LocalDateTime time) {
-        DayOfWeek weekDay = time.getDayOfWeek();
-
-    }
-
     public void EditBillboard(Billboard billboard) throws SQLException {
         String query = "call editBillboard(" + billboard.getCreatorId()+billboard.getBackgroundColor()+billboard.getMessageColor()+
                 billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";

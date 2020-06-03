@@ -34,9 +34,7 @@ public class User {
 
     public String getSalt(){return salt;}
 
-    public String getHashPass(){return hashPass;}
-
-    public boolean checkPassword(String enteredPass) {return enteredPass.compareTo(hashPass) == 0; }
+    public String getSaltPass(){return saltPass;}
 
     public ArrayList<String> getPermission() {
         if(privilege.toUpperCase().compareTo("CREATE BILLBOARDS") == 0){
@@ -92,14 +90,12 @@ public class User {
     public static String saltedPassword (String hashedPassword, String salt) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
 
-        String saltedPassword = byteToString(md.digest((hashedPassword + salt).getBytes()));
-
-        return saltedPassword;
+        return byteToString(md.digest((hashedPassword + salt).getBytes()));
     }
 
     // turning byte to string
     private static String byteToString(byte[] hash){
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (byte b : hash) {
             sb.append(String.format("%02x", b & 0xFF));
         }
