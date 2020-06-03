@@ -150,7 +150,11 @@ public class Database {
         connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
         Statement statement = connection.createStatement();
         Database.init();
-        //statement.execute("Call AddUser('Patrick Ha', 'username1', 'password', 'Edit User')");
+        String username = "admin";
+        String password = "password";
+
+        // User user = new User();
+        // statement.execute("Call AddUser('Patrick Ha', 'username1', 'password', 'Edit User')");
         String [] array = Database.RetrieveColumnData(statement, "Call DisplayUsers()");
         //String [] array2 = Database.RetrieveColumnData(statement, "Call getScheduleIdByBillboardId(8)");
         String[][] arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
