@@ -32,7 +32,6 @@ public class ServerRespond {
         if (request instanceof DeleteBillboardRequest){
             DeleteBillboardRequest post = (DeleteBillboardRequest) request;
             deleteBillboard(post.getBillboard());
-
         }
         if(request instanceof DisplayBillboardRequest){
             displayBillboard();
@@ -45,22 +44,23 @@ public class ServerRespond {
             EditBillboardRequest post = (EditBillboardRequest) request;
             EditBillboard(post.getBillboard());
         }
+        if(request instanceof AddUserResquest) {
+            AddUserResquest post = (AddUserResquest) request;
+            addUser(post.getUser());
+        }
+        if(request instanceof DeleteUserRequest) {
+            DeleteUserRequest post = (DeleteUserRequest) request;
+            deleteUser(post.getUsername());
+        }
+        if(request instanceof AddUserResquest) {
+            AddUserResquest post = (AddUserResquest) request;
+            addUser(post.getUser());
+        }
     }
     //TODO: Do this later on
     public void currentBillboard(LocalDateTime time) {
         DayOfWeek weekDay = time.getDayOfWeek();
 
-    }
-
-    public void addBillboard(Billboard billboard) throws SQLException {
-        String query = "call addBillboard(" + billboard.getCreatorId()+billboard.getBackgroundColor()+billboard.getMessageColor()+
-                billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
-        statement.execute(query);
-    }
-    public void deleteBillboard(Billboard billboard) throws SQLException {
-        String query = "call deleteBillboard('"+billboard.getName()  +"');";
-        statement.execute(query);
-        System.out.println("delete billboard " +billboard.getName());
     }
     public void displayBillboard() throws SQLException, IOException {
         String[][] allBillboards = Database.RetrieveData(statement, "Call displayAllBillboards()");
@@ -68,9 +68,39 @@ public class ServerRespond {
         oos.writeObject(allBillboards);
         oos.flush();
     }
+    public void displayUsers() throws SQLException, IOException {
+        String[][] allUsers = Database.RetrieveData(statement, "Call displayUsers();");
+        System.out.println("Retrieved all users");
+        oos.writeObject(allUsers);
+        oos.flush();
+
+    }
+
+
+    public void addBillboard(Billboard billboard) throws SQLException {
+        String query = "call addBillboard(" + billboard.getCreatorId()+billboard.getBackgroundColor()+billboard.getMessageColor()+
+                billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
+        statement.execute(query);
+    }
+    public void deleteBillboard(String billboard) throws SQLException {
+        String query = "call deleteBillboard('"+billboard  +"');";
+        statement.execute(query);
+        System.out.println("delete billboard " +billboard);
+    }
+
     public void EditBillboard(Billboard billboard) throws SQLException {
         String query = "call editBillboard(" + billboard.getCreatorId()+billboard.getBackgroundColor()+billboard.getMessageColor()+
                 billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
         statement.execute(query);
     }
+    public void addUser(User user) throws SQLException {
+        String addUserQuery = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
+        statement.execute(addUserQuery);
+    }
+    public void deleteUser(String username) throws SQLException {
+        String deleteUserQuery = "Call deleteUser('" +username +"');";
+        statement.execute(deleteUserQuery);
+    }
+
+
 }

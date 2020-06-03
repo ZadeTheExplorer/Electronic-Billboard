@@ -2,26 +2,22 @@ package Billboard;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class User {
     private String userName;
-    private ArrayList<String> permission;
-    private String privilege;
+    private ArrayList<String> privileges;
     private String salt;
     private String saltPass;
 
-
-    public User(String name, String password, ArrayList<String> permission, String privilege) throws Exception{
+    public User(String name, String password, ArrayList<String> privileges) throws Exception{
         userName = name;
         this.salt = createSalt();
         String hashPass = hashedPassword(password);
         saltPass = saltedPassword(hashPass,salt);
-        this.permission = new ArrayList<>(permission.size());
-        this.permission.addAll(permission);
-        this.privilege = privilege;
+        this.privileges = new ArrayList<>(privileges.size());
+        this.privileges.addAll(privileges);
     }
 
     public String getUserName() {
@@ -36,35 +32,27 @@ public class User {
 
     public String getSaltPass(){return saltPass;}
 
-    public ArrayList<String> getPermission() {
-        if(privilege.toUpperCase().compareTo("CREATE BILLBOARDS") == 0){
 
-        }
-        else if(privilege.toUpperCase().compareTo("EDIT ALL BILLBOARDS") == 0){
 
-        }
-        else if(privilege.toUpperCase().compareTo("SCHEDULE BILLBOARD") == 0){
-
-        }
-        else if(privilege.toUpperCase().compareTo("EDIT USER") == 0){
-
-        }
-        return permission;
+    public void setPrivileges(ArrayList<String> permission) {
+        this.privileges = privileges;
     }
 
-    public void setPermission(ArrayList<String> permission) {
-        this.permission = permission;
-    }
-
-    public String getPrivilege() {
-        return privilege;
+    public StringBuilder getPrivilege() {
+        StringBuilder s = new StringBuilder();
+        String prefix = "";
+        for (String privilege : privileges ){
+            s.append(prefix).append(privilege);
+            prefix = ", ";
+        }
+        return s;
     }
 
     /* To update the user's privilege
     * @param acquired privilege
     */
-    public void setPrivilege(String privilege) {
-        this.privilege = privilege;
+    public void setPrivilege(ArrayList<String> privileges) {
+        this.privileges = privileges;
     }
 
     //create a new hashed password
@@ -102,4 +90,5 @@ public class User {
 
         return sb.toString();
     }
+
 }

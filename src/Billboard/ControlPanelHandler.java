@@ -45,15 +45,6 @@ public class ControlPanelHandler extends Thread {
                     break;
                 }
 
-                // write on output stream based on the
-                // answer from the client
-                // Basicly, we have implemented the basic transfer data with String as code commented below
-                // What we want is to make Server and TestPanel2 working with Object (In this demo situation is with Billboard, request: Add)
-                // Our idea is create a ServerRespond class for Handle all the Respond when Server receives a Request from 1 of its clients
-                // ControlPanelHandler is for handling all Request from ControlPanel (same with Viewer)
-                // ServerRespond will deal with database (It uses stored Mysql procedure to execute the query)
-                // TestPanel2 (Atom version of ControlPanel) will send a Request to Server when user click to its button
-                // Current obstacles are implementing the code in ServerRespond and a better strategy to transfer data within the stream.
                 ServerRespond res = new ServerRespond(received, oos);
                 res.handle();
 //                if (received.equals("Create Billboard")) {
