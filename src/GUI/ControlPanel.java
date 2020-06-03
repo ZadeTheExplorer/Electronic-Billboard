@@ -1,5 +1,7 @@
 package GUI;
 
+import Billboard.Request.DisplayBillboardRequest;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -7,21 +9,28 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.sql.*;
+import java.util.Arrays;
 
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
-    public static final int WIDTH = 900;
-    public static final int HEIGHT = 600;
-    private String[] billBoardCols;
-    private Object[][] billBoardData;
+    public static final int WIDTH = 1000;
+    public static final int HEIGHT = 700;
+    static ObjectOutputStream output;
+    static ObjectInputStream input;
+    private static String[] billBoardCols;
+    private static Object[][] billBoardData;
     private JPanel pnlMenu;
     private JPanel pnlCenter;
     private JLabel lblName;
-    private JTextField tfBillboardID;
     private JTextField tfBillboardName;
-    private JTextField tfBillboardTitle;
-    private JTextField tfBillboardCreator;
-    private JTextField tfBillboardSchedule;
+    private JTextField tfBillboardUserID;
+    private JTextField tfBillboardBGColor;
+    private JTextField tfBillboardTitleColor;
+    private JTextField tfBillboardURL;
     private JTextField tfNewBillboardID;
     private JTextField tfNewBillboardName;
     private JTextField tfNewBillboardTitle;
@@ -90,16 +99,16 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setLocationRelativeTo(null);
         lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
 
-        tfBillboardID = new JTextField();
-        tfBillboardID.setEditable(false);
         tfBillboardName = new JTextField();
         tfBillboardName.setEditable(false);
-        tfBillboardTitle = new JTextField();
-        tfBillboardTitle.setEditable(false);
-        tfBillboardCreator = new JTextField();
-        tfBillboardCreator.setEditable(false);
-        tfBillboardSchedule = new JTextField();
-        tfBillboardSchedule.setEditable(false);
+        tfBillboardUserID = new JTextField();
+        tfBillboardUserID.setEditable(false);
+        tfBillboardBGColor = new JTextField();
+        tfBillboardBGColor.setEditable(false);
+        tfBillboardTitleColor = new JTextField();
+        tfBillboardTitleColor.setEditable(false);
+        tfBillboardURL = new JTextField();
+        tfBillboardURL.setEditable(false);
 
         tfNewBillboardID = new JTextField();
         tfNewBillboardName = new JTextField();
@@ -164,7 +173,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnEditSchedule.setBackground(Color.YELLOW);
         btnEditSchedule.setFocusPainted(false);
 
-        pnlBillboardInformation = new JPanel(new GridLayout(0,5,2,2));
+        pnlBillboardInformation = new JPanel(new GridLayout(0,7,2,2));
         pnlBillboardInformation.setOpaque(true);
         pnlBillboardInformation.setBorder(BorderFactory.createTitledBorder("Billboard Information"));
         pnlBillboardInformation.setPreferredSize(new Dimension(1,80));
@@ -173,7 +182,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlBillboardButton.setOpaque(true);
         pnlBillboardButton.setBorder(BorderFactory.createTitledBorder("Command Panel"));
 
-        pnlBillBoardList = new JPanel(new FlowLayout());
+        pnlBillBoardList = new JPanel(new GridLayout(0,1,1,1));
         pnlBillBoardList.setOpaque(true);
         pnlBillBoardList.setBorder(BorderFactory.createTitledBorder("Billboard List"));
 
@@ -279,26 +288,15 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
         pnlBillboard.setLayout(new GridBagLayout());
 
-        billBoardCols = new String[] {"ID","Name","Title","Creator","Schedule"};
-        billBoardData = new Object[][] {
-                {1,"Billboard A","Advertisement","Jaden","TimeStamp"},
-                {2,"Billboard B","Advertisement","Jaden","TimeStamp"},
-                {3,"Billboard C","Advertisement","Jaden","TimeStamp"},
-                {4,"Billboard D","Advertisement","Jaden","TimeStamp"},
-                {5,"Billboard E","Advertisement","Jaden","TimeStamp"},
-        };
+        billBoardCols = new String[] {"Name","User","TitleColor","DesColor","URL","Title","Description"};
 
-        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"ID"), constraints,1,1,1,1 );
-        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Name"), constraints,1,1,1,1 );
-        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Title"), constraints,1,1,1,1 );
-        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Creator"), constraints,1,1,1,1 );
-        addToPanel(pnlBillboardInformation, createLabel(Color.BLACK,"Schedule"), constraints,1,1,1,1 );
+        addToPanelWithArray(billBoardCols,pnlBillboardInformation,constraints);
 
-        addToPanel(pnlBillboardInformation, tfBillboardID, constraints,0,0,1,1 );
         addToPanel(pnlBillboardInformation, tfBillboardName, constraints,0,0,1,1 );
-        addToPanel(pnlBillboardInformation, tfBillboardTitle, constraints,0,0,1,1 );
-        addToPanel(pnlBillboardInformation, tfBillboardCreator, constraints,0,0,1,1 );
-        addToPanel(pnlBillboardInformation, tfBillboardSchedule, constraints,0,0,1,1 );
+        addToPanel(pnlBillboardInformation, tfBillboardUserID, constraints,0,0,1,1 );
+        addToPanel(pnlBillboardInformation, tfBillboardBGColor, constraints,0,0,1,1 );
+        addToPanel(pnlBillboardInformation, tfBillboardTitleColor, constraints,0,0,1,1 );
+        addToPanel(pnlBillboardInformation, tfBillboardURL, constraints,0,0,1,1 );
 
 
         addToPanel(pnlBillboardButton,btnDeleteBb,constraints,1,0,1,1);
@@ -317,7 +315,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             }
         });
 
-        addToPanel(pnlBillBoardList, billBoardListScrollPane, constraints,1,0,1,1 );
+        addToPanel(pnlBillBoardList, billBoardListScrollPane, constraints,0,0,1,1 );
 
         addToPanel(pnlBillboard, pnlBillBoardList,constraints,1,0,1,1);
         addToPanel(pnlBillboard, pnlBillboardInformation,constraints,1,1,1,1);
@@ -484,6 +482,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         jp.add(c, constraints);
     }
 
+    private void addToPanelWithArray(String[] array, JPanel pnl,GridBagConstraints constraints){
+        for(int i = 0; i < array.length; i ++){
+            addToPanel(pnl, createLabel(Color.BLACK,array[i]), constraints,1,1,1,1 );
+        }
+    }
+
     private JLabel createLabel(Color c, String text){
         JLabel lbl = new JLabel();
         lbl.setBackground(c);
@@ -516,7 +520,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
         table.getColumnModel().getColumn(0).setPreferredWidth(20);
         table.setPreferredScrollableViewportSize(new Dimension(500,100));
-        table.setPreferredSize(new Dimension(500,300));
+        table.setPreferredSize(new Dimension(700,300));
         table.setSelectionBackground(Color.CYAN);
         table.setShowGrid(false);
         table.setDefaultEditor(Object.class, null);
@@ -539,8 +543,33 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     //TODO: GET THE WHOLE COLUMN
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException {
+        Socket socketControlPanel = new Socket("localhost", 1234);
+
+        output = new ObjectOutputStream(socketControlPanel.getOutputStream());
+        input = new ObjectInputStream(socketControlPanel.getInputStream());
+
+        output.writeObject("TestPanel2");
+        output.flush();
+        System.out.println("Identified!");
+        System.out.println(input.readObject());
+        try {
+            output.writeObject(new DisplayBillboardRequest());
+            output.flush();
+            Object list = input.readObject();
+            String[][] table = (String[][]) list;
+            System.out.println(Arrays.deepToString(table));
+            billBoardData = new Object[table.length - 1][table[0].length];
+            for(int i = 0; i < table.length - 1; i++){
+                billBoardData[i] = table[i+1];
+            }
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
+
+
+
 //        Connection connection = DBConnection.getInstance();
 //        CallableStatement st = connection.prepareCall("call displayAllBillboards()");
 //        ResultSet result = st.executeQuery();
@@ -642,11 +671,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void editBillBoard(boolean bool){
-        tfBillboardCreator.setEditable(bool);
-        tfBillboardID.setEditable(bool);
+        tfBillboardTitleColor.setEditable(bool);
         tfBillboardName.setEditable(bool);
-        tfBillboardSchedule.setEditable(bool);
-        tfBillboardTitle.setEditable(bool);
+        tfBillboardUserID.setEditable(bool);
+        tfBillboardURL.setEditable(bool);
+        tfBillboardBGColor.setEditable(bool);
     }
 
     public void editUser(boolean bool){
@@ -664,11 +693,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void setValueBillboardInfo(JTable table){
-        tfBillboardID.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
-        tfBillboardName.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
-        tfBillboardTitle.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
-        tfBillboardCreator.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
-        tfBillboardSchedule.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
+        tfBillboardName.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
+        tfBillboardUserID.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+        tfBillboardBGColor.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
+        tfBillboardTitleColor.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+        tfBillboardURL.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
         btnEditBb.setText("Edit");
         editBillBoard(false);
     }
