@@ -1,11 +1,12 @@
 package Billboard;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class User {
+public class User implements Serializable {
     private String userName;
     private ArrayList<String> privileges;
     private String salt;

@@ -1,12 +1,14 @@
 package GUI;
 
 import Billboard.Billboard;
+import Billboard.User;
 import Billboard.Request.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
@@ -23,11 +26,13 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     public static final int HEIGHT = 700;
     static ObjectOutputStream output;
     static ObjectInputStream input;
-    private static String[] billBoardCols;
     private static Object[][] billBoardData;
+    private static Object[][] userData;
+    private static Object[][] scheduleData;
     private JPanel pnlMenu;
     private JPanel pnlCenter;
     private JLabel lblName;
+    private JLabel lblUserPassword;
     private JTextField tfBillboardName;
     private JTextField tfBillboardUsername;
     private JTextField tfBillboardBGColor;
@@ -36,11 +41,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JTextField tfBillboardURL;
     private JTextField tfBillboardTitle;
     private JTextField tfBillboardDescription;
-    private JTextField tfNewBillboardID;
     private JTextField tfNewBillboardName;
+    private JTextField tfNewBillboardUsername;
+    private JTextField tfNewBillboardBGColor;
+    private JTextField tfNewBillboardTitleColor;
+    private JTextField tfNewBillboardDescriptionColor;
+    private JTextField tfNewBillboardURL;
     private JTextField tfNewBillboardTitle;
-    private JTextField tfNewBillboardCreator;
-    private JTextField tfNewBillboardSchedule;
+    private JTextField tfNewBillboardDescription;
     private JTextField tfUserID;
     private JTextField tfUserName;
     private JTextField tfUserUsername;
@@ -56,8 +64,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JPanel pnlBillboard;
     private JPanel pnlBillboardButton;
     private JTable billboardTable;
-    private JScrollPane billBoardListScrollPane;
-    private TableModel modelTable;
+    private JTable userTable;
+    private JTable scheduleTable;
+    private DefaultTableModel modelTableBillboard;
+    private DefaultTableModel modelTableUser;
+    private DefaultTableModel modelTableSchedule;
     private JButton btnBillboard;
     private JButton btnSchedule;
     private JButton btnNewBillBoard;
@@ -81,22 +92,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public ControlPanel(String title) throws SQLException {
         super(title);
-    }
-
-    public String[] getBillBoardCols() {
-        return billBoardCols;
-    }
-
-    public void setBillBoardCols(String[] billBoardCols) {
-        this.billBoardCols = billBoardCols;
-    }
-
-    public Object[][] getBillBoardData() {
-        return billBoardData;
-    }
-
-    public void setBillBoardData(Object[][] billBoardData) {
-        this.billBoardData = billBoardData;
     }
 
     private void createGUI() {
@@ -123,11 +118,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfBillboardDescription = new JTextField();
         tfBillboardDescription.setEditable(false);
 
-        tfNewBillboardID = new JTextField();
         tfNewBillboardName = new JTextField();
+        tfNewBillboardUsername = new JTextField();
+        tfNewBillboardBGColor = new JTextField();
+        tfNewBillboardTitleColor = new JTextField();
+        tfNewBillboardDescriptionColor = new JTextField();
+        tfNewBillboardURL = new JTextField();
         tfNewBillboardTitle = new JTextField();
-        tfNewBillboardCreator = new JTextField();
-        tfNewBillboardSchedule = new JTextField();
+        tfNewBillboardDescription = new JTextField();
 
         tfUserID = new JTextField();
         tfUserID.setEditable(false);
@@ -303,7 +301,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
         pnlBillboard.setLayout(new GridBagLayout());
 
-        billBoardCols = new String[] {"Name","User","BackgroundColor","TitleColor","DesColor","URL","Title","Description"};
+        String[] billBoardCols = new String[] {"Name","User","BackgroundColor","TitleColor","DesColor","URL","Title","Description"};
 
         addToPanelWithLabelArray(billBoardCols,pnlBillboardInformation,constraints);
 
@@ -312,19 +310,27 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
         addToPanelWithComponentArray(billboardTextFields,pnlBillboardInformation,constraints);
 
-        addToPanel(pnlBillboardButton,btnDeleteBb,constraints,1,0,1,1);
-        addToPanel(pnlBillboardButton,btnEditBb,constraints,1,1,1,1);
-        addToPanel(pnlBillboardButton,btnExportBb,constraints,1,2,1,1);
+        JButton[] buttons = new JButton[] {btnDeleteBb, btnEditBb,btnExportBb};
+        addToPanelWithComponentArray(buttons,pnlBillboardButton,constraints);
 
         pnlBillboardButton.setPreferredSize(new Dimension(1,80));
-        //set up the scroll pane
+        //CREATE THE TABLE
         billboardTable = createTable(billBoardCols,billBoardData);
-        billBoardListScrollPane = new JScrollPane(billboardTable);
+        //SET UP THE SCROLLPANE
+        modelTableBillboard = new DefaultTableModel(billBoardData,billBoardCols);
+        billboardTable.setModel(modelTableBillboard);
+        //CENTER THE CELL'S DATA
+        centerRowData(billboardTable);
+        JScrollPane billBoardListScrollPane = new JScrollPane(billboardTable);
         billBoardListScrollPane.setPreferredSize(new Dimension(500,200));
         ListSelectionModel modelTableSelection = billboardTable.getSelectionModel();
+        //SET UP SELECTION MODEL
+        modelTableSelection.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         modelTableSelection.addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent e) {
-                setValueBillboardInfo(billboardTable);
+                if(!e.getValueIsAdjusting()){
+                    setValueBillboardInfo(billboardTable);
+                }
             }
         });
 
@@ -341,42 +347,52 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         constrainNewBillboard.weightx = 10;
         constrainNewBillboard.weighty = 10;
 
-        tfNewBillboardID.setPreferredSize(new Dimension(200,20));
         tfNewBillboardName.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardUsername.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardBGColor.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardTitleColor.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardDescriptionColor.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardURL.setPreferredSize(new Dimension(200,20));
         tfNewBillboardTitle.setPreferredSize(new Dimension(200,20));
-        tfNewBillboardCreator.setPreferredSize(new Dimension(200,20));
-        tfNewBillboardSchedule.setPreferredSize(new Dimension(200,20));
+        tfNewBillboardDescription.setPreferredSize(new Dimension(200,20));
 
         addToPanel(pnlNewBillBoard,createLabel(Color.BLACK,"Billboard Registration:"),constrainNewBillboard,0,0,1,1);
-        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard ID"),constrainNewBillboard,1,1,1,1);
-        addToPanel(pnlNewBillBoard,tfNewBillboardID,constrainNewBillboard,2, 1 , 1 , 1);
-        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Name"),constrainNewBillboard,1,2,1,1);
-        addToPanel(pnlNewBillBoard,tfNewBillboardName,constrainNewBillboard,2, 2 , 1 , 1);
-        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Title"),constrainNewBillboard,1,3,1,1);
-        addToPanel(pnlNewBillBoard,tfNewBillboardTitle,constrainNewBillboard,2, 3 , 1 , 1);
-        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Creator"),constrainNewBillboard,1,4,1,1);
-        addToPanel(pnlNewBillBoard,tfNewBillboardCreator,constrainNewBillboard,2, 4 , 1 , 1);
-        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Schedule"),constrainNewBillboard,1,5,1,1);
-        addToPanel(pnlNewBillBoard,tfNewBillboardSchedule,constrainNewBillboard,2, 5 , 1 , 1);
 
-        addToPanel(pnlNewBillBoard, btnCreateNewBb,constrainNewBillboard,3,3,1,1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Name"),constrainNewBillboard,1,1,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardName,constrainNewBillboard,2, 1 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Username"),constrainNewBillboard,1,2,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardUsername,constrainNewBillboard,2, 2 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Background Color"),constrainNewBillboard,1,3,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardBGColor,constrainNewBillboard,2, 3 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Title Color"),constrainNewBillboard,1,4,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardTitleColor,constrainNewBillboard,2, 4 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Description Color"),constrainNewBillboard,1,5,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardDescriptionColor,constrainNewBillboard,2, 5 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard URL"),constrainNewBillboard,1,6,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardURL,constrainNewBillboard,2, 6 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Title"),constrainNewBillboard,1,7,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardTitle,constrainNewBillboard,2, 7 , 1 , 1);
+        addToPanel(pnlNewBillBoard,createLabel(Color.BLACK, "Billboard Description"),constrainNewBillboard,1,8,1,1);
+        addToPanel(pnlNewBillBoard, tfNewBillboardDescription,constrainNewBillboard,2, 8 , 1 , 1);
+
+        addToPanel(pnlNewBillBoard, btnCreateNewBb,constrainNewBillboard,3,4,1,1);
 
         JPanel pnlDisplayUserManagement = new JPanel(new FlowLayout());
-        String[] userTableCols = new String[] {"ID","Name","Username","Password","Privilege"};
-        Object[][] userTableData = new Object[][] {
-                {1,"Jaden","jaden","password","admin"},
-                {2,"Patrixe","patrixe","password","admin"},
-                {3,"Edward","edward","password","admin"},
-                {4,"Jinx","jinx","password","user"},
-                {5,"Ezreal","ezreal","password","user"}
-        };
-        JTable userTable = createTable(userTableCols,userTableData);
+        String[] userTableCols = new String[] {"Username","Privilege"};
+
+        userTable = createTable(userTableCols,userData);
         JScrollPane userPane = new JScrollPane(userTable);
         userPane.setPreferredSize(new Dimension(500,200));
+        modelTableUser = new DefaultTableModel(userData,userTableCols);
+        userTable.setModel(modelTableUser);
+        centerRowData(userTable);
         ListSelectionModel modelTableUser = userTable.getSelectionModel();
+        modelTableUser.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         modelTableUser.addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent e) {
-                setValueUserInfo(userTable);
+                if(!e.getValueIsAdjusting()){
+                    setValueUserInfo(userTable);
+                }
             }
         });
 
@@ -384,7 +400,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlDisplayUserManagement.setBorder(BorderFactory.createTitledBorder("User List"));
         pnlUserManagement.setLayout(new GridBagLayout());
 
-        JPanel pnlUserManagementInfo = new JPanel(new GridLayout(0,5,1,1));
+        JPanel pnlUserManagementInfo = new JPanel(new GridLayout(0,3,1,1));
         pnlUserManagementInfo.setOpaque(true);
         pnlUserManagementInfo.setBorder(BorderFactory.createTitledBorder("User Information"));
         pnlUserManagementInfo.setPreferredSize(new Dimension(1,80));
@@ -394,21 +410,18 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlUserManagementControl.setBorder(BorderFactory.createTitledBorder("Command Panel"));
         pnlUserManagementControl.setPreferredSize(new Dimension(1,80));
 
-        addToPanel(pnlUserManagementControl, btnUserCreate, constraints,0,0,1,1);
-        addToPanel(pnlUserManagementControl, btnUserEdit, constraints,0,0,1,1);
-        addToPanel(pnlUserManagementControl, btnUserDelete, constraints,0,0,1,1);
+        JButton[] userButtons = new JButton[] {btnUserCreate,btnUserEdit,btnUserDelete};
+        addToPanelWithComponentArray(userButtons,pnlUserManagementControl,constraints);
+        lblUserPassword = createLabel(Color.BLACK,"Password");
+        JLabel[] userLabels = new JLabel[] {createLabel(Color.BLACK,"Username")
+                ,lblUserPassword,createLabel(Color.BLACK,"Privilege")};
+        addToPanelWithComponentArray(userLabels,pnlUserManagementInfo,constraints);
 
-        addToPanel(pnlUserManagementInfo, createLabel(Color.BLACK,"ID"), constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, createLabel(Color.BLACK,"Name"), constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, createLabel(Color.BLACK,"Username"), constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, createLabel(Color.BLACK,"Password"), constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, createLabel(Color.BLACK,"Privilege"), constraints,1,1,1,1 );
+        JTextField[] userTextFields = new JTextField[]{tfUserName,tfUserPassword,tfUserPrivilege};
+        addToPanelWithComponentArray(userTextFields,pnlUserManagementInfo,constraints);
 
-        addToPanel(pnlUserManagementInfo, tfUserID, constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, tfUserName, constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, tfUserUsername, constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, tfUserPassword, constraints,1,1,1,1 );
-        addToPanel(pnlUserManagementInfo, tfUserPrivilege, constraints,1,1,1,1 );
+        lblUserPassword.setVisible(false);
+        tfUserPassword.setVisible(false);
 
         addToPanel(pnlDisplayUserManagement,userPane,constraints,1,0,1,1);
         addToPanel(pnlUserManagement,pnlDisplayUserManagement,constraints,0,0,1,1);
@@ -469,9 +482,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanel(pnlMenu, btnNewBillBoard,constraints,2,2,3,1);
         addToPanel(pnlMenu, btnUserManagement,constraints,2,3,3,1);
 
-
-
-
     }
 
     /**
@@ -523,7 +533,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         //Return the JPanel object
     }
 
-    private JTable createTable(String[] columns, Object[][] data){
+    private static JTable createTable(String[] columns, Object[][] data){
         JTable table;
         table = new JTable(data,columns){
             @Override
@@ -531,12 +541,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 return getValueAt(0, column).getClass();
             }
         };
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
-        for(int i = 0; i < columns.length; i++){
-            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
         table.getColumnModel().getColumn(0).setPreferredWidth(20);
         table.setPreferredScrollableViewportSize(new Dimension(500,100));
         table.setPreferredSize(new Dimension(700,300));
@@ -591,6 +596,42 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    public static void createABillboard(Billboard billboard){
+        try{
+            output.writeObject(new AddBillboardRequest(billboard));
+            output.flush();
+            System.out.println("Created!");
+        } catch (IOException ioException) {
+            System.out.println(ioException);
+        }
+    }
+
+    public static void getUserData(){
+        try{
+            output.writeObject(new DisplayAllUsersRequest());
+            output.flush();
+            Object list = input.readObject();
+            String[][] table = (String[][]) list;
+            System.out.println(Arrays.deepToString(table));
+            userData = new Object[table.length - 1][table[0].length];
+            for(int i = 0; i < table.length - 1; i++){
+                userData[i] = table[i+1];
+            }
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
+    }
+
+    public static void createAUser(User user){
+        try{
+            output.writeObject(new AddUserResquest(user));
+            output.flush();
+            System.out.println("Created!");
+        } catch (IOException ioException) {
+            System.out.println(ioException);
+        }
+    }
+
 
 
     @Override
@@ -610,6 +651,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         System.out.println("Identified!");
         System.out.println(input.readObject());
         getBillboardData();
+        getUserData();
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
 
 
@@ -622,6 +664,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        //SELECT BILLBOARD SECTION
         if(e.getSource() == btnBillboard){
             clearScreen();
             btnBillboard.setContentAreaFilled(true);
@@ -633,6 +676,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             ;
             //pnlCenter.add();
         }
+        //SELECT NEW BILLBOARD SECTION
         else if(e.getSource() == btnNewBillBoard){
             clearScreen();
             btnBillboard.setContentAreaFilled(false);
@@ -642,7 +686,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
             pnlNewBillBoard.setVisible(true);
         }
-
+        //SELECT SCHEDULE SECTION
         else if(e.getSource() == btnSchedule){
             clearScreen();
             btnBillboard.setContentAreaFilled(false);
@@ -653,6 +697,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             //pnlCenter.add();
 
         }
+        //SELECT USER SECTION
         else if(e.getSource() == btnUserManagement){
             clearScreen();
             btnBillboard.setContentAreaFilled(false);
@@ -662,21 +707,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             pnlUserManagement.setVisible(true);
             //pnlCenter.add();
         }
+
+        //DELETE BILLBOARD
         else if(e.getSource() == btnDeleteBb){
             String billboardName = billboardTable.getValueAt(billboardTable.getSelectedRow(), 0).toString();
             deleteABillboard(billboardName);
-            int selectedRow = billboardTable.getSelectedRow();
-            //modelTable.removeListSelectionListener();
-            getBillboardData();
-            this.dispose();
-            try {
-                SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            billBoardListScrollPane.revalidate();
-            billBoardListScrollPane.repaint();
+            modelTableBillboard.removeRow(billboardTable.getSelectedRow());
         }
+
         //EDIT BILLBOARD
         else if(e.getSource() == btnEditBb){
             if(btnEditBb.getText().compareTo("Edit") == 0){
@@ -684,32 +722,43 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 btnEditBb.setText("Save");
             }else{
                 //create a new billboard after modified
-                String[] billboardData = new String[billboardTable.getColumnCount()];
                 Billboard target = new Billboard(tfBillboardName.getText()
-                        , tfBillboardUsername.getText()
-                        ,tfBillboardBGColor.getText(),tfBillboardTitle.getText()
+                        ,tfBillboardUsername.getText()
+                        ,tfBillboardBGColor.getText(),tfBillboardTitleColor.getText()
                         ,tfBillboardDescriptionColor.getText()
                         ,tfBillboardURL.getText(),tfBillboardTitle.getText()
                         ,tfBillboardDescription.getText());
                 System.out.println(target.toString());
                 editABillboard(target);
+                JTextField[] textFields = new JTextField[] {tfBillboardName,tfBillboardUsername,tfBillboardBGColor
+                ,tfBillboardTitleColor,tfBillboardDescriptionColor,tfBillboardURL,tfBillboardTitle,tfBillboardDescription};
+                setUpdateValue(modelTableBillboard,billboardTable,textFields);
                 editBillBoard(false);
-
-                pnlBillboard.revalidate();
-                pnlBillboard.repaint();
                 btnEditBb.setText("Edit");
-                try {
-                    output.writeObject(new EditBillboardRequest(target));
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                try {
-                    output.flush();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-                getBillboardData();
             }
+        }
+        //CREATE NEW BILLBOARD
+        else if(e.getSource() == btnCreateNewBb){
+            Billboard newBillboard = new Billboard(tfNewBillboardName.getText()
+                    ,tfNewBillboardUsername.getText()
+                    ,tfNewBillboardBGColor.getText(),tfNewBillboardTitleColor.getText()
+                    ,tfNewBillboardDescriptionColor.getText()
+                    ,tfNewBillboardURL.getText(),tfNewBillboardTitle.getText()
+                    ,tfNewBillboardDescription.getText());
+            System.out.println(newBillboard.toString());
+            createABillboard(newBillboard);
+            modelTableBillboard.addRow(new String[]{tfNewBillboardName.getText(),tfNewBillboardUsername.getText(),
+            tfNewBillboardBGColor.getText(),tfNewBillboardTitleColor.getText(),tfNewBillboardDescriptionColor.getText(),
+                    tfNewBillboardURL.getText(),tfNewBillboardTitle.getText(),tfNewBillboardDescription.getText()});
+            tfNewBillboardName.setText(null);
+            tfNewBillboardUsername.setText(null);
+            tfNewBillboardBGColor.setText(null);
+            tfNewBillboardTitleColor.setText(null);
+            tfNewBillboardDescriptionColor.setText(null);
+            tfNewBillboardURL.setText(null);
+            tfNewBillboardTitle.setText(null);
+            tfNewBillboardDescription.setText(null);
+            btnBillboard.doClick();
         }
         else if(e.getSource() == btnUserEdit){
             if(btnUserEdit.getText().compareTo("Edit") == 0){
@@ -723,15 +772,24 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         else if(e.getSource() == btnUserCreate){
             if(btnUserCreate.getText().compareTo("Create") == 0){
                 editUser(true);
-                tfUserID.setText(null);
+                lblUserPassword.setVisible(true);
+                tfUserPassword.setVisible(true);
                 tfUserName.setText(null);
-                tfUserUsername.setText(null);
                 tfUserPassword.setText(null);
                 tfUserPrivilege.setText(null);
                 btnUserCreate.setText("Save");
-                btnUserCreate.setText("Save");
             }else{
                 editUser(false);
+                String privileges = tfUserPrivilege.getText();
+                ArrayList<String> privilege = new ArrayList<>(Arrays.asList(privileges.split(",")));
+                try {
+                    User newUser = new User(tfUserName.getText(),tfUserPassword.getText(),privilege);
+                    createAUser(newUser);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                lblUserPassword.setVisible(false);
+                tfUserPassword.setVisible(false);
                 btnUserCreate.setText("Create");
             }
         }
@@ -754,8 +812,16 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlBillboard.setVisible(false);
     }
 
+    public void centerRowData(JTable table){
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+        for(int i = 0; i < table.getColumnCount(); i++){
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+    }
+
     public void editBillBoard(boolean bool){
-        tfBillboardName.setEditable(bool);
         tfBillboardUsername.setEditable(bool);
         tfBillboardBGColor.setEditable(bool);
         tfBillboardTitleColor.setEditable(bool);
@@ -766,9 +832,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void editUser(boolean bool){
-        tfUserID.setEditable(bool);
         tfUserName.setEditable(bool);
-        tfUserUsername.setEditable(bool);
         tfUserPassword.setEditable(bool);
         tfUserPrivilege.setEditable(bool);
     }
@@ -779,34 +843,41 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnEditSchedule.setText("Edit");
     }
 
+    public void setUpdateValue(TableModel tableModel, JTable table, JTextField[] textFields){
+        int selectedRow = table.getSelectedRow();
+        for(int i =0; i < textFields.length; i++){
+            tableModel.setValueAt(textFields[i].getText(),selectedRow,i);
+        }
+    }
+
     public void setValueBillboardInfo(JTable table){
-        tfBillboardName.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
-        tfBillboardUsername.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
-        tfBillboardBGColor.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
-        tfBillboardTitleColor.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
-        tfBillboardDescriptionColor.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
-        tfBillboardURL.setText(table.getValueAt(table.getSelectedRow(), 5).toString());
-        tfBillboardTitle.setText(table.getValueAt(table.getSelectedRow(), 6).toString());
-        tfBillboardDescription.setText(table.getValueAt(table.getSelectedRow(), 7).toString());
+        JTextField[] textFields = new JTextField[]{tfBillboardName,tfBillboardUsername,tfBillboardBGColor,
+                tfBillboardTitleColor,tfBillboardDescriptionColor,tfBillboardURL,tfBillboardTitle,tfBillboardDescription};
+        setTextFields(billboardTable,textFields);
         btnEditBb.setText("Edit");
         editBillBoard(false);
     }
 
     public void setValueUserInfo(JTable table){
-        tfUserID.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
-        tfUserName.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
-        tfUserUsername.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
-        tfUserPassword.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
-        tfUserPrivilege.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
+        JTextField[] textFields = new JTextField[]{tfUserName,tfUserPrivilege};
+        setTextFields(userTable,textFields);
         editUser(false);
         btnUserCreate.setText("Create");
         btnUserEdit.setText("Edit");
     }
 
     public void setValueScheduleInfo(JTable table){
-        tfScheduleBillBoard.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
-        tfScheduleTimestamp.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+        JTextField[] textFields = new JTextField[]{tfScheduleBillBoard,tfScheduleTimestamp};
+        setTextFields(scheduleTable,textFields);
         editSchedule(false);
         btnUserCreate.setText("Create");
+    }
+
+    public void setTextFields(JTable table, JTextField[] textFields){
+        if(table.getSelectedRow() != -1 ){
+            for(int i = 0; i < textFields.length; i++){
+                textFields[i].setText(table.getValueAt(table.getSelectedRow(), i).toString());
+            }
+        }
     }
 }

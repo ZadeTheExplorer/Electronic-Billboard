@@ -139,9 +139,9 @@ CREATE PROCEDURE `electronicBB`.`editBillboard` (IN name varchar(45), IN user_na
                                             IN information_color varchar(7), IN url varchar(200), IN message varchar(100), IN information varchar(100))
 BEGIN
     UPDATE billboards
-    SET billboard.user_name=user_name, billboard.background_color=background_color, billboard.message_color=message_color,
-     billboard.information_color=information_color, billboard.url=url, billboard.message=message, billboard.information=information
-    WHERE billboard.name=name;
+    SET billboards.user_name=user_name, billboards.background_color=background_color, billboards.message_color=message_color,
+        billboards.information_color=information_color, billboards.url=url, billboards.message=message, billboards.information=information
+    WHERE billboards.name=name;
 END $$
 
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedules` (
