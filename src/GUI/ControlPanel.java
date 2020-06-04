@@ -746,6 +746,21 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    public static void getBillboardData(){
+        try{
+            output.writeObject(new DisplayAllBillboardsRequest());
+            output.flush();
+            Object list = input.readObject();
+            String[][] table = (String[][]) list;
+            System.out.println(Arrays.deepToString(table));
+            billBoardData = new Object[table.length - 1][table[0].length];
+            for(int i = 0; i < table.length - 1; i++){
+                billBoardData[i] = table[i+1];
+            }
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
+    }
 
     public void clearScreen(){
         pnlNewBillBoard.setVisible(false);

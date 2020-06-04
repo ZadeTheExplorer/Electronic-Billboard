@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
 public class ControlPanelHandler extends Thread {
@@ -55,7 +56,7 @@ public class ControlPanelHandler extends Thread {
 //                    oos.writeObject("[S] Edited a billboard");
 //                    oos.flush();
 //                }
-            } catch (IOException | ClassNotFoundException | SQLException e) {
+            } catch (IOException | ClassNotFoundException | SQLException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
         }

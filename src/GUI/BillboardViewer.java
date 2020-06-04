@@ -1,8 +1,7 @@
 package GUI;
-import Billboard.Request.DisplayBillboardRequest;
+import Billboard.Request.DisplayAllBillboardsRequest;
 
 import javax.swing.*;
-import javax.sql.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,8 +10,6 @@ import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.Timer;
 
 public class BillboardViewer extends JFrame implements Runnable, ActionListener {
     public static final int WIDTH = 900;
@@ -108,7 +105,7 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
 //        timer.scheduleAtFixedRate(request, 0, 15000);
 //        System.out.println(ois.readObject().toString());
         try{
-            oos.writeObject(new DisplayBillboardRequest());
+            oos.writeObject(new DisplayAllBillboardsRequest());
             oos.flush();
             Object o = ois.readObject();
             String[][] table = (String[][]) o;

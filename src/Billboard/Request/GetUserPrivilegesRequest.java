@@ -1,8 +1,10 @@
 package Billboard.Request;
 
-public class SetUserPermissionRequest {
+import java.io.Serializable;
+
+public class GetUserPrivilegesRequest implements Serializable {
     private String username;
-    public SetUserPermissionRequest(String username) {
+    public GetUserPrivilegesRequest(String username) {
         this.username = username;
     }
 

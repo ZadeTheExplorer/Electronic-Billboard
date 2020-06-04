@@ -1,8 +1,7 @@
 package GUI;
 
-import Billboard.Billboard;
 import Billboard.Request.DeleteBillboardRequest;
-import Billboard.Request.DisplayBillboardRequest;
+import Billboard.Request.DisplayAllBillboardsRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,9 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class TestPanel2 extends JFrame implements ActionListener, Runnable{
     public static final int WIDTH = 500;
@@ -85,11 +82,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
             testLabel2.setText(tfTest.getText());
             testLabel2.setVisible(true);
             try {
-                //TODO: DELETE FROM BILLBOARD LIST
-                Billboard billboard = new Billboard("COVID", 1, "white", "red",
-                        "black", "https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg",
-                        "Wash your hand", "Stay at home!");
-                //oos.writeObject(new DeleteBillboardRequest(billboard));
+                oos.writeObject(new DeleteBillboardRequest("COVID"));
                 oos.flush();
                 System.out.println("Delete...");
             } catch (IOException ioException) {
@@ -106,7 +99,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
         //Display all billboards
         if (e.getSource() == button2){
             try {
-                oos.writeObject(new DisplayBillboardRequest());
+                oos.writeObject(new DisplayAllBillboardsRequest());
                 oos.flush();
                 Object o = ois.readObject();
                 String[][] table = (String[][]) o;

@@ -2,7 +2,9 @@ package Billboard.Request;
 
 import Billboard.User;
 
-public class AddUserResquest {
+import java.io.Serializable;
+
+public class AddUserResquest implements Serializable {
     private User user;
     public AddUserResquest(User user) {
         this.user = user;
