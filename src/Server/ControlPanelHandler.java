@@ -39,23 +39,16 @@ public class ControlPanelHandler extends Thread {
                 received = ois.readObject();
 
                 if (received.equals("Exit")) {
-                    System.out.println("[C] " + this.s + " sends exit...");
-                    System.out.println("Closing this connection.");
+                    System.out.println("[ControlPanel] " + this.s + " sends exit...");
+                    System.out.println("[Server] Closing connection to ControlPanel.");
                     this.s.close();
+                    //BillboardServer.removeThread(this);
                     System.out.println("Connection closed");
                     break;
                 }
-
                 ServerRespond res = new ServerRespond(received, oos);
                 res.handle();
-//                if (received.equals("Create Billboard")) {
-//                    oos.writeObject("[S] Created a billboard!");
-//                    oos.flush();
-//                }
-//                if (received.equals("Edit Billboard")) {
-//                    oos.writeObject("[S] Edited a billboard");
-//                    oos.flush();
-//                }
+
             } catch (IOException | ClassNotFoundException | SQLException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }

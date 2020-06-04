@@ -10,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class ServerRespond {
     private Object request;
@@ -69,6 +70,9 @@ public class ServerRespond {
         if(request instanceof LoginRequest){
             LoginRequest post = (LoginRequest) request;
             login(post.getUsername(), post.getHashPassword());
+        }
+        if(request instanceof DeleteUserRequest){
+            deleteUser(((DeleteUserRequest) request).getUsername());
         }
     }
 
@@ -163,6 +167,8 @@ public class ServerRespond {
     public void login(String username, String hashedPassword){
         try{
             String[][] userInfo = Database.RetrieveData(statement, "Call getUserInfo('"+username+"')");
+            System.out.println(Arrays.deepToString(userInfo));
+
             // if password is correct
             if(userInfo[1][2].compareTo(User.saltedPassword(hashedPassword,userInfo[1][1])) == 0){
                 oos.writeObject(userInfo[1][3]);
