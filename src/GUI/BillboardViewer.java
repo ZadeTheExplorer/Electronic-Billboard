@@ -1,5 +1,5 @@
 package GUI;
-import Billboard.Billboard;
+import ElectronicBillboardObject.Billboard;
 
 import javax.swing.*;
 import java.awt.*;

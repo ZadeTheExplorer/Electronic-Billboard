@@ -1,7 +1,7 @@
 package GUI;
 
-import Billboard.Billboard;
-import Billboard.Request.*;
+import ElectronicBillboardObject.Billboard;
+import Request.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -422,7 +422,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlBillBoardScheduleList.setBorder(BorderFactory.createTitledBorder("Schedule Information"));
         //pnlBillBoardScheduleList.setPreferredSize(new Dimension(1,80));
 
-        JTable scheduleTable = createTable(new String[]{"Billboard","Schedule"}, new Object[][] {
+        JTable scheduleTable = createTable(new String[]{"ElectronicBillboardObject","Schedule"}, new Object[][] {
                 {"Billboard 1","Monday"},
                 {"Billboard 2","Tuesday"},
                 {"Billboard 3","Wednesday"},
@@ -450,7 +450,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlBillBoardScheduleControl.setPreferredSize(new Dimension(1,80));
 
 
-        addToPanel(pnlBillBoardScheduleInformation, createLabel(Color.BLACK,"Billboard"),constraints,0,0,1,1);
+        addToPanel(pnlBillBoardScheduleInformation, createLabel(Color.BLACK, "ElectronicBillboardObject"),constraints,0,0,1,1);
         addToPanel(pnlBillBoardScheduleInformation, createLabel(Color.BLACK,"Schedule"),constraints,0,0,1,1);
         addToPanel(pnlBillBoardScheduleInformation, tfScheduleBillBoard,constraints,0,0,1,1);
         addToPanel(pnlBillBoardScheduleInformation, tfScheduleTimestamp,constraints,0,1,1,1);
