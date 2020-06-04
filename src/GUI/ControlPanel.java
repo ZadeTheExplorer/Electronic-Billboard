@@ -555,22 +555,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return jButton;
     }
 
-    public static void getBillboardData(){
-        try{
-            output.writeObject(new DisplayBillboardRequest());
-            output.flush();
-            Object list = input.readObject();
-            String[][] table = (String[][]) list;
-            System.out.println(Arrays.deepToString(table));
-            billBoardData = new Object[table.length - 1][table[0].length];
-            for(int i = 0; i < table.length - 1; i++){
-                billBoardData[i] = table[i+1];
-            }
-        } catch (IOException | ClassNotFoundException ioException) {
-            System.out.println("ERROR");
-        }
-    }
-
     public static void deleteABillboard(String billboardName){
         try{
             output.writeObject(new DeleteBillboardRequest(billboardName));
@@ -686,7 +670,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 //create a new billboard after modified
                 String[] billboardData = new String[billboardTable.getColumnCount()];
                 Billboard target = new Billboard(tfBillboardName.getText()
-                        ,Integer.parseInt(tfBillboardUserID.getText())
+                        ,tfBillboardUserID.getText()
                         ,tfBillboardBGColor.getText(),tfBillboardTitle.getText()
                         ,tfBillboardDescriptionColor.getText()
                         ,tfBillboardURL.getText(),tfBillboardTitle.getText()

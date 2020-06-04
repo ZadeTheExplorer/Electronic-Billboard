@@ -49,9 +49,9 @@ public class Database {
         for (String s : tempsArray) {
             statement.execute(s);
         }
-        statement.execute("INSERT INTO billboards VALUES('COVID', 1, 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!');");
-        statement.execute("INSERT INTO billboards VALUES('Alo', 1, 'yellow', 'blue', 'green', 'https://lh3.googleusercontent.com/v5ie2VWYRjmDV2b2s_rYrgrWcpFhFiUn0aQlf97W3VkGO84kofOu8psqBir1HZIfQts', 'Say hello', 'Sayhello10times!');");
-        statement.execute("call addBillboard('COVID123', 1, 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!')");
+        statement.execute("INSERT INTO billboards VALUES('COVID', 'admin', 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!');");
+        statement.execute("INSERT INTO billboards VALUES('Alo', 'admin', 'yellow', 'blue', 'green', 'https://lh3.googleusercontent.com/v5ie2VWYRjmDV2b2s_rYrgrWcpFhFiUn0aQlf97W3VkGO84kofOu8psqBir1HZIfQts', 'Say hello', 'Sayhello10times!');");
+        statement.execute("call addBillboard('COVID123', 'jadenB', 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!')");
         statement.close();
     }
     //TODO: USE THIS WHEN RETURN ONLY 1 COLUMN DATA
