@@ -61,11 +61,11 @@ public class BillboardServer {
             panel1Thread.start();
             System.out.println("start PANEL1 (VIEWER)");
         }
-        if(o.equals("TestPanel2")){
-            System.out.println("Start new thread for PANEL 2 (CONTROL PANEL)");
+        if(o.equals("ControlPanel")){
+            System.out.println("Start new thread for ControlPanel (CONTROL PANEL)");
             Thread panel2Thread = new ControlPanelHandler(s, ois, oos);
             panel2Thread.start();
-            System.out.println("start PANEL2 (CONTROL PANEL)");
+            System.out.println("start ControlPanel (CONTROL PANEL)");
         }
     }
 

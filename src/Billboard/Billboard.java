@@ -12,8 +12,23 @@ public class Billboard implements Serializable {
     private String picture;
     private String information;
     private String informationColor;
-    public Billboard(String billboardName,int creatorId,String backgroundColor,String message,
-                     String messageColor,String picture,String information,String informationColor){
+
+    @Override
+    public String toString() {
+        return "Billboard{" +
+                "name='" + name + '\'' +
+                ", creatorId=" + creatorId +
+                ", backgroundColor='" + backgroundColor + '\'' +
+                ", message='" + message + '\'' +
+                ", messageColor='" + messageColor + '\'' +
+                ", picture='" + picture + '\'' +
+                ", information='" + information + '\'' +
+                ", informationColor='" + informationColor + '\'' +
+                '}';
+    }
+
+    public Billboard(String billboardName, int creatorId, String backgroundColor, String message,
+                     String messageColor, String picture, String information, String informationColor){
         this.name = billboardName;
         this.creatorId = creatorId;
         this.backgroundColor = backgroundColor;

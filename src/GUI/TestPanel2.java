@@ -89,7 +89,7 @@ public class TestPanel2 extends JFrame implements ActionListener, Runnable{
                 Billboard billboard = new Billboard("COVID", 1, "white", "red",
                         "black", "https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg",
                         "Wash your hand", "Stay at home!");
-                oos.writeObject(new DeleteBillboardRequest(billboard));
+                //oos.writeObject(new DeleteBillboardRequest(billboard));
                 oos.flush();
                 System.out.println("Delete...");
             } catch (IOException ioException) {
