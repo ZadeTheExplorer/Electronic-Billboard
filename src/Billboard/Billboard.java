@@ -89,7 +89,19 @@ public class Billboard implements Serializable {
         this.informationColor = informationColor;
     }
 
-
+    @Override
+    public String toString() {
+        return "Billboard{" +
+                "name='" + name + '\'' +
+                ", creator='" + creator + '\'' +
+                ", backgroundColor='" + backgroundColor + '\'' +
+                ", message='" + message + '\'' +
+                ", messageColor='" + messageColor + '\'' +
+                ", picture='" + picture + '\'' +
+                ", information='" + information + '\'' +
+                ", informationColor='" + informationColor + '\'' +
+                '}';
+    }
 
     //TODO: XMLFile.create(Billboard billboard)
     public void exportXML() {

@@ -29,7 +29,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JPanel pnlCenter;
     private JLabel lblName;
     private JTextField tfBillboardName;
-    private JTextField tfBillboardUserID;
+    private JTextField tfBillboardUsername;
     private JTextField tfBillboardBGColor;
     private JTextField tfBillboardTitleColor;
     private JTextField tfBillboardDescriptionColor;
@@ -108,8 +108,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
         tfBillboardName = new JTextField();
         tfBillboardName.setEditable(false);
-        tfBillboardUserID = new JTextField();
-        tfBillboardUserID.setEditable(false);
+        tfBillboardUsername = new JTextField();
+        tfBillboardUsername.setEditable(false);
         tfBillboardBGColor = new JTextField();
         tfBillboardBGColor.setEditable(false);
         tfBillboardTitleColor = new JTextField();
@@ -307,7 +307,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
         addToPanelWithLabelArray(billBoardCols,pnlBillboardInformation,constraints);
 
-        JTextField[] billboardTextFields = new JTextField[] {tfBillboardName,tfBillboardUserID,
+        JTextField[] billboardTextFields = new JTextField[] {tfBillboardName, tfBillboardUsername,
                 tfBillboardBGColor,tfBillboardTitleColor,tfBillboardDescriptionColor,tfBillboardURL,tfBillboardTitle,tfBillboardDescription};
 
         addToPanelWithComponentArray(billboardTextFields,pnlBillboardInformation,constraints);
@@ -555,6 +555,22 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return jButton;
     }
 
+    public static void getBillboardData(){
+        try{
+            output.writeObject(new DisplayAllBillboardsRequest());
+            output.flush();
+            Object list = input.readObject();
+            String[][] table = (String[][]) list;
+            System.out.println(Arrays.deepToString(table));
+            billBoardData = new Object[table.length - 1][table[0].length];
+            for(int i = 0; i < table.length - 1; i++){
+                billBoardData[i] = table[i+1];
+            }
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
+    }
+
     public static void deleteABillboard(String billboardName){
         try{
             output.writeObject(new DeleteBillboardRequest(billboardName));
@@ -670,7 +686,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 //create a new billboard after modified
                 String[] billboardData = new String[billboardTable.getColumnCount()];
                 Billboard target = new Billboard(tfBillboardName.getText()
-                        ,tfBillboardUserID.getText()
+                        , tfBillboardUsername.getText()
                         ,tfBillboardBGColor.getText(),tfBillboardTitle.getText()
                         ,tfBillboardDescriptionColor.getText()
                         ,tfBillboardURL.getText(),tfBillboardTitle.getText()
@@ -730,21 +746,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    public static void getBillboardData(){
-        try{
-            output.writeObject(new DisplayAllBillboardsRequest());
-            output.flush();
-            Object list = input.readObject();
-            String[][] table = (String[][]) list;
-            System.out.println(Arrays.deepToString(table));
-            billBoardData = new Object[table.length - 1][table[0].length];
-            for(int i = 0; i < table.length - 1; i++){
-                billBoardData[i] = table[i+1];
-            }
-        } catch (IOException | ClassNotFoundException ioException) {
-            System.out.println("ERROR");
-        }
-    }
 
     public void clearScreen(){
         pnlNewBillBoard.setVisible(false);
@@ -755,7 +756,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public void editBillBoard(boolean bool){
         tfBillboardName.setEditable(bool);
-        tfBillboardUserID.setEditable(bool);
+        tfBillboardUsername.setEditable(bool);
         tfBillboardBGColor.setEditable(bool);
         tfBillboardTitleColor.setEditable(bool);
         tfBillboardDescriptionColor.setEditable(bool);
@@ -780,7 +781,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public void setValueBillboardInfo(JTable table){
         tfBillboardName.setText(table.getValueAt(table.getSelectedRow(), 0).toString());
-        tfBillboardUserID.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+        tfBillboardUsername.setText(table.getValueAt(table.getSelectedRow(), 1).toString());
         tfBillboardBGColor.setText(table.getValueAt(table.getSelectedRow(), 2).toString());
         tfBillboardTitleColor.setText(table.getValueAt(table.getSelectedRow(), 3).toString());
         tfBillboardDescriptionColor.setText(table.getValueAt(table.getSelectedRow(), 4).toString());
