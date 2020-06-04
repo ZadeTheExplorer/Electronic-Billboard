@@ -33,8 +33,6 @@ public class User implements Serializable {
 
     public String getSaltPass(){return saltPass;}
 
-
-
     public void setPrivileges(ArrayList<String> permission) {
         this.privileges = privileges;
     }

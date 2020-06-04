@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class ServerRespond {
     private Object request;
@@ -64,6 +65,10 @@ public class ServerRespond {
         if(request instanceof SetScheduleRequest){
             SetScheduleRequest post = (SetScheduleRequest) request;
             setSchedule((post.getScheduleId()), post.getBillboardName(), post.getStartTime(), post.getDuration());
+        }
+        if(request instanceof LoginRequest){
+            LoginRequest post = (LoginRequest) request;
+            login(post.getUsername(), post.getHashPassword());
         }
     }
 
@@ -155,8 +160,24 @@ public class ServerRespond {
         DayOfWeek weekDay = time.getDayOfWeek();
 
     }
-    public void login(String username, String password) throws SQLException {
-        String[][] userInfo = Database.RetrieveData(statement, "Call ");
+    public void login(String username, String hashedPassword){
+        try{
+            String[][] userInfo = Database.RetrieveData(statement, "Call getUserInfo('"+username+"')");
+            // if password is correct
+            if(userInfo[1][2].compareTo(User.saltedPassword(hashedPassword,userInfo[1][1])) == 0){
+                oos.writeObject(userInfo[1][3]);
+                System.out.println(userInfo[1][3]);
+                oos.flush();
+            } else {
+                oos.writeObject("Fail");
+                System.out.println("Login fail!");
+                oos.flush();
+            }
+        } catch (SQLException | NoSuchAlgorithmException | IOException throwable) {
+            throwable.printStackTrace();
+        }
+
+
     }
     public void logout(){}
 }

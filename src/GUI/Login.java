@@ -1,14 +1,15 @@
 package GUI;
-
 import Billboard.DBConnection;
+import Billboard.Request.LoginRequest;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -23,6 +24,8 @@ public class Login extends JFrame implements Runnable{
     private JTextField tfUser;
     private JTextField tfPass;
     private JButton btnLogin;
+    static ObjectOutputStream output;
+    static ObjectInputStream input;
 
     public Login(String title){
         super(title);
@@ -42,7 +45,7 @@ public class Login extends JFrame implements Runnable{
         this.getContentPane().add(borderPanel,BorderLayout.PAGE_START);
 
         lblUserID = new JLabel("User ID: ");
-        lblPassWord = new JLabel("Pass Word: ");
+        lblPassWord = new JLabel("Password: ");
         tfUser = new JTextField();
         tfUser.setPreferredSize(new Dimension(300,25));
         tfPass = new JTextField();
@@ -75,37 +78,57 @@ public class Login extends JFrame implements Runnable{
         btnLogin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    Connection conn = DBConnection.getInstance();
-                    String sql = "SELECT * FROM Users\n" +
-                            "WHERE Username=? AND Password=?";
-                    PreparedStatement ps = conn.prepareStatement(sql);
-                    ps.setString(1, tfUser.getText());
-                    ps.setString(2,tfPass.getText());
-
-                    ResultSet rs = ps.executeQuery();
-                    if(rs.next()){
-                        JOptionPane.showMessageDialog(null, "Login successfully");
-                        SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
-                        dispose();
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null,"The ID or Password you've entered is incorrect;");
-                    }
-                }catch(Exception E){
-                    JOptionPane.showMessageDialog(null, "Username and Password is missing!");
+                String userName = tfUser.getText();
+                String password = tfPass.getText();
+                try {
+                    output.writeObject(new LoginRequest(userName, password));
+                    output.flush();
+                    System.out.println("request sent!!!");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
                 }
+                try {
+                    Object o = input.readObject();
+                    if(o.equals("Fail")) {
+                        JOptionPane.showMessageDialog(null,
+                            "Username or password is incorrect!",
+                            "Login fail",
+                            JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        //TODO:
+                        String privileges = (String) o;
+                        if(privileges.contains("Edit Users")){
 
+                        }
+                        if(privileges.contains("Create Billboard")){
+
+                        }
+                        if(privileges.contains("Edit All Billboards")){
+
+                        }
+                        if(privileges.contains("Schedule Billboard")){
+
+                        }
+                    }
+                } catch (IOException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                //SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
+                //dispose();
             }
         });
-
-
-
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+        Socket socketControlPanel = new Socket("localhost", 1234);
+
+        output = new ObjectOutputStream(socketControlPanel.getOutputStream());
+        input = new ObjectInputStream(socketControlPanel.getInputStream());
+        output.writeObject("Login");
+        output.flush();
         SwingUtilities.invokeLater(new Login("Login"));
+
     }
 
 }
