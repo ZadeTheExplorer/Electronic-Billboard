@@ -1,9 +1,8 @@
 package GUI;
 
-import Billboard.Billboard;
-import Billboard.Request.CurrentBillboardRequest;
+import ElectronicBillboardObject.Billboard;
+import Request.CurrentBillboardRequest;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

@@ -1,6 +1,5 @@
 package GUI;
-import Billboard.DBConnection;
-import Billboard.Request.LoginRequest;
+import Request.LoginRequest;
 
 import javax.swing.*;
 import java.awt.*;
