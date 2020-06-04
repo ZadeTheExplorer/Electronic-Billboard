@@ -416,10 +416,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         addToPanelWithComponentArray(userButtons,pnlUserManagementControl,constraints);
         lblUserPassword = createLabel(Color.BLACK,"Password");
         JLabel[] userLabels = new JLabel[] {createLabel(Color.BLACK,"Username")
-                ,lblUserPassword,createLabel(Color.BLACK,"Privilege")};
+                ,createLabel(Color.BLACK,"Privilege"),lblUserPassword};
         addToPanelWithComponentArray(userLabels,pnlUserManagementInfo,constraints);
 
-        JTextField[] userTextFields = new JTextField[]{tfUserName,tfUserPassword,tfUserPrivilege};
+        JTextField[] userTextFields = new JTextField[]{tfUserName,tfUserPrivilege,tfUserPassword};
         addToPanelWithComponentArray(userTextFields,pnlUserManagementInfo,constraints);
 
         lblUserPassword.setVisible(false);
@@ -634,6 +634,38 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    public static void deleteAUser(String username){
+        try{
+            output.writeObject(new DeleteUserRequest(username));
+            output.flush();
+            System.out.println("Deleted User!");
+        } catch (IOException ioException) {
+            System.out.println(ioException);
+        }
+    }
+
+    public static void updateAUserPassword(String username, String password){
+        try{
+            output.writeObject(new SetUserPassword(username,password));
+            output.flush();
+            System.out.println("Update Password!");
+        } catch (IOException ioException) {
+            System.out.println(ioException);
+        }
+    }
+
+    public static void updateAUserPrivilege(String username, String password){
+        try{
+            output.writeObject(new SetUserPrivilegesRequest(username));
+            output.flush();
+            System.out.println("Update Password!");
+        } catch (IOException ioException) {
+            System.out.println(ioException);
+        }
+    }
+
+
+
     @Override
     public void run() {
         createGUI();
@@ -651,7 +683,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         output.flush();
         System.out.println("Identified!");
         System.out.println(input.readObject());
-        //TODO FUCKING ERROR APPEAR
+        
         getBillboardData();
         getUserData();
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
@@ -715,6 +747,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             String billboardName = billboardTable.getValueAt(billboardTable.getSelectedRow(), 0).toString();
             deleteABillboard(billboardName);
             modelTableBillboard.removeRow(billboardTable.getSelectedRow());
+            tfBillboardName.setText(null);
+            tfBillboardUsername.setText(null);
+            tfBillboardBGColor.setText(null);
+            tfBillboardTitleColor.setText(null);
+            tfBillboardDescriptionColor.setText(null);
+            tfBillboardURL.setText(null);
+            tfBillboardTitle.setText(null);
+            tfBillboardDescription.setText(null);
         }
 
         //EDIT BILLBOARD
@@ -766,6 +806,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             if(btnUserEdit.getText().compareTo("Edit") == 0){
                 editUser(true);
                 btnUserEdit.setText("Save");
+
             }else{
                 editUser(false);
                 btnUserEdit.setText("Edit");
@@ -790,11 +831,20 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
+                modelTableUser.addRow(new String[] {tfUserName.getText(),tfUserPrivilege.getText()});
                 lblUserPassword.setVisible(false);
                 tfUserPassword.setVisible(false);
                 btnUserCreate.setText("Create");
             }
         }
+        else if(e.getSource() == btnUserDelete){
+                String username = userTable.getValueAt(userTable.getSelectedRow(), 0).toString();
+                deleteAUser(username);
+                modelTableUser.removeRow(userTable.getSelectedRow());
+                tfUserName.setText(null);
+                tfUserPassword.setText(null);
+        }
+
         else if(e.getSource() == btnEditSchedule){
             if(btnEditSchedule.getText().compareTo("Edit") == 0){
                 editSchedule(true);
@@ -864,6 +914,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         JTextField[] textFields = new JTextField[]{tfUserName,tfUserPrivilege};
         setTextFields(userTable,textFields);
         editUser(false);
+        tfUserPassword.setVisible(false);
+        lblUserPassword.setVisible(false);
         btnUserCreate.setText("Create");
         btnUserEdit.setText("Edit");
     }
