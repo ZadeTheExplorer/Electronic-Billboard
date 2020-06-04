@@ -5,17 +5,17 @@ import java.io.Serializable;
 //TODO: CHANGE UNIT TEST FOR BILLBOARD
 public class Billboard implements Serializable {
     private String name;
-    private int creatorId;
+    private String creator;
     private String backgroundColor;
     private String message;
     private String messageColor;
     private String picture;
     private String information;
     private String informationColor;
-    public Billboard(String billboardName,int creatorId,String backgroundColor,String message,
+    public Billboard(String billboardName,String creator,String backgroundColor,String message,
                      String messageColor,String picture,String information,String informationColor){
         this.name = billboardName;
-        this.creatorId = creatorId;
+        this.creator = creator;
         this.backgroundColor = backgroundColor;
         this.message = message;
         this.messageColor = messageColor;
@@ -33,12 +33,12 @@ public class Billboard implements Serializable {
         this.name = name;
     }
 
-    public int getCreatorId() {
-        return creatorId;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setCreatorId(int creatorId) {
-        this.creatorId = creatorId;
+    public void setCreatorId(String creator) {
+        this.creator = creator;
     }
 
     public String getBackgroundColor() {
@@ -90,13 +90,6 @@ public class Billboard implements Serializable {
     }
 
 
-
-
-
-
-    public void delete(int name){
-
-    }
 
     //TODO: XMLFile.create(Billboard billboard)
     public void exportXML() {

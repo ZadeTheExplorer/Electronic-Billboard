@@ -80,7 +80,7 @@ DROP TABLE IF EXISTS `electronicBB`.`billboards`; $$
 
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`billboards` (
   `name` varchar(45) NOT NULL PRIMARY KEY,
-  `user_name` int(3) NOT NULL,
+  `user_name` varchar(45) NOT NULL,
   `background_color` varchar(7) default '#FFFFFF',
   `message_color` varchar(7) default '#ff0000',
   `information_color` varchar(7) default '#000000',

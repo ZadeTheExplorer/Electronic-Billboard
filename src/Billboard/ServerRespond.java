@@ -96,7 +96,7 @@ public class ServerRespond {
     }
 
     public void addBillboard(Billboard billboard) throws SQLException {
-        String query = "call addBillboard(" + billboard.getCreatorId()+billboard.getBackgroundColor()+billboard.getMessageColor()+
+        String query = "call addBillboard(" + billboard.getCreator()+billboard.getBackgroundColor()+billboard.getMessageColor()+
                 billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
         statement.execute(query);
     }
@@ -107,7 +107,7 @@ public class ServerRespond {
     }
 
     public void EditBillboard(Billboard billboard) throws SQLException {
-        String query = "call editBillboard(" + billboard.getCreatorId()+billboard.getBackgroundColor()+billboard.getMessageColor()+
+        String query = "call editBillboard(" + billboard.getCreator()+billboard.getBackgroundColor()+billboard.getMessageColor()+
                 billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
         statement.execute(query);
     }
@@ -155,6 +155,8 @@ public class ServerRespond {
         DayOfWeek weekDay = time.getDayOfWeek();
 
     }
-    public void login(){}
+    public void login(String username, String password) throws SQLException {
+        String[][] userInfo = Database.RetrieveData(statement, "Call ");
+    }
     public void logout(){}
 }
