@@ -169,5 +169,9 @@ public class Database {
 
         String[][] arrayList1 = Database.RetrieveData(statement, "Call displayAllSchedules()");
         String[][] arrayList2 = Database.RetrieveData(statement, "Call getScheduleInfo(1)");
+
+        String[] values = {"AB","BC","CD","AE"};
+        boolean contains = Arrays.asList(values).contains("A B");
+        System.out.println( String.valueOf(contains) + Arrays.asList(values).contains("AB"));
     }
 }

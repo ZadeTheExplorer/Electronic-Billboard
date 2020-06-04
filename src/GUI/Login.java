@@ -1,5 +1,4 @@
 package GUI;
-
 import Billboard.DBConnection;
 import Billboard.Request.LoginRequest;
 
@@ -11,9 +10,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -87,30 +83,40 @@ public class Login extends JFrame implements Runnable{
                 try {
                     output.writeObject(new LoginRequest(userName, password));
                     output.flush();
+                    System.out.println("request sent!!!");
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-                System.out.println("request sent!!!");
                 try {
                     Object o = input.readObject();
                     if(o.equals("Fail")) {
                         JOptionPane.showMessageDialog(null,
-                            "Your entered user name or password is incorrect!",
+                            "Username or password is incorrect!",
                             "Login fail",
                             JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        //TODO:
+                        String privileges = (String) o;
+                        if(privileges.contains("Edit Users")){
+
+                        }
+                        if(privileges.contains("Create Billboard")){
+
+                        }
+                        if(privileges.contains("Edit All Billboards")){
+
+                        }
+                        if(privileges.contains("Schedule Billboard")){
+
+                        }
                     }
                 } catch (IOException | ClassNotFoundException ex) {
                     ex.printStackTrace();
                 }
-
                 //SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
                 //dispose();
-
             }
         });
-
-
-
     }
 
 
@@ -119,12 +125,10 @@ public class Login extends JFrame implements Runnable{
 
         output = new ObjectOutputStream(socketControlPanel.getOutputStream());
         input = new ObjectInputStream(socketControlPanel.getInputStream());
-
-//        output.writeObject("Login");
-//        output.flush();
-//        System.out.println("Identified!");
-//        System.out.println(input.readObject());
+        output.writeObject("Login");
+        output.flush();
         SwingUtilities.invokeLater(new Login("Login"));
+
     }
 
 }

@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class ServerRespond {
     private Object request;
@@ -165,9 +166,11 @@ public class ServerRespond {
             // if password is correct
             if(userInfo[1][2].compareTo(User.saltedPassword(hashedPassword,userInfo[1][1])) == 0){
                 oos.writeObject(userInfo[1][3]);
+                System.out.println(userInfo[1][3]);
                 oos.flush();
             } else {
                 oos.writeObject("Fail");
+                System.out.println("Login fail!");
                 oos.flush();
             }
         } catch (SQLException | NoSuchAlgorithmException | IOException throwable) {

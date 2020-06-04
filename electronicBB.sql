@@ -87,7 +87,6 @@ CREATE TABLE  IF NOT EXISTS `electronicBB`.`billboards` (
   `url` varchar(200),
   `message` varchar(100) default '',
   `information` varchar(100) default ''
-
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayAllBillboards`; $$

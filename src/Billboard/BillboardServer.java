@@ -49,23 +49,29 @@ public class BillboardServer {
         ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
         Object o = ois.readObject();
 
-        if(o.equals("Client1")){
-            System.out.println("Start new thread for CLIENT");
-            Thread t = new ClientHandler(s, ois, oos);
-            t.start();
-            System.out.println("start CLIENT");
-        }
-        if(o.equals("TestPanel1")){
-            System.out.println("Start new thread for PANEL 1 (VIEWER)");
+//        if(o.equals("Client1")){
+//            System.out.println("Start new thread for CLIENT");
+//            Thread t = new ClientHandler(s, ois, oos);
+//            t.start();
+//            System.out.println("start CLIENT");
+//        }
+        if(o.equals("Viewer")){
+            System.out.println("Start new thread for Viewer");
             Thread panel1Thread = new ViewerHandler(s, ois, oos);
             panel1Thread.start();
-            System.out.println("start PANEL1 (VIEWER)");
+            System.out.println("[Server] Connection started to Viewer");
         }
         if(o.equals("ControlPanel")){
-            System.out.println("Start new thread for ControlPanel (CONTROL PANEL)");
+            System.out.println("Start new thread for ControlPanel");
             Thread panel2Thread = new ControlPanelHandler(s, ois, oos);
             panel2Thread.start();
-            System.out.println("start ControlPanel (CONTROL PANEL)");
+            System.out.println("[Server] Connection started to ControlPanel");
+        }
+        if(o.equals("Login")){
+            System.out.println("Start new thread for Login");
+            Thread panel2Thread = new ControlPanelHandler(s, ois, oos);
+            panel2Thread.start();
+            System.out.println("[Server] User need to login for further actions");
         }
     }
 
@@ -87,8 +93,10 @@ public class BillboardServer {
 
         // FOR 1st client (Viewer)
         Socket socket1 = null;
-        // FOR 2nd client (ControlPanel)
+        // FOR 2nd client (Login)
         Socket socket2 = null;
+        // FOR 3rd client (ControlPanel)
+        Socket socket3 = null;
         try{
             socket1 = serverSocket.accept();
             threadHandler(socket1);
@@ -96,6 +104,8 @@ public class BillboardServer {
             socket2 = serverSocket.accept();
             threadHandler(socket2);
 
+            socket3 = serverSocket.accept();
+            threadHandler(socket3);
         } catch (IOException e) {
             e.printStackTrace();
         }

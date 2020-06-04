@@ -1,31 +1,38 @@
 package GUI;
-import Billboard.Request.DisplayAllBillboardsRequest;
+import Billboard.Billboard;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
+import java.util.Timer;
 
 public class BillboardViewer extends JFrame implements Runnable, ActionListener {
+    private Socket socket;
+    private static ObjectOutputStream objectOutputStream;
+    private static ObjectInputStream objectInputStream;
+
+
     public static final int WIDTH = 900;
     public static final int HEIGHT = 600;
     private Color backgroundColor;
     private Color titleColor;
     private Color descriptionColor;
-    private JPanel billboard;
+    private JPanel billboardPanel;
     private JTextArea titleBox;
     private JTextArea descriptionBox;
     private String title;
     private String description;
     private JLabel billboardImage;
+    private Billboard billboard;
     static String currentDir = System.getProperty("user.dir");
-    public BillboardViewer(String title){
+    public BillboardViewer(String title) throws IOException {
         super(title);
+        socket = new Socket("localhost", 1234);
+        // obtaining input and out streams
+        objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
     }
 
     public void Display(){
@@ -50,21 +57,36 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         constraints.weightx = 0;
         constraints.weighty = 2;
 
-        billboard = new JPanel(new GridBagLayout());
-        billboard.setBackground(backgroundColor);
+        billboardPanel = new JPanel(new GridBagLayout());
+        billboardPanel.setBackground(backgroundColor);
 
-        addToPanel(billboard, titleBox,constraints,0,1,1,1);
-        addToPanel(billboard, billboardImage,constraints,0,2,1,1);
+        addToPanel(billboardPanel, titleBox,constraints,0,1,1,1);
+        addToPanel(billboardPanel, billboardImage,constraints,0,2,1,1);
         descriptionBox.setAlignmentX(CENTER_ALIGNMENT);
-        addToPanel(billboard, descriptionBox,constraints,0,3,1,1);
+        addToPanel(billboardPanel, descriptionBox,constraints,0,3,1,1);
 
-        this.getContentPane().add(billboard, BorderLayout.CENTER);
-        billboard.addMouseListener(new MouseAdapter() {
+        this.getContentPane().add(billboardPanel, BorderLayout.CENTER);
+        billboardPanel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e){
                 System.exit(0);
             }
         });
-
+        // Add action for onClose of Viewer
+        this.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+                int i=JOptionPane.showConfirmDialog(null, "Do you want to close Billboard Viewer?");
+                if(i==0) {
+                    try {
+                        objectOutputStream.close();
+                        objectInputStream.close();
+                        socket.close();
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                    }
+                    System.exit(0);//Exit
+                }
+            }
+        });
     }
 
     public JTextArea createTextBox(String textBoxContent, Color textBoxColor, int textSize, int textBoxWidth) {
@@ -85,37 +107,29 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         constraints.gridheight = h;
         jp.add(c, constraints);
     }
-
+    public void setBillboard(Billboard billboard) {
+        this.billboard = billboard;
+    }
     @Override
     public void run() {
         Display();
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        //SwingUtilities.invokeLater(new BillboardViewer("Billboard Viewer"));
-        Socket BillboardViewerSocket = new Socket("localhost", 1234);
-        // obtaining input and out streams
+        BillboardViewer viewer = new BillboardViewer("Billboard Viewer");
 
-        ObjectOutputStream oos = new ObjectOutputStream(BillboardViewerSocket.getOutputStream());
-        ObjectInputStream ois = new ObjectInputStream(BillboardViewerSocket.getInputStream());
 
-        System.out.println("Identified!");
-//        RequestTimer request = new RequestTimer(BillboardViewerSocket, oos);
-//        java.util.Timer timer = new Timer(true);
-//        timer.scheduleAtFixedRate(request, 0, 15000);
-//        System.out.println(ois.readObject().toString());
-        try{
-            oos.writeObject(new DisplayAllBillboardsRequest());
-            oos.flush();
-            Object o = ois.readObject();
-            String[][] table = (String[][]) o;
-            System.out.println(Arrays.deepToString(table));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            ois.close();
-            oos.close();
-        }
+        objectOutputStream.writeObject("Viewer");
+        objectOutputStream.flush();
+
+        System.out.println("[Viewer] Connect successfully to Server.\n Start sending request to current billboard!");
+        RequestTimer request = new RequestTimer(objectOutputStream, objectInputStream, viewer);
+
+        Timer timer = new Timer(true);
+        timer.scheduleAtFixedRate(request, 0, 15000);
+        System.out.println(objectInputStream.readObject().toString());
+
+        SwingUtilities.invokeLater(viewer);
     }
 
     @Override
