@@ -12,8 +12,8 @@ public class Billboard implements Serializable {
     private String picture;
     private String information;
     private String informationColor;
-    public Billboard(String billboardName,String creator,String backgroundColor,String message,
-                     String messageColor,String picture,String information,String informationColor){
+    public Billboard(String billboardName,String creator,String backgroundColor,String messageColor,
+                     String informationColor,String picture,String message,String information){
         this.name = billboardName;
         this.creator = creator;
         this.backgroundColor = backgroundColor;

@@ -101,19 +101,19 @@ public class ServerRespond {
     }
 
     public void addBillboard(Billboard billboard) throws SQLException {
-        String query = "call addBillboard(" + billboard.getCreator()+billboard.getBackgroundColor()+billboard.getMessageColor()+
-                billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
+        String query = "Call addBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
+                "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
         statement.execute(query);
     }
     public void deleteBillboard(String billboard) throws SQLException {
-        String query = "call deleteBillboard('"+billboard  +"');";
+        String query = "Call deleteBillboard('"+billboard  +"');";
         statement.execute(query);
         System.out.println("delete billboard " +billboard);
     }
 
     public void EditBillboard(Billboard billboard) throws SQLException {
-        String query = "call editBillboard(" + billboard.getCreator()+billboard.getBackgroundColor()+billboard.getMessageColor()+
-                billboard.getInformationColor()+billboard.getPicture()+billboard.getMessage()+billboard.getInformation() + ");";
+        String query = "Call editBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
+                "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
         statement.execute(query);
     }
     public void addUser(User user) throws SQLException {
