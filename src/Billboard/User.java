@@ -32,8 +32,6 @@ public class User {
 
     public String getSaltPass(){return saltPass;}
 
-
-
     public void setPrivileges(ArrayList<String> permission) {
         this.privileges = privileges;
     }

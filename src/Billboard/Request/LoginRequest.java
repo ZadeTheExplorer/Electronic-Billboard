@@ -13,10 +13,6 @@ public class LoginRequest implements Serializable {
         this.password = password;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public String getUsername() {
         return username;
     }

@@ -65,6 +65,10 @@ public class ServerRespond {
             SetScheduleRequest post = (SetScheduleRequest) request;
             setSchedule((post.getScheduleId()), post.getBillboardName(), post.getStartTime(), post.getDuration());
         }
+        if(request instanceof LoginRequest){
+            LoginRequest post = (LoginRequest) request;
+            login(post.getUsername(), post.getHashPassword());
+        }
     }
 
     public void displayAllBillboards() throws SQLException, IOException {
@@ -155,8 +159,22 @@ public class ServerRespond {
         DayOfWeek weekDay = time.getDayOfWeek();
 
     }
-    public void login(String username, String password) throws SQLException {
-        String[][] userInfo = Database.RetrieveData(statement, "Call ");
+    public void login(String username, String hashedPassword){
+        try{
+            String[][] userInfo = Database.RetrieveData(statement, "Call getUserInfo('"+username+"')");
+            // if password is correct
+            if(userInfo[1][2].compareTo(User.saltedPassword(hashedPassword,userInfo[1][1])) == 0){
+                oos.writeObject(userInfo[1][3]);
+                oos.flush();
+            } else {
+                oos.writeObject("Fail");
+                oos.flush();
+            }
+        } catch (SQLException | NoSuchAlgorithmException | IOException throwable) {
+            throwable.printStackTrace();
+        }
+
+
     }
     public void logout(){}
 }
