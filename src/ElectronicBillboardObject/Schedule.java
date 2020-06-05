@@ -18,7 +18,6 @@ public class Schedule {
         this.duration = duration;
         this.dayOfWeek = dayOfWeek;
     }
-
     public String getBillboardName() {
         return billboardName;
     }
@@ -49,5 +48,13 @@ public class Schedule {
 
     public void setDuration(Time duration) {
         this.duration = duration;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
     }
 }

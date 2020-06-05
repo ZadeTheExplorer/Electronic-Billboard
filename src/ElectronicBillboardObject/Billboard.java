@@ -37,7 +37,7 @@ public class Billboard implements Serializable {
         return creator;
     }
 
-    public void setCreatorId(String creator) {
+    public void setCreator(String creator) {
         this.creator = creator;
     }
 

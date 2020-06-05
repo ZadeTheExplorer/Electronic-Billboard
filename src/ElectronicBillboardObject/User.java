@@ -21,6 +21,18 @@ public class User implements Serializable {
         this.privileges.addAll(privileges);
     }
 
+    public ArrayList<String> getPrivileges() {
+        return privileges;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public void setSaltPass(String saltPass) {
+        this.saltPass = saltPass;
+    }
+
     public String getUserName() {
         return userName;
     }
