@@ -1,5 +1,7 @@
 package Server;
 
+import Request.CurrentBillboardRequest;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -36,7 +38,8 @@ public class ViewerHandler extends Thread{
 
             // Ask user what he wants
             try {
-                oos.writeObject("[S] Hello, start connecting... ");oos.flush();
+                oos.writeObject("[Server] Connected.\n ");
+                oos.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -47,17 +50,23 @@ public class ViewerHandler extends Thread{
                     received = ois.readObject();
 
                     if (received.equals("Exit")) {
-                        System.out.println("[C] " + this.s + " sends exit...");
-                        System.out.println("Closing this connection.");
+                        System.out.println("[Viewer] " + this.s + " sends exit...");
+                        System.out.println("[Server] Closing connection to Viewer.");
                         this.s.close();
-                        System.out.println("Connection closed");
+                        //BillboardServer.removeThread(this);
+                        System.out.println("[Server] Connection closed");
                         break;
                     }
-
                     // write on output stream based on the
                     // answer from the client
                     if (received.equals("Current")) {
-                        oos.writeObject("[S] Request received!");
+                        oos.writeObject("[Server] Request received!");
+                        oos.flush();
+                    }
+                    //TODO
+                    if (received instanceof CurrentBillboardRequest){
+                        oos.writeObject("[Server] Request received!");
+                        System.out.println("[Viewer] Request current billboard");
                         oos.flush();
                     }
                 } catch (IOException | ClassNotFoundException e) {

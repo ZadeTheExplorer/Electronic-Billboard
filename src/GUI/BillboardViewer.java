@@ -77,9 +77,12 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
                 int i=JOptionPane.showConfirmDialog(null, "Do you want to close Billboard Viewer?");
                 if(i==0) {
                     try {
+                        // Send Exit Request
+                        objectOutputStream.writeObject("Exit");
+                        objectOutputStream.flush();
+                        // Close stream
                         objectOutputStream.close();
                         objectInputStream.close();
-                        socket.close();
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                     }
@@ -121,12 +124,14 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
 
         objectOutputStream.writeObject("Viewer");
         objectOutputStream.flush();
+        System.out.println(objectInputStream.readObject());
 
         System.out.println("[Viewer] Connect successfully to Server.\n Start sending request to current billboard!");
+
         RequestTimer request = new RequestTimer(objectOutputStream, objectInputStream, viewer);
 
         Timer timer = new Timer(true);
-        timer.scheduleAtFixedRate(request, 0, 15000);
+        timer.scheduleAtFixedRate(request, 0, 2000);
         System.out.println(objectInputStream.readObject().toString());
 
         SwingUtilities.invokeLater(viewer);

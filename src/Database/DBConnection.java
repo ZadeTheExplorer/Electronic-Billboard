@@ -27,7 +27,7 @@ public class DBConnection {
 
             instance = DriverManager.getConnection(url+ "/" + schema, username, password);
 
-            JOptionPane.showMessageDialog(null, "Login Successful...");
+            //JOptionPane.showMessageDialog(null, "Login Successful...");
 
         }
         catch (SQLException | FileNotFoundException sqle) {

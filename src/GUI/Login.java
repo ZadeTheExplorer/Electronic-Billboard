@@ -1,14 +1,19 @@
 package GUI;
 import Request.LoginRequest;
+import Server.SessionToken;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -74,48 +79,53 @@ public class Login extends JFrame implements Runnable{
         gcb.gridy = 4;
         borderPanel.add(btnLogin, gcb);
 
-        btnLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String userName = tfUser.getText();
-                String password = tfPass.getText();
-                try {
-                    output.writeObject(new LoginRequest(userName, password));
-                    output.flush();
-                    System.out.println("request sent!!!");
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-                try {
-                    Object o = input.readObject();
-                    if(o.equals("Fail")) {
-                        JOptionPane.showMessageDialog(null,
-                            "Username or password is incorrect!",
-                            "Login fail",
-                            JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        //TODO:
-                        String privileges = (String) o;
-                        if(privileges.contains("Edit Users")){
+        btnLogin.addActionListener(e -> {
+            String userName = tfUser.getText();
+            String password = tfPass.getText();
+            try {
+                System.out.println("Username: " +userName+ "\nPassword: " + password);
+                output.writeObject(new LoginRequest(userName, password));
+                output.flush();
+                System.out.println("request sent!!!");
 
-                        }
-                        if(privileges.contains("Create Billboard")){
-
-                        }
-                        if(privileges.contains("Edit All Billboards")){
-
-                        }
-                        if(privileges.contains("Schedule Billboard")){
-
-                        }
+                System.out.println("[Login] Wait for Server's respond");
+                Object o = input.readObject();
+                if(o.equals("Fail")) {
+                    JOptionPane.showMessageDialog(null,
+                        "Username or password is incorrect!",
+                        "Login fail",
+                        JOptionPane.ERROR_MESSAGE);
+                } else {
+                    //TODO:
+                    String privileges = (String) o;
+                    ArrayList<String> listOfPrivileges = new ArrayList<>();
+                    if(privileges.contains("Edit Users")){
+                        listOfPrivileges.add("Edit Users");
                     }
-                } catch (IOException | ClassNotFoundException ex) {
-                    ex.printStackTrace();
+                    if(privileges.contains("Create Billboard")){
+                        listOfPrivileges.add("Create Billboard");
+                    }
+                    if(privileges.contains("Edit All Billboards")){
+                        listOfPrivileges.add("Edit All Billboards");
+                    }
+                    if(privileges.contains("Schedule Billboard")){
+                        listOfPrivileges.add("Schedule Billboard");
+                    }
+                    new SessionToken(listOfPrivileges);
+                    System.out.println("Retrieved privileges of this user: " + listOfPrivileges.toString() +"\nCreated token for this session!");
+                    //TODO
+                    JOptionPane.showMessageDialog(new JFrame(),"Login successfully!");
+
+                    output.close();
+                    input.close();
                 }
-                //SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
-                //dispose();
+            } catch (IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
             }
+            //SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
+            //dispose();
         });
+
     }
 
 
@@ -126,6 +136,7 @@ public class Login extends JFrame implements Runnable{
         input = new ObjectInputStream(socketControlPanel.getInputStream());
         output.writeObject("Login");
         output.flush();
+        System.out.println(input.readObject());
         SwingUtilities.invokeLater(new Login("Login"));
 
     }
