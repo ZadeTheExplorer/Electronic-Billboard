@@ -53,9 +53,7 @@ public class Database {
         }
         statement.execute("INSERT INTO billboards VALUES('COVID', 'admin', '#BBF1C8', '#D92027', '#FF9234', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'COVID-19 pandemic', 'Hand washing is recommended to prevent the spread of the disease');");
         statement.execute("INSERT INTO billboards VALUES('DenVau Rapper', 'admin', '#FFC9C9', '#FF4900', '#000000', 'https://image.plo.vn/w800/Uploaded/2020/wopsvun/2019_06_20/den-vau_gsuj.jpg', 'Song: 2 Billion Years', 'Directed by Den\n" +
-                "Prod. by paryobeats\n" +
-                "Record: Trac Ngoc Linh\n" +
-                "Quay: (Mome team) Tuan Khoi, Phat Nguyen, Thieu Pham, Khoa Danh, Thai Son\n" +
+                "Quay: Khoa Danh, Thai Son\n" +
                 "Engsub: Hana Lexis');");
 
         CallableStatement scheduleStatement = connection.prepareCall("Call addSchedule(?,?,?,?)");
