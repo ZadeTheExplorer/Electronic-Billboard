@@ -3,6 +3,7 @@ package Database;
 import ElectronicBillboardObject.User;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,19 +14,13 @@ import java.util.Scanner;
 public class Database {
     static Connection connection;
 
-    static {
-        try {
-            connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+    public Database() {
+        connection = DBConnection.getInstance();
     };
 
-    public Database() throws SQLException {};
 
-    //TODO: INIT THE DATABASE
     public static void init() throws FileNotFoundException, SQLException {
-
+        connection = DBConnection.getInstance();
         // create token
         String token = "";
         // for-each loop for calculating heat index of May - October
@@ -74,7 +69,7 @@ public class Database {
         scheduleStatement.close();
         statement.close();
     }
-    //TODO: USE THIS WHEN RETURN ONLY 1 COLUMN DATA
+
     public static String[] RetrieveColumnData(Statement st, String query) throws SQLException {
         String[] column;
         // get all current entries
@@ -94,8 +89,7 @@ public class Database {
 
         return column;
     }
-    //TODO: USE THIS WHEN SELECT * FROM A TABLE OR MULTI COLs
-    // Return List<String[]> : List of rows (rows is String[])
+
     public static String[][] RetrieveData(Statement st, String query) throws SQLException {
         // get all current entries
         ResultSet rs = st.executeQuery(query);
@@ -132,37 +126,11 @@ public class Database {
 //        System.out.println(Arrays.deepToString(newTable));
         return newTable;
     }
-    //TODO: USE THIS WHEN PRINT RETURN OF A STATEMENT's EXECUTION
-    private static void displayContents(Statement st, String query) throws SQLException {
 
-        // get all current entries
-        ResultSet rs = st.executeQuery(query);
-
-        // use metadata to get the number of columns
-        int columnCount = rs.getMetaData().getColumnCount();
-
-        // output the column names
-        for (int i = 0; i < columnCount; i++) {
-            System.out.printf("%-20s", rs.getMetaData().getColumnName(i + 1));
-        }
-        System.out.printf("%n");
-
-        // output each row
-        while (rs.next()) {
-            for (int i = 0; i < columnCount; i++) {
-                System.out.printf("%-20s", rs.getString(i + 1));
-            }
-            System.out.printf("%n");
-        }
-        System.out.printf("%n");
-    }
-
-    //TODO: RUN THIS VOID MAIN TO INITIALISE DATABASE.
-    // WHEN APPLY TO PROGRAM REMOVE THIS AND ADD TO BILLBOARD SERVER
     public static void main(String[] args) throws Exception {
-        connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306", "root", "");
-        Statement statement = connection.createStatement();
         Database.init();
+        Statement statement = connection.createStatement();
+
         String username = "admin";
         String password = "password";
         ArrayList<String> privileges = new ArrayList<>();
@@ -173,7 +141,7 @@ public class Database {
         User user = new User(username, password, privileges);
 
         String addUser = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
-        System.out.println(addUser);
+
         statement.execute(addUser);
         String [] array = Database.RetrieveColumnData(statement, "Call displayUsers()");
         String [][] userArr = Database.RetrieveData(statement, "Call displayUsers()");
@@ -185,6 +153,5 @@ public class Database {
 
         String[] values = {"AB","BC","CD","AE"};
         boolean contains = Arrays.asList(values).contains("A B");
-        System.out.println( String.valueOf(contains) + Arrays.asList(values).contains("AB"));
     }
 }

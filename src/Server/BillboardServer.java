@@ -1,6 +1,7 @@
 package Server;
 
 import Database.DBConnection;
+import Database.Database;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -19,6 +20,7 @@ public class BillboardServer {
      * Instantiates a new Billboard server.
      */
     private BillboardServer() throws IOException {
+
         connection = DBConnection.getInstance();
         activeThreads = new Thread[3];
         serverSocket = new ServerSocket(1234);
@@ -32,33 +34,6 @@ public class BillboardServer {
         return instance;
     }
 
-//    public static Thread[] getActiveThreads() {
-//        return activeThreads;
-//    }
-//    public static void addActiveThread(Thread thread){
-//        for (int i=0; i<activeThreads.length; i++){
-//            if(activeThreads[i] == null) {
-//                activeThreads[i] = thread;
-//                break;
-//            }
-//        }
-//    }
-//    public static void removeThread(Thread thread){
-//        for (int i=0; i<activeThreads.length; i++){
-//            if(activeThreads[i].equals(thread)) {
-//                activeThreads[i] = null;
-//                break;
-//            }
-//        }
-//    }
-//    public void hasSlotSocket() throws IOException, ClassNotFoundException {
-//        for (int i=0; i<activeThreads.length; i++){
-//            if(activeThreads[i] == null) {
-//                threadHandler(serverSocket.accept());
-//                return;
-//            }
-//        }
-//    }
     /**
      * Close.
      */
@@ -122,9 +97,6 @@ public class BillboardServer {
         BillboardServer server = BillboardServer.getInstance();
 
         System.out.println("[SERVER] Waiting for client connection...");
-
-        //TODO: UNCOMMENT IF THIS IS FIRST RUN
-        //Database.init();
 
         try {
 //            while(true){

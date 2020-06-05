@@ -1,1 +1,2 @@
-port=20
+socket.url=localhost
+socket.port=20
