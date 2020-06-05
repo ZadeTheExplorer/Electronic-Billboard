@@ -179,8 +179,6 @@ public class ServerRespond {
             System.out.println("retrieved all billboards");
             oos.writeObject(allBillboards);
             oos.flush();
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -192,8 +190,6 @@ public class ServerRespond {
             System.out.println("Retrieved data of billboard: " + billboardName);
             oos.writeObject(billboardData);
             oos.flush();
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -204,8 +200,6 @@ public class ServerRespond {
             String[][] allUsers = Database.RetrieveData(statement, "Call displayUsers();");
             System.out.println("Retrieved all users");
             oos.writeObject(allUsers);
-            oos.flush();
-            oos.writeObject("Success");
             oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
@@ -220,8 +214,6 @@ public class ServerRespond {
             String[][] allSchedules = Database.RetrieveData(statement, "Call displayAllSchedules();");
             System.out.println("Retrieved all Schedules");
             oos.writeObject(allSchedules);
-            oos.flush();
-            oos.writeObject("Success");
             oos.flush();
         }  catch (SQLException e){
             oos.writeObject(e);
@@ -246,8 +238,6 @@ public class ServerRespond {
             String query = "Call deleteBillboard('"+billboard  +"');";
             statement.execute(query);
             System.out.println("delete billboard " +billboard);
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -259,8 +249,6 @@ public class ServerRespond {
             String query = "Call editBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
                     "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
             statement.execute(query);
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -270,8 +258,6 @@ public class ServerRespond {
         try {
             String addUserQuery = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
             statement.execute(addUserQuery);
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -281,8 +267,6 @@ public class ServerRespond {
         try {
             String deleteUserQuery = "Call deleteUser('" +username +"');";
             statement.execute(deleteUserQuery);
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -292,8 +276,6 @@ public class ServerRespond {
         try {
             String getUserPrivilegeQuery = "Call getUserPrivileges('" +username +"');";
             statement.execute(getUserPrivilegeQuery);
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -309,8 +291,6 @@ public class ServerRespond {
             }
             String setUserPrivilegeQuery = "Call setUserPrivileges('" + username +"', '"+ permissions+ "');";
             statement.execute(setUserPrivilegeQuery);
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -323,8 +303,6 @@ public class ServerRespond {
             String saltedPassword = User.saltedPassword(hashedPass, salt);
             String setUserPrivilegeQuery = "Call updatePassword('" + username + "', '" + salt + "', '"+ saltedPassword+"');";
             statement.execute(setUserPrivilegeQuery);
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e) {
             oos.writeObject(e);
             oos.flush();
@@ -340,8 +318,6 @@ public class ServerRespond {
             statement.setTime(3, duration);
             statement.executeUpdate();
 
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -355,8 +331,6 @@ public class ServerRespond {
             deleteScheduleStatement.setTime(2, start);
             deleteScheduleStatement.executeUpdate();
 
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
