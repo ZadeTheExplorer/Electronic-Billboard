@@ -148,6 +148,7 @@ CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedules` (
   `billboard_name` varchar(45) NOT NULL,
   `start_time` TIME NOT NULL,
   `duration` TIME NOT NULL,
+  `weekday` varchar(10) NOT NULL,
   FOREIGN KEY (billboard_name) REFERENCES billboards.name (billboard_name)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
 
@@ -175,9 +176,9 @@ END $$
 DROP PROCEDURE IF EXISTS `electronicBB`.`addSchedule`; $$
 
 CREATE PROCEDURE `electronicBB`.`addSchedule` (IN billboard_name varchar(45),
-                                            IN start_time TIME, IN duration TIME)
+                                            IN start_time TIME, IN duration TIME, IN weekday varchar(10))
 BEGIN
-  INSERT INTO schedules(billboard_name, start_time, duration) VALUES(billboard_name, start_time, end_time);
+  INSERT INTO schedules(billboard_name, start_time, duration, weekday) VALUES(billboard_name, start_time, duration, weekday);
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`deleteSchedule`; $$
