@@ -680,7 +680,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     //TODO: GET THE WHOLE COLUMN
-    public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException {
+    public static void main() throws SQLException, IOException, ClassNotFoundException {
         Socket socketControlPanel = new Socket("localhost", 1234);
 
         output = new ObjectOutputStream(socketControlPanel.getOutputStream());

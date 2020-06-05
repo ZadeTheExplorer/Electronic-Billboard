@@ -37,7 +37,6 @@ public class LoginHandler extends Thread {
             e.printStackTrace();
         }
 
-        while (true) {
             try {
                 // receive the answer from client
                 received = ois.readObject();
@@ -48,7 +47,7 @@ public class LoginHandler extends Thread {
                     this.s.close();
                     //BillboardServer.removeThread(this);
                     System.out.println("Connection closed");
-                    break;
+                    return;
                 }
                 ServerRespond res = new ServerRespond(received, oos);
                 res.handle();
@@ -67,6 +66,6 @@ public class LoginHandler extends Thread {
                 e.printStackTrace();
             }
             System.out.println("Login session End!");
-        }
+
     }
 }

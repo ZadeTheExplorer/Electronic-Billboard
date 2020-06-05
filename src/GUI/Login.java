@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JFrame;
@@ -115,11 +116,12 @@ public class Login extends JFrame implements Runnable{
                     System.out.println("Retrieved privileges of this user: " + listOfPrivileges.toString() +"\nCreated token for this session!");
                     //TODO
                     JOptionPane.showMessageDialog(new JFrame(),"Login successfully!");
-
+                    ControlPanel.main();
                     output.close();
                     input.close();
+                    dispose();
                 }
-            } catch (IOException | ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException | SQLException ex) {
                 ex.printStackTrace();
             }
             //SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
