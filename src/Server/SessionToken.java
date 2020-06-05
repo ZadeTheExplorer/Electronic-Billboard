@@ -11,7 +11,6 @@ public class SessionToken implements Serializable {
     }
 
     public boolean canEditUser(){
-        System.out.println(Arrays.toString(privileges));
         return Arrays.asList(privileges).contains("Edit Users");
     }
     public boolean canCreateBillboard(){

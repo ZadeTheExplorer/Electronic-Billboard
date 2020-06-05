@@ -5,6 +5,7 @@ import ElectronicBillboardObject.*;
 import Request.*;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
@@ -15,12 +16,14 @@ import java.util.Arrays;
 public class ServerRespond {
     private Object request;
     private ObjectOutputStream oos;
+    private ObjectInputStream ois;
     private final Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/electronicbb", "root", "");
     private final Statement statement = connection.createStatement();
 
-    public ServerRespond(Object request, ObjectOutputStream oos) throws SQLException {
+    public ServerRespond(Object request, ObjectOutputStream oos, ObjectInputStream ois) throws SQLException {
         this.request = request;
         this.oos = oos;
+        this.ois = ois;
     }
 
     public void handle() throws SQLException, IOException, NoSuchAlgorithmException {
@@ -74,6 +77,7 @@ public class ServerRespond {
             }
         }
         if(request instanceof DisplayAllUsersRequest) {
+            System.out.println("[ControlPanel] Request display all servers");
             DisplayAllUsersRequest post = (DisplayAllUsersRequest) request;
             if(!post.getSessionToken().canEditUser()){
                 tokenErrorHandler();
@@ -142,17 +146,40 @@ public class ServerRespond {
                 deleteUser(post.getUsername());
             }
         }
+        if(request instanceof ExportBillboardRequest){
+            ExportBillboardRequest post = (ExportBillboardRequest) request;
+            exportBillboard(post.getBillboardName());
+        }
     }
     public void tokenErrorHandler() throws IOException {
         System.out.println("[Server] User do not have permission to do this action");
-        oos.writeObject("No permission");
+        oos.writeObject("No Permission");
         oos.flush();
+
     }
+    public void exportBillboard(String billboardName) throws SQLException {
+        String[][] billboardData = Database.RetrieveData(statement, "Call displayBillboard('" + billboardName + "')");
+        Billboard exportBillboard = new Billboard(
+                billboardData[1][0],
+                billboardData[1][1],
+                billboardData[1][2],
+                billboardData[1][3],
+                billboardData[1][4],
+                billboardData[1][5],
+                billboardData[1][6],
+                billboardData[1][7]
+        );
+        XMLFile.create(exportBillboard);
+        System.out.println("[SERVER] Exported " + exportBillboard.getName());
+    }
+
     public void displayAllBillboards() throws IOException {
         try{
             String[][] allBillboards = Database.RetrieveData(statement, "Call displayAllBillboards()");
             System.out.println("retrieved all billboards");
             oos.writeObject(allBillboards);
+            oos.flush();
+            oos.writeObject("Success");
             oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
@@ -165,6 +192,8 @@ public class ServerRespond {
             System.out.println("Retrieved data of billboard: " + billboardName);
             oos.writeObject(billboardData);
             oos.flush();
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -176,6 +205,8 @@ public class ServerRespond {
             System.out.println("Retrieved all users");
             oos.writeObject(allUsers);
             oos.flush();
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -184,11 +215,13 @@ public class ServerRespond {
     //TODO: With this RetrievedData() we only can get start and end time as String.
     // java provided this: with t isInstanceOf java.sql.Time
     // String s = new SimpleDateFormat("HH.mm.ss.SSS").format(t.getTime());
-    public void displayAllSchedules() throws SQLException, IOException {
+    public void displayAllSchedules() throws IOException {
         try{
             String[][] allSchedules = Database.RetrieveData(statement, "Call displayAllSchedules();");
             System.out.println("Retrieved all Schedules");
             oos.writeObject(allSchedules);
+            oos.flush();
+            oos.writeObject("Success");
             oos.flush();
         }  catch (SQLException e){
             oos.writeObject(e);
@@ -201,6 +234,8 @@ public class ServerRespond {
             String query = "Call addBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
                     "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
             statement.execute(query);
+            oos.writeObject("Success");
+            oos.flush();
         }  catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -211,6 +246,8 @@ public class ServerRespond {
             String query = "Call deleteBillboard('"+billboard  +"');";
             statement.execute(query);
             System.out.println("delete billboard " +billboard);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -222,6 +259,8 @@ public class ServerRespond {
             String query = "Call editBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
                     "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
             statement.execute(query);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -231,6 +270,8 @@ public class ServerRespond {
         try {
             String addUserQuery = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
             statement.execute(addUserQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -240,6 +281,8 @@ public class ServerRespond {
         try {
             String deleteUserQuery = "Call deleteUser('" +username +"');";
             statement.execute(deleteUserQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -249,6 +292,8 @@ public class ServerRespond {
         try {
             String getUserPrivilegeQuery = "Call getUserPrivileges('" +username +"');";
             statement.execute(getUserPrivilegeQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -264,6 +309,8 @@ public class ServerRespond {
             }
             String setUserPrivilegeQuery = "Call setUserPrivileges('" + username +"', '"+ permissions+ "');";
             statement.execute(setUserPrivilegeQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -276,6 +323,8 @@ public class ServerRespond {
             String saltedPassword = User.saltedPassword(hashedPass, salt);
             String setUserPrivilegeQuery = "Call updatePassword('" + username + "', '" + salt + "', '"+ saltedPassword+"');";
             statement.execute(setUserPrivilegeQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e) {
             oos.writeObject(e);
             oos.flush();
@@ -284,11 +333,15 @@ public class ServerRespond {
     //TODO: STORE START_TIME AND DURATION AS Java.Sql.Time
     public void setSchedule(String billboardName, Time start, Time duration) throws IOException {
         try {
+
             CallableStatement statement = connection.prepareCall("Call addSchedule(?,?,?)");
             statement.setString(1, billboardName);
             statement.setTime(2, start);
             statement.setTime(3, duration);
             statement.executeUpdate();
+
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -301,6 +354,9 @@ public class ServerRespond {
             deleteScheduleStatement.setString(1, billboardName);
             deleteScheduleStatement.setTime(2, start);
             deleteScheduleStatement.executeUpdate();
+
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
