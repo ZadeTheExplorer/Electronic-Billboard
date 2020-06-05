@@ -14,16 +14,42 @@ import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+/**
+ * The type Viewer handler.
+ */
 public class ViewerHandler extends Thread{
-        DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
-        DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
+    /**
+     * The Fordate.
+     */
+    DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
+    /**
+     * The Fortime.
+     */
+    DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
 
-        ObjectInputStream ois;
-        ObjectOutputStream oos;
-        Socket s;
+    /**
+     * The Ois.
+     */
+    ObjectInputStream ois;
+    /**
+     * The Oos.
+     */
+    ObjectOutputStream oos;
+    /**
+     * The S.
+     */
+    Socket s;
 
 
-        // Constructor
+    /**
+     * Instantiates a new Viewer handler.
+     *
+     * @param s   the s
+     * @param dis the dis
+     * @param dos the dos
+     */
+// Constructor
         public ViewerHandler(Socket s, ObjectInputStream dis, ObjectOutputStream dos)
         {
             this.s = s;

@@ -7,12 +7,31 @@ import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 
+/**
+ * The type Control panel handler.
+ */
 public class ControlPanelHandler extends Thread {
+    /**
+     * The Ois.
+     */
     ObjectInputStream ois;
+    /**
+     * The Oos.
+     */
     ObjectOutputStream oos;
+    /**
+     * The S.
+     */
     Socket s;
 
-    // Constructor
+    /**
+     * Instantiates a new Control panel handler.
+     *
+     * @param s   the s
+     * @param ois the ois
+     * @param oos the oos
+     */
+// Constructor
     public ControlPanelHandler(Socket s, ObjectInputStream ois, ObjectOutputStream oos)
     {
         this.s = s;

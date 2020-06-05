@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Properties;
 
+/**
+ * The type Db connection.
+ */
 public class DBConnection {
 
     private static Connection instance = null;
@@ -35,6 +38,11 @@ public class DBConnection {
         }
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static Connection getInstance() {
         if (instance == null) {
             new DBConnection();

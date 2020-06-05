@@ -13,6 +13,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+/**
+ * The type Server respond.
+ */
 public class ServerRespond {
     private Object request;
     private ObjectOutputStream oos;
@@ -20,12 +23,27 @@ public class ServerRespond {
     private final Connection connection = DriverManager.getConnection("jdbc:mariadb://localhost:3306/electronicbb", "root", "");
     private final Statement statement = connection.createStatement();
 
+    /**
+     * Instantiates a new Server respond.
+     *
+     * @param request the request
+     * @param oos     the oos
+     * @param ois     the ois
+     * @throws SQLException the sql exception
+     */
     public ServerRespond(Object request, ObjectOutputStream oos, ObjectInputStream ois) throws SQLException {
         this.request = request;
         this.oos = oos;
         this.ois = ois;
     }
 
+    /**
+     * Handle.
+     *
+     * @throws SQLException             the sql exception
+     * @throws IOException              the io exception
+     * @throws NoSuchAlgorithmException the no such algorithm exception
+     */
     public void handle() throws SQLException, IOException, NoSuchAlgorithmException {
         if (request instanceof AddBillboardRequest){
             AddBillboardRequest post = (AddBillboardRequest) request;
@@ -151,12 +169,25 @@ public class ServerRespond {
             exportBillboard(post.getBillboardName());
         }
     }
+
+    /**
+     * Token error handler.
+     *
+     * @throws IOException the io exception
+     */
     public void tokenErrorHandler() throws IOException {
         System.out.println("[Server] User do not have permission to do this action");
         oos.writeObject("No Permission");
         oos.flush();
 
     }
+
+    /**
+     * Export billboard.
+     *
+     * @param billboardName the billboard name
+     * @throws SQLException the sql exception
+     */
     public void exportBillboard(String billboardName) throws SQLException {
         String[][] billboardData = Database.RetrieveData(statement, "Call displayBillboard('" + billboardName + "')");
         Billboard exportBillboard = new Billboard(
@@ -173,6 +204,11 @@ public class ServerRespond {
         System.out.println("[SERVER] Exported " + exportBillboard.getName());
     }
 
+    /**
+     * Display all billboards.
+     *
+     * @throws IOException the io exception
+     */
     public void displayAllBillboards() throws IOException {
         try{
             String[][] allBillboards = Database.RetrieveData(statement, "Call displayAllBillboards()");
@@ -185,6 +221,12 @@ public class ServerRespond {
         }
     }
 
+    /**
+     * Gets billboard data.
+     *
+     * @param billboardName the billboard name
+     * @throws IOException the io exception
+     */
     public void getBillboardData(String billboardName) throws IOException {
         try{
             String[][] billboardData = Database.RetrieveData(statement, "Call displayBillboard('" + billboardName + "')");
@@ -197,6 +239,11 @@ public class ServerRespond {
         }
     }
 
+    /**
+     * Display all users.
+     *
+     * @throws IOException the io exception
+     */
     public void displayAllUsers() throws IOException {
         try{
             String[][] allUsers = Database.RetrieveData(statement, "Call displayUsers();");
@@ -208,7 +255,13 @@ public class ServerRespond {
             oos.flush();
         }
     }
-    //TODO: With this RetrievedData() we only can get start and end time as String.
+
+    /**
+     * Display all schedules.
+     *
+     * @throws IOException the io exception
+     */
+//TODO: With this RetrievedData() we only can get start and end time as String.
     // java provided this: with t isInstanceOf java.sql.Time
     // String s = new SimpleDateFormat("HH.mm.ss.SSS").format(t.getTime());
     public void displayAllSchedules() throws IOException {
@@ -223,6 +276,12 @@ public class ServerRespond {
         }
     }
 
+    /**
+     * Add billboard.
+     *
+     * @param billboard the billboard
+     * @throws IOException the io exception
+     */
     public void addBillboard(Billboard billboard) throws IOException {
         try {
             String query = "Call addBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
@@ -235,6 +294,13 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
+    /**
+     * Delete billboard.
+     *
+     * @param billboard the billboard
+     * @throws IOException the io exception
+     */
     public void deleteBillboard(String billboard) throws IOException {
         try{
             String query = "Call deleteBillboard('"+billboard  +"');";
@@ -248,6 +314,12 @@ public class ServerRespond {
         }
     }
 
+    /**
+     * Edit billboard.
+     *
+     * @param billboard the billboard
+     * @throws IOException the io exception
+     */
     public void EditBillboard(Billboard billboard) throws IOException {
         try{
             String query = "Call editBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
@@ -260,6 +332,13 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
+    /**
+     * Add user.
+     *
+     * @param user the user
+     * @throws IOException the io exception
+     */
     public void addUser(User user) throws IOException {
         try {
             String addUserQuery = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
@@ -271,6 +350,13 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
+    /**
+     * Delete user.
+     *
+     * @param username the username
+     * @throws IOException the io exception
+     */
     public void deleteUser(String username) throws IOException {
         try {
             String deleteUserQuery = "Call deleteUser('" +username +"');";
@@ -282,6 +368,13 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
+    /**
+     * Gets user privilege.
+     *
+     * @param username the username
+     * @throws IOException the io exception
+     */
     public void getUserPrivilege(String username) throws IOException {
         try {
             String getUserPrivilegeQuery = "Call getUserPrivileges('" +username +"');";
@@ -293,6 +386,14 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
+    /**
+     * Sets user privilege.
+     *
+     * @param username   the username
+     * @param privileges the privileges
+     * @throws IOException the io exception
+     */
     public void setUserPrivilege(String username, String[] privileges) throws IOException {
         try {
             StringBuilder permissions = new StringBuilder();
@@ -310,6 +411,15 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
+    /**
+     * Sets user password.
+     *
+     * @param username the username
+     * @param password the password
+     * @throws NoSuchAlgorithmException the no such algorithm exception
+     * @throws IOException              the io exception
+     */
     public void setUserPassword(String username,String password) throws NoSuchAlgorithmException, IOException {
         try {
             String salt = User.createSalt();
@@ -324,7 +434,17 @@ public class ServerRespond {
             oos.flush();
         }
     }
-    //TODO: STORE START_TIME AND DURATION AS Java.Sql.Time
+
+    /**
+     * Sets schedule.
+     *
+     * @param billboardName the billboard name
+     * @param start         the start
+     * @param duration      the duration
+     * @param dayOfWeek     the day of week
+     * @throws IOException the io exception
+     */
+//TODO: STORE START_TIME AND DURATION AS Java.Sql.Time
     public void setSchedule(String billboardName, Time start, Time duration, String dayOfWeek) throws IOException {
         try {
 
@@ -342,7 +462,15 @@ public class ServerRespond {
             oos.flush();
         }
     }
-    //TODO
+
+    /**
+     * Delete schedule.
+     *
+     * @param billboardName the billboard name
+     * @param start         the start
+     * @throws IOException the io exception
+     */
+//TODO
     public void deleteSchedule(String billboardName, Time start) throws IOException {
         try {
             CallableStatement deleteScheduleStatement = connection.prepareCall("Call deleteSchedule(?,?)");
@@ -358,7 +486,13 @@ public class ServerRespond {
         }
     }
 
-    //TODO: Do this later on
+    /**
+     * Current billboard.
+     *
+     * @param time the time
+     * @throws IOException the io exception
+     */
+//TODO: Do this later on
     public void currentBillboard(LocalDateTime time) throws IOException {
 //        try{
 //
@@ -369,6 +503,15 @@ public class ServerRespond {
 //            oos.flush();
 //        }
     }
+
+    /**
+     * Login.
+     *
+     * @param username       the username
+     * @param hashedPassword the hashed password
+     * @throws IOException              the io exception
+     * @throws NoSuchAlgorithmException the no such algorithm exception
+     */
     public void login(String username, String hashedPassword) throws IOException, NoSuchAlgorithmException {
         String[][] userInfo = null;
         try{
@@ -399,5 +542,9 @@ public class ServerRespond {
 
 
     }
+
+    /**
+     * Logout.
+     */
     public void logout(){}
 }

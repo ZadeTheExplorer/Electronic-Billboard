@@ -8,8 +8,14 @@ import java.time.DayOfWeek;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The type Schedule test.
+ */
 class ScheduleTest {
 
+    /**
+     * Gets billboard name.
+     */
     @Test
     void getBillboardName() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -17,6 +23,9 @@ class ScheduleTest {
         assertEquals("Testing",schedule.getBillboardName());
     }
 
+    /**
+     * Sets billboard name.
+     */
     @Test
     void setBillboardName() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -25,6 +34,9 @@ class ScheduleTest {
         assertEquals("New testing",schedule.getBillboardName());
     }
 
+    /**
+     * Gets user name.
+     */
     @Test
     void getUserName() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -33,6 +45,9 @@ class ScheduleTest {
         assertEquals("New testing",schedule.getBillboardName());
     }
 
+    /**
+     * Sets user name.
+     */
     @Test
     void setUserName() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -41,6 +56,9 @@ class ScheduleTest {
         assertEquals("user",schedule.getUserName());
     }
 
+    /**
+     * Gets start.
+     */
     @Test
     void getStart() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -48,6 +66,9 @@ class ScheduleTest {
         assertEquals(Time.valueOf("09:00:00"),schedule.getStart());
     }
 
+    /**
+     * Sets start.
+     */
     @Test
     void setStart() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -56,6 +77,9 @@ class ScheduleTest {
         assertEquals(Time.valueOf("10:00:00"),schedule.getStart());
     }
 
+    /**
+     * Gets duration.
+     */
     @Test
     void getDuration() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -63,6 +87,9 @@ class ScheduleTest {
         assertEquals(Time.valueOf("01:00:00"),schedule.getDuration());
     }
 
+    /**
+     * Sets duration.
+     */
     @Test
     void setDuration() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -71,6 +98,9 @@ class ScheduleTest {
         assertEquals(Time.valueOf("02:00:00"),schedule.getDuration());
     }
 
+    /**
+     * Gets day of week.
+     */
     @Test
     void getDayOfWeek() {
         Schedule schedule = new Schedule("Testing","admin",
@@ -78,6 +108,9 @@ class ScheduleTest {
         assertEquals(DayOfWeek.FRIDAY,schedule.getDayOfWeek());
     }
 
+    /**
+     * Sets day of week.
+     */
     @Test
     void setDayOfWeek() {
         Schedule schedule = new Schedule("Testing","admin",

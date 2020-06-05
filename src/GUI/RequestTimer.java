@@ -13,12 +13,26 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.TimerTask;
 
+/**
+ * The type Request timer.
+ */
 public class RequestTimer extends TimerTask {
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
     private BillboardViewer panel;
     private Billboard billboard;
+    /**
+     * The Fortime.
+     */
     DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
+
+    /**
+     * Instantiates a new Request timer.
+     *
+     * @param oos   the oos
+     * @param ois   the ois
+     * @param panel the panel
+     */
     public RequestTimer(ObjectOutputStream oos, ObjectInputStream ois, BillboardViewer panel){
         this.oos = oos;
         this.ois = ois;
@@ -32,6 +46,10 @@ public class RequestTimer extends TimerTask {
         getRespond();
 
     }
+
+    /**
+     * Send request.
+     */
     public void sendRequest(){
         try{
             oos.writeObject(new CurrentBillboardRequest(LocalDateTime.now()));
@@ -41,6 +59,10 @@ public class RequestTimer extends TimerTask {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Get respond.
+     */
     public void getRespond(){
         try{
             //TODO: REPLACE this code to a code that create a new billboard with info return from database

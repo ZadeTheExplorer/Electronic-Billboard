@@ -23,11 +23,26 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * The type Control panel.
+ */
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
+    /**
+     * The constant WIDTH.
+     */
     public static final int WIDTH = 1000;
+    /**
+     * The constant HEIGHT.
+     */
     public static final int HEIGHT = 700;
     private static Socket socket;
+    /**
+     * The Output.
+     */
     static ObjectOutputStream output;
+    /**
+     * The Input.
+     */
     static ObjectInputStream input;
     private static SessionToken token;
     private static Object[][] billBoardData;
@@ -95,6 +110,13 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnLogOut;
 
 
+    /**
+     * Instantiates a new Control panel.
+     *
+     * @param title the title
+     * @throws SQLException the sql exception
+     * @throws IOException  the io exception
+     */
     public ControlPanel(String title) throws SQLException, IOException {
         super(title);
         socket = new Socket("localhost", 1234);
@@ -595,6 +617,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return jButton;
     }
 
+    /**
+     * Server respond handler boolean.
+     *
+     * @param o the o
+     * @return the boolean
+     */
     public static boolean serverRespondHandler(Object o){
         if(o.equals("No Permission")){
             System.out.println("[SERVER] User do not have permision to execute this");
@@ -608,6 +636,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return true;
     }
 
+    /**
+     * Get billboard data.
+     */
     public static void getBillboardData(){
         try{
             output.writeObject(new DisplayAllBillboardsRequest(token));
@@ -625,6 +656,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Delete a billboard.
+     *
+     * @param billboardName the billboard name
+     */
     public static void deleteABillboard(String billboardName){
         try{
             output.writeObject(new DeleteBillboardRequest(billboardName, token));
@@ -636,6 +672,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Edit a billboard.
+     *
+     * @param billboard the billboard
+     */
     public static void editABillboard(Billboard billboard){
         try{
             output.writeObject(new EditBillboardRequest(billboard, token));
@@ -647,6 +688,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Create a billboard.
+     *
+     * @param billboard the billboard
+     */
     public static void createABillboard(Billboard billboard){
         try{
             output.writeObject(new AddBillboardRequest(billboard, token));
@@ -658,6 +704,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Get user data.
+     */
     public static void getUserData(){
         try{
             System.out.println("[ControlPanel] Sending Display all users Request");
@@ -678,6 +727,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Create a user.
+     *
+     * @param user the user
+     */
     public static void createAUser(User user){
         try{
             output.writeObject(new AddUserResquest(user, token));
@@ -689,6 +743,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Delete a user.
+     *
+     * @param username the username
+     */
     public static void deleteAUser(String username){
         try{
             output.writeObject(new DeleteUserRequest(username, token));
@@ -700,6 +759,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Update a user password.
+     *
+     * @param username the username
+     * @param password the password
+     */
     public static void updateAUserPassword(String username, String password){
         try{
             output.writeObject(new SetUserPassword(username,password, token));
@@ -711,6 +776,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Update a user privilege.
+     *
+     * @param username   the username
+     * @param privileges the privileges
+     */
     public static void updateAUserPrivilege(String username, String[] privileges){
         try{
             output.writeObject(new SetUserPrivilegesRequest(username, privileges, token));
@@ -722,6 +793,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Get schedule data.
+     */
     public static void getScheduleData(){
         try{
             output.writeObject(new DisplayAllSchedulesRequest(token));
@@ -743,6 +817,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Create a schedule.
+     *
+     * @param billboardName the billboard name
+     * @param start         the start
+     * @param duration      the duration
+     * @param dayOfWeek     the day of week
+     */
     public static void createASchedule(String billboardName, Time start, Time duration, String dayOfWeek){
         try{
             output.writeObject(new SetScheduleRequest(billboardName,start,duration,dayOfWeek,token));
@@ -754,6 +836,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Delete a schedule.
+     *
+     * @param billboardName the billboard name
+     * @param start         the start
+     */
     public static void deleteASchedule(String billboardName, Time start){
         try{
             output.writeObject(new DeleteScheduleRequest(billboardName,start,token));
@@ -771,6 +859,15 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         createGUI();
 
     }
+
+    /**
+     * Start.
+     *
+     * @param token the token
+     * @throws SQLException           the sql exception
+     * @throws IOException            the io exception
+     * @throws ClassNotFoundException the class not found exception
+     */
     public static void start(SessionToken token) throws SQLException, IOException, ClassNotFoundException {
         ControlPanel controlPanel = new ControlPanel("BillboardControlPanel");
         ControlPanel.token =token;
@@ -784,7 +881,15 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         getScheduleData();
         SwingUtilities.invokeLater(controlPanel);
     }
-    //TODO: GET THE WHOLE COLUMN
+
+    /**
+     * Main.
+     *
+     * @throws SQLException           the sql exception
+     * @throws IOException            the io exception
+     * @throws ClassNotFoundException the class not found exception
+     */
+//TODO: GET THE WHOLE COLUMN
     public static void main() throws SQLException, IOException, ClassNotFoundException {
         Socket socketControlPanel = new Socket("localhost", 1234);
 
@@ -1043,6 +1148,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
 
+    /**
+     * Clear screen.
+     */
     public void clearScreen(){
         pnlNewBillBoard.setVisible(false);
         pnlUserManagement.setVisible(false);
@@ -1050,6 +1158,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlBillboard.setVisible(false);
     }
 
+    /**
+     * Center row data.
+     *
+     * @param table the table
+     */
     public void centerRowData(JTable table){
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -1059,6 +1172,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Edit bill board.
+     *
+     * @param bool the bool
+     */
     public void editBillBoard(boolean bool){
         tfBillboardUsername.setEditable(bool);
         tfBillboardBGColor.setEditable(bool);
@@ -1069,11 +1187,21 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfBillboardDescription.setEditable(bool);
     }
 
+    /**
+     * Edit user.
+     *
+     * @param bool the bool
+     */
     public void editUser(boolean bool){
         tfUserPassword.setEditable(bool);
         tfUserPrivilege.setEditable(bool);
     }
 
+    /**
+     * Edit schedule.
+     *
+     * @param bool the bool
+     */
     public void editSchedule(boolean bool){
         tfScheduleBillboardName.setEditable(bool);
         tfScheduleStart.setEditable(bool);
@@ -1081,6 +1209,13 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfScheduleDayOfWeek.setEditable(bool);
     }
 
+    /**
+     * Set update value.
+     *
+     * @param tableModel the table model
+     * @param table      the table
+     * @param textFields the text fields
+     */
     public void setUpdateValue(TableModel tableModel, JTable table, JTextField[] textFields){
         int selectedRow = table.getSelectedRow();
         for(int i =0; i < textFields.length; i++){
@@ -1088,6 +1223,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Set value billboard info.
+     *
+     * @param table the table
+     */
     public void setValueBillboardInfo(JTable table){
         JTextField[] textFields = new JTextField[]{tfBillboardName,tfBillboardUsername,tfBillboardBGColor,
                 tfBillboardTitleColor,tfBillboardDescriptionColor,tfBillboardURL,tfBillboardTitle,tfBillboardDescription};
@@ -1096,6 +1236,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         editBillBoard(false);
     }
 
+    /**
+     * Set value user info.
+     *
+     * @param table the table
+     */
     public void setValueUserInfo(JTable table){
         JTextField[] textFields = new JTextField[]{tfUserName,tfUserPrivilege};
         setTextFields(userTable,textFields);
@@ -1107,6 +1252,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserEdit.setText("Edit");
     }
 
+    /**
+     * Set value schedule info.
+     *
+     * @param table the table
+     */
     public void setValueScheduleInfo(JTable table){
         JTextField[] textFields = new JTextField[]{ tfScheduleBillboardName, tfScheduleStart,
         tfScheduleDuration,tfScheduleDayOfWeek};
@@ -1115,6 +1265,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserCreate.setText("Create");
     }
 
+    /**
+     * Set text fields.
+     *
+     * @param table      the table
+     * @param textFields the text fields
+     */
     public void setTextFields(JTable table, JTextField[] textFields){
         if(table.getSelectedRow() != -1 ){
             for(int i = 0; i < textFields.length; i++){
@@ -1123,6 +1279,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    /**
+     * Check empty input boolean.
+     *
+     * @param inputs the inputs
+     * @return the boolean
+     */
     public boolean checkEmptyInput(JTextField[] inputs){
         for(int i = 0 ; i < inputs.length ; i++){
             if(inputs[i].getText().compareTo("") == 0){
@@ -1132,16 +1294,27 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         return false;
     }
 
+    /**
+     * Clear input values.
+     *
+     * @param inputs the inputs
+     */
     public void clearInputValues(JTextField[] inputs){
         for(int i = 0; i < inputs.length; i ++){
             inputs[i].setText(null);
         }
     }
 
+    /**
+     * Alert empty input.
+     */
     public void alertEmptyInput(){
         JOptionPane.showMessageDialog(null,"Please fill in all input values");
     }
 
+    /**
+     * Alert unselected row.
+     */
     public void alertUnselectedRow(){
         JOptionPane.showMessageDialog(null,"Please select a row!");
     }

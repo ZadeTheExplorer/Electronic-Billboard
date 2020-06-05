@@ -11,14 +11,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * The type Database.
+ */
 public class Database {
+    /**
+     * The Connection.
+     */
     static Connection connection;
 
+    /**
+     * Instantiates a new Database.
+     */
     public Database() {
         connection = DBConnection.getInstance();
     };
 
 
+    /**
+     * Init.
+     *
+     * @throws FileNotFoundException the file not found exception
+     * @throws SQLException          the sql exception
+     */
     public static void init() throws FileNotFoundException, SQLException {
         connection = DBConnection.getInstance();
         // create token
@@ -68,6 +83,14 @@ public class Database {
         statement.close();
     }
 
+    /**
+     * Retrieve column data string [ ].
+     *
+     * @param st    the st
+     * @param query the query
+     * @return the string [ ]
+     * @throws SQLException the sql exception
+     */
     public static String[] RetrieveColumnData(Statement st, String query) throws SQLException {
         String[] column;
         // get all current entries
@@ -88,6 +111,14 @@ public class Database {
         return column;
     }
 
+    /**
+     * Retrieve data string [ ] [ ].
+     *
+     * @param st    the st
+     * @param query the query
+     * @return the string [ ] [ ]
+     * @throws SQLException the sql exception
+     */
     public static String[][] RetrieveData(Statement st, String query) throws SQLException {
         // get all current entries
         ResultSet rs = st.executeQuery(query);
@@ -125,6 +156,12 @@ public class Database {
         return newTable;
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     * @throws Exception the exception
+     */
     public static void main(String[] args) throws Exception {
         Database.init();
         Statement statement = connection.createStatement();

@@ -19,6 +19,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * The type Login.
+ */
 public class Login extends JFrame implements Runnable{
     private static int W = 500;
     private static int H = 200;
@@ -29,9 +32,20 @@ public class Login extends JFrame implements Runnable{
     private JTextField tfUser;
     private JTextField tfPass;
     private JButton btnLogin;
+    /**
+     * The Output.
+     */
     static ObjectOutputStream output;
+    /**
+     * The Input.
+     */
     static ObjectInputStream input;
 
+    /**
+     * Instantiates a new Login.
+     *
+     * @param title the title
+     */
     public Login(String title){
         super(title);
     }
@@ -136,6 +150,13 @@ public class Login extends JFrame implements Runnable{
     }
 
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     * @throws IOException            the io exception
+     * @throws ClassNotFoundException the class not found exception
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         Socket socketControlPanel = new Socket("localhost", 1234);
 

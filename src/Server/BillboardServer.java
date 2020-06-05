@@ -26,6 +26,12 @@ public class BillboardServer {
         serverSocket = new ServerSocket(1234);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     * @throws IOException the io exception
+     */
     public static BillboardServer getInstance() throws IOException {
         if(instance == null){
             instance = new BillboardServer();

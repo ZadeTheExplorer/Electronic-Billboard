@@ -10,14 +10,39 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * The type Login handler.
+ */
 public class LoginHandler extends Thread {
+    /**
+     * The Ois.
+     */
     final ObjectInputStream ois;
+    /**
+     * The Oos.
+     */
     final ObjectOutputStream oos;
+    /**
+     * The S.
+     */
     final Socket s;
+    /**
+     * The Fordate.
+     */
     DateFormat fordate = new SimpleDateFormat("yyyy/MM/dd");
+    /**
+     * The Fortime.
+     */
     DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
 
-    // Constructor
+    /**
+     * Instantiates a new Login handler.
+     *
+     * @param s   the s
+     * @param dis the dis
+     * @param dos the dos
+     */
+// Constructor
     public LoginHandler(Socket s, ObjectInputStream dis, ObjectOutputStream dos) {
         this.s = s;
         this.ois = dis;

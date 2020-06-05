@@ -12,10 +12,26 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * The type Xml file.
+ */
 public class XMLFile {
+    /**
+     * The constant xmlFilePath.
+     */
     public static String xmlFilePath;
+
+    /**
+     * Instantiates a new Xml file.
+     */
     public XMLFile(){};
-    //TODO: Implement NULL input for element
+
+    /**
+     * Create.
+     *
+     * @param billboard the billboard
+     */
+//TODO: Implement NULL input for element
     public static void create(Billboard billboard){
         xmlFilePath = System.getProperty("user.dir").toString() + "src\\"+billboard.getName()+".xml";
         try {
@@ -73,7 +89,12 @@ public class XMLFile {
         }
     }
 
-    //TODO: Java SAX Parser
+    /**
+     * Read.
+     *
+     * @param file the file
+     */
+//TODO: Java SAX Parser
     // Implement Reader with simple api for XML
     // This method read line by line and based on opening and closing tag
     // suitable for this project

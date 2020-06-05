@@ -8,13 +8,22 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Timer;
 
+/**
+ * The type Billboard viewer.
+ */
 public class BillboardViewer extends JFrame implements Runnable, ActionListener {
     private Socket socket;
     private static ObjectOutputStream objectOutputStream;
     private static ObjectInputStream objectInputStream;
 
 
+    /**
+     * The constant WIDTH.
+     */
     public static final int WIDTH = 900;
+    /**
+     * The constant HEIGHT.
+     */
     public static final int HEIGHT = 600;
     private Color backgroundColor;
     private Color titleColor;
@@ -26,7 +35,17 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
     private String description;
     private JLabel billboardImage;
     private Billboard billboard;
+    /**
+     * The Current dir.
+     */
     static String currentDir = System.getProperty("user.dir");
+
+    /**
+     * Instantiates a new Billboard viewer.
+     *
+     * @param title the title
+     * @throws IOException the io exception
+     */
     public BillboardViewer(String title) throws IOException {
         super(title);
         socket = new Socket("localhost", 1234);
@@ -35,6 +54,9 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         objectInputStream = new ObjectInputStream(socket.getInputStream());
     }
 
+    /**
+     * Display.
+     */
     public void Display(){
         setVisible(true);
         setSize(WIDTH, HEIGHT);
@@ -92,6 +114,15 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         });
     }
 
+    /**
+     * Create text box j text area.
+     *
+     * @param textBoxContent the text box content
+     * @param textBoxColor   the text box color
+     * @param textSize       the text size
+     * @param textBoxWidth   the text box width
+     * @return the j text area
+     */
     public JTextArea createTextBox(String textBoxContent, Color textBoxColor, int textSize, int textBoxWidth) {
         JTextArea textBox = new JTextArea(textBoxContent);
         textBox.setFont(new Font("Arial",Font.BOLD,textSize));
@@ -110,6 +141,12 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         constraints.gridheight = h;
         jp.add(c, constraints);
     }
+
+    /**
+     * Sets billboard.
+     *
+     * @param billboard the billboard
+     */
     public void setBillboard(Billboard billboard) {
         this.billboard = billboard;
     }
@@ -118,6 +155,13 @@ public class BillboardViewer extends JFrame implements Runnable, ActionListener 
         Display();
     }
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     * @throws IOException            the io exception
+     * @throws ClassNotFoundException the class not found exception
+     */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         BillboardViewer viewer = new BillboardViewer("Billboard Viewer");
 
