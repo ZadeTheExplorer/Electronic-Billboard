@@ -51,9 +51,27 @@ public class Database {
         for (String s : tempsArray) {
             statement.execute(s);
         }
-        statement.execute("INSERT INTO billboards VALUES('COVID', 'admin', 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!');");
-        statement.execute("INSERT INTO billboards VALUES('Alo', 'admin', 'yellow', 'blue', 'green', 'https://lh3.googleusercontent.com/v5ie2VWYRjmDV2b2s_rYrgrWcpFhFiUn0aQlf97W3VkGO84kofOu8psqBir1HZIfQts', 'Say hello', 'Sayhello10times!');");
-        statement.execute("call addBillboard('COVID123', 'jadenB', 'white', 'red', 'black', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'Wash your hand', 'Stay at home!')");
+        statement.execute("INSERT INTO billboards VALUES('COVID', 'admin', '#BBF1C8', '#D92027', '#FF9234', 'https://d2v9ipibika81v.cloudfront.net/uploads/sites/40/COVID-19.jpg', 'COVID-19 pandemic', 'Hand washing is recommended to prevent the spread of the disease');");
+        statement.execute("INSERT INTO billboards VALUES('DenVau Rapper', 'admin', '#FFC9C9', '#FF4900', '#000000', 'https://image.plo.vn/w800/Uploaded/2020/wopsvun/2019_06_20/den-vau_gsuj.jpg', 'Song: 2 Billion Years', 'Directed by Den\n" +
+                "Prod. by paryobeats\n" +
+                "Record: Trac Ngoc Linh\n" +
+                "Quay: (Mome team) Tuan Khoi, Phat Nguyen, Thieu Pham, Khoa Danh, Thai Son\n" +
+                "Engsub: Hana Lexis');");
+
+        CallableStatement scheduleStatement = connection.prepareCall("Call addSchedule(?,?,?,?)");
+        scheduleStatement.setString(1,"COVID");
+        scheduleStatement.setString(4, "Friday");
+        scheduleStatement.setTime(2, Time.valueOf("05:30:00"));
+        scheduleStatement.setTime(3, Time.valueOf("00:15:00"));
+        scheduleStatement.executeQuery();
+
+        scheduleStatement.setString(1,"DenVau Rapper");
+        scheduleStatement.setString(4, "Wednesday");
+        scheduleStatement.setTime(2, Time.valueOf("10:00:00"));
+        scheduleStatement.setTime(3, Time.valueOf("00:30:00"));
+        scheduleStatement.executeQuery();
+
+        scheduleStatement.close();
         statement.close();
     }
     //TODO: USE THIS WHEN RETURN ONLY 1 COLUMN DATA

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JFrame;
@@ -91,10 +92,12 @@ public class Login extends JFrame implements Runnable{
                 System.out.println("[Login] Wait for Server's respond");
                 Object o = input.readObject();
                 if(o.equals("Fail")) {
+                    System.out.println("Username or password is incorrect!");
                     JOptionPane.showMessageDialog(null,
                         "Username or password is incorrect!",
                         "Login fail",
                         JOptionPane.ERROR_MESSAGE);
+
                 } else {
                     //TODO:
                     String privileges = (String) o;
@@ -112,14 +115,18 @@ public class Login extends JFrame implements Runnable{
                         listOfPrivileges.add("Schedule Billboard");
                     }
                     new SessionToken(listOfPrivileges);
+
+                    System.out.println();
                     System.out.println("Retrieved privileges of this user: " + listOfPrivileges.toString() +"\nCreated token for this session!");
                     //TODO
                     JOptionPane.showMessageDialog(new JFrame(),"Login successfully!");
+                    ControlPanel.main();
 
-                    output.close();
-                    input.close();
+                    dispose();
+                    //System.exit(0);
                 }
-            } catch (IOException | ClassNotFoundException ex) {
+                System.out.println("End of a login session");
+            } catch (IOException | ClassNotFoundException | SQLException ex) {
                 ex.printStackTrace();
             }
             //SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));

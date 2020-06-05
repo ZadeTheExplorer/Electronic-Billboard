@@ -36,8 +36,8 @@ public class LoginHandler extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        while(true){
 
-        while (true) {
             try {
                 // receive the answer from client
                 received = ois.readObject();
@@ -57,16 +57,18 @@ public class LoginHandler extends Thread {
                 e.printStackTrace();
             }
 
-            // closing resources
-            try {
-                System.out.println("Closing stream IO at " + s);
-                this.ois.close();
-                this.oos.close();
-                System.out.println("Closed Login");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Login session End!");
+
         }
+        // closing resources
+        try {
+            System.out.println("Closing stream IO at " + s);
+            this.ois.close();
+            this.oos.close();
+            System.out.println("Closed Login");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Login session End!");
+
     }
 }

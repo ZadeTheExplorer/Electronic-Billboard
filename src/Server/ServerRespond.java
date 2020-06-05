@@ -25,10 +25,18 @@ public class ServerRespond {
 
     public void handle() throws SQLException, IOException, NoSuchAlgorithmException {
         if (request instanceof AddBillboardRequest){
-            addBillboard(((AddBillboardRequest) request).getBillboard());
+            if(!SessionToken.canCreateBillboard()){
+                tokenErrorHandler();
+            } else{
+                addBillboard(((AddBillboardRequest) request).getBillboard());
+            }
         }
         if (request instanceof DeleteBillboardRequest){
-            deleteBillboard(((DeleteBillboardRequest) request).getBillboard());
+            if (!SessionToken.canEditBillboards()){
+                tokenErrorHandler();
+            } else {
+                deleteBillboard(((DeleteBillboardRequest) request).getBillboard());
+            }
         }
         if(request instanceof DisplayAllBillboardsRequest){
             displayAllBillboards();
@@ -40,148 +48,290 @@ public class ServerRespond {
             currentBillboard(((CurrentBillboardRequest) request).getTime());
         }
         if(request instanceof EditBillboardRequest) {
-            EditBillboard(((EditBillboardRequest) request).getBillboard());
+            if(!SessionToken.canEditBillboards()){
+                tokenErrorHandler();
+            } else{
+                EditBillboard(((EditBillboardRequest) request).getBillboard());
+            }
         }
         if(request instanceof AddUserResquest) {
-            addUser(((AddUserResquest) request).getUser());
+            if(!SessionToken.canEditUser()){
+                tokenErrorHandler();
+            }else {
+                addUser(((AddUserResquest) request).getUser());
+            }
         }
         if(request instanceof DeleteUserRequest) {
-            deleteUser(((DeleteUserRequest) request).getUsername());
+            if(!SessionToken.canEditUser()){
+                tokenErrorHandler();
+            }else {
+                deleteUser(((DeleteUserRequest) request).getUsername());
+            }
         }
         if(request instanceof DisplayAllUsersRequest) {
-            displayAllUsers();
+            if(!SessionToken.canEditUser()){
+                tokenErrorHandler();
+            }else {
+                displayAllUsers();
+            }
         }
         if(request instanceof GetUserPrivilegesRequest){
-            getUserPrivilege(((GetUserPrivilegesRequest) request).getUsername());
+            if(!SessionToken.canEditUser()){
+            tokenErrorHandler();
+            }else {
+                getUserPrivilege(((GetUserPrivilegesRequest) request).getUsername());
+            }
         }
         if(request instanceof SetUserPrivilegesRequest){
-            setUserPrivilege(((SetUserPrivilegesRequest) request).getUsername());
+            if(!SessionToken.canEditUser()){
+                tokenErrorHandler();
+            }else {
+                setUserPrivilege(((SetUserPrivilegesRequest) request).getUsername(),((SetUserPrivilegesRequest) request).getPrivileges());
+            }
         }
         if(request instanceof SetUserPassword) {
-            setUserPassword(((SetUserPassword) request).getUsername(),((SetUserPassword) request).getPassword());
+            if(!SessionToken.canEditUser()){
+                tokenErrorHandler();
+            }else {
+                setUserPassword(((SetUserPassword) request).getUsername(),((SetUserPassword) request).getPassword());
+            }
         }
         if(request instanceof DisplayAllSchedulesRequest){
-            displayAllSchedules();
+            if(!SessionToken.canScheduleBillboard()){
+                tokenErrorHandler();
+            }else {
+                displayAllSchedules();
+            }
         }
         if(request instanceof SetScheduleRequest){
-            SetScheduleRequest post = (SetScheduleRequest) request;
-            setSchedule((post.getScheduleId()), post.getBillboardName(), post.getStartTime(), post.getDuration());
+            if(!SessionToken.canScheduleBillboard()){
+                tokenErrorHandler();
+            }else {
+                SetScheduleRequest post = (SetScheduleRequest) request;
+                setSchedule(post.getBillboardName(), post.getStartTime(), post.getDuration());
+            }
+        }
+        if(request instanceof DeleteScheduleRequest){
+            if(!SessionToken.canScheduleBillboard()){
+                tokenErrorHandler();
+            }else {
+                DeleteScheduleRequest post = (DeleteScheduleRequest) request;
+                deleteSchedule(post.getBillboardName(), post.getStartTime());
+            }
         }
         if(request instanceof LoginRequest){
             LoginRequest post = (LoginRequest) request;
             login(post.getUsername(), post.getHashPassword());
         }
         if(request instanceof DeleteUserRequest){
-            deleteUser(((DeleteUserRequest) request).getUsername());
+            if(!SessionToken.canEditUser()){
+                tokenErrorHandler();
+            } else {
+                deleteUser(((DeleteUserRequest) request).getUsername());
+            }
         }
     }
-
-    public void displayAllBillboards() throws SQLException, IOException {
-        String[][] allBillboards = Database.RetrieveData(statement, "Call displayAllBillboards()");
-        System.out.println("retrieved all billboards");
-        oos.writeObject(allBillboards);
+    public void tokenErrorHandler() throws IOException {
+        System.out.println("[Server] User do not have permission to do this action");
+        oos.writeObject("No permission");
         oos.flush();
     }
-    public void getBillboardData(String billboardName) throws SQLException, IOException {
-        String[][] billboardData = Database.RetrieveData(statement, "Call displayBillboard('" + billboardName + "')");
-        System.out.println("Retrieved data of billboard: " + billboardName);
-        oos.writeObject(billboardData);
-        oos.flush();
+    public void displayAllBillboards() throws IOException {
+        try{
+            String[][] allBillboards = Database.RetrieveData(statement, "Call displayAllBillboards()");
+            System.out.println("retrieved all billboards");
+            oos.writeObject(allBillboards);
+            oos.flush();
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-    public void displayAllUsers() throws SQLException, IOException {
-        String[][] allUsers = Database.RetrieveData(statement, "Call displayUsers();");
-        System.out.println("Retrieved all users");
-        oos.writeObject(allUsers);
-        oos.flush();
+    public void getBillboardData(String billboardName) throws IOException {
+        try{
+            String[][] billboardData = Database.RetrieveData(statement, "Call displayBillboard('" + billboardName + "')");
+            System.out.println("Retrieved data of billboard: " + billboardName);
+            oos.writeObject(billboardData);
+            oos.flush();
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
+    }
+    public void displayAllUsers() throws IOException {
+        try{
+            String[][] allUsers = Database.RetrieveData(statement, "Call displayUsers();");
+            System.out.println("Retrieved all users");
+            oos.writeObject(allUsers);
+            oos.flush();
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
     //TODO: With this RetrievedData() we only can get start and end time as String.
     // java provided this: with t isInstanceOf java.sql.Time
     // String s = new SimpleDateFormat("HH.mm.ss.SSS").format(t.getTime());
     public void displayAllSchedules() throws SQLException, IOException {
-        String[][] allSchedules = Database.RetrieveData(statement, "Call displayAllSchedules();");
-        System.out.println("Retrieved all Schedules");
-        oos.writeObject(allSchedules);
-        oos.flush();
+        try{
+            String[][] allSchedules = Database.RetrieveData(statement, "Call displayAllSchedules();");
+            System.out.println("Retrieved all Schedules");
+            oos.writeObject(allSchedules);
+            oos.flush();
+        }  catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
 
-    public void addBillboard(Billboard billboard) throws SQLException {
-        String query = "Call addBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
-                "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
-        statement.execute(query);
+    public void addBillboard(Billboard billboard) throws IOException {
+        try {
+            String query = "Call addBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
+                    "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
+            statement.execute(query);
+        }  catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-    public void deleteBillboard(String billboard) throws SQLException {
-        String query = "Call deleteBillboard('"+billboard  +"');";
-        statement.execute(query);
-        System.out.println("delete billboard " +billboard);
+    public void deleteBillboard(String billboard) throws IOException {
+        try{
+            String query = "Call deleteBillboard('"+billboard  +"');";
+            statement.execute(query);
+            System.out.println("delete billboard " +billboard);
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
 
-    public void EditBillboard(Billboard billboard) throws SQLException {
-        String query = "Call editBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
-                "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
-        statement.execute(query);
+    public void EditBillboard(Billboard billboard) throws IOException {
+        try{
+            String query = "Call editBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
+                    "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
+            statement.execute(query);
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-    public void addUser(User user) throws SQLException {
-        String addUserQuery = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
-        statement.execute(addUserQuery);
+    public void addUser(User user) throws IOException {
+        try {
+            String addUserQuery = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
+            statement.execute(addUserQuery);
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-    public void deleteUser(String username) throws SQLException {
-        String deleteUserQuery = "Call deleteUser('" +username +"');";
-        statement.execute(deleteUserQuery);
+    public void deleteUser(String username) throws IOException {
+        try {
+            String deleteUserQuery = "Call deleteUser('" +username +"');";
+            statement.execute(deleteUserQuery);
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-    public void getUserPrivilege(String username) throws SQLException {
-        String getUserPrivilegeQuery = "Call getUserPrivileges('" +username +"');";
-        statement.execute(getUserPrivilegeQuery);
+    public void getUserPrivilege(String username) throws IOException {
+        try {
+            String getUserPrivilegeQuery = "Call getUserPrivileges('" +username +"');";
+            statement.execute(getUserPrivilegeQuery);
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-    public void setUserPrivilege(String username) throws SQLException {
-        String setUserPrivilegeQuery = "Call setUserPrivileges('" + username + "');";
-        statement.execute(setUserPrivilegeQuery);
+    public void setUserPrivilege(String username, String[] privileges) throws IOException {
+        try {
+            StringBuilder permissions = new StringBuilder();
+            String prefix = "";
+            for (String privilege : privileges){
+                permissions.append(prefix).append(privilege);
+                prefix = ", ";
+            }
+            String setUserPrivilegeQuery = "Call setUserPrivileges('" + username +"', '"+ permissions+ "');";
+            statement.execute(setUserPrivilegeQuery);
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-    public void setUserPassword(String username,String password) throws SQLException, NoSuchAlgorithmException {
-        String salt = User.createSalt();
-        String hashedPass = User.hashedPassword(password);
-        String saltedPassword = User.saltedPassword(hashedPass, salt);
-        String setUserPrivilegeQuery = "Call updatePassword('" + username + "', '" + salt + "', '"+ saltedPassword+"');";
-        statement.execute(setUserPrivilegeQuery);
+    public void setUserPassword(String username,String password) throws NoSuchAlgorithmException, IOException {
+        try {
+            String salt = User.createSalt();
+            String hashedPass = User.hashedPassword(password);
+            String saltedPassword = User.saltedPassword(hashedPass, salt);
+            String setUserPrivilegeQuery = "Call updatePassword('" + username + "', '" + salt + "', '"+ saltedPassword+"');";
+            statement.execute(setUserPrivilegeQuery);
+        } catch (SQLException e) {
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
     //TODO: STORE START_TIME AND DURATION AS Java.Sql.Time
-    public void setSchedule(int scheduleId, String billboardName, Time start, Time duration) throws SQLException {
-        CallableStatement statement = connection.prepareCall("Call addSchedule(?,?,?)");
-        statement.setString(1, billboardName);
-        statement.setTime(2, start);
-        statement.setTime(3, duration);
-        statement.executeUpdate();
+    public void setSchedule(String billboardName, Time start, Time duration) throws IOException {
+        try {
+            CallableStatement statement = connection.prepareCall("Call addSchedule(?,?,?)");
+            statement.setString(1, billboardName);
+            statement.setTime(2, start);
+            statement.setTime(3, duration);
+            statement.executeUpdate();
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
-
-    public void deleteSchedule(String billboardName, Time start) throws SQLException {
-        CallableStatement deleteScheduleStatement = connection.prepareCall("Call deleteSchedule(?,?)");
-        deleteScheduleStatement.setString(1, billboardName);
-        deleteScheduleStatement.setTime(2, start);
-        deleteScheduleStatement.executeUpdate();
+    //TODO
+    public void deleteSchedule(String billboardName, Time start) throws IOException {
+        try {
+            CallableStatement deleteScheduleStatement = connection.prepareCall("Call deleteSchedule(?,?)");
+            deleteScheduleStatement.setString(1, billboardName);
+            deleteScheduleStatement.setTime(2, start);
+            deleteScheduleStatement.executeUpdate();
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
+        }
     }
 
     //TODO: Do this later on
-    public void currentBillboard(LocalDateTime time) {
-        DayOfWeek weekDay = time.getDayOfWeek();
-
+    public void currentBillboard(LocalDateTime time) throws IOException {
+//        try{
+//
+//            DayOfWeek weekDay = time.getDayOfWeek();
+//        }
+//        catch (SQLException e){
+//            oos.writeObject(e);
+//            oos.flush();
+//        }
     }
-    public void login(String username, String hashedPassword){
+    public void login(String username, String hashedPassword) throws IOException, NoSuchAlgorithmException {
+        String[][] userInfo = null;
         try{
-            String[][] userInfo = Database.RetrieveData(statement, "Call getUserInfo('"+username+"')");
+            userInfo = Database.RetrieveData(statement, "Call getUserInfo('"+username+"')");
             System.out.println(Arrays.deepToString(userInfo));
-
-            // if password is correct
-            if(userInfo[1][2].compareTo(User.saltedPassword(hashedPassword,userInfo[1][1])) == 0){
-                oos.writeObject(userInfo[1][3]);
-                System.out.println(userInfo[1][3]);
-                oos.flush();
-            } else {
-                oos.writeObject("Fail");
-                System.out.println("Login fail!");
-                oos.flush();
-            }
-        } catch (SQLException | NoSuchAlgorithmException | IOException throwable) {
-            throwable.printStackTrace();
+        } catch (SQLException e){
+            oos.writeObject(e);
+            oos.flush();
         }
+
+        // if password is correct
+        if (userInfo == null || userInfo.length <= 1){
+            oos.writeObject("Fail");
+            System.out.println("Can not find username");
+            oos.flush();
+        }
+        else if(userInfo[1][2].compareTo(User.saltedPassword(hashedPassword,userInfo[1][1])) == 0){
+        oos.writeObject(userInfo[1][3]);
+        System.out.println(userInfo[1][3]);
+        oos.flush();
+        } else {
+            oos.writeObject("Fail");
+            System.out.println("Login fail!");
+            oos.flush();
+        }
+
 
 
     }
