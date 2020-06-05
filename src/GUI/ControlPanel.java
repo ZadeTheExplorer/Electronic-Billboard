@@ -784,13 +784,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         getUserData();
         getScheduleData();
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
-
-
-
-//        Connection connection = DBConnection.getInstance();
-//        CallableStatement st = connection.prepareCall("call displayAllBillboards()");
-//        ResultSet result = st.executeQuery();
-//        result.next();
     }
 
     @Override
@@ -968,6 +961,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 }
                 lblUserPassword.setVisible(false);
                 tfUserPassword.setVisible(false);
+                tfUserName.setEditable(false);
                 editUser(false);
                 btnUserCreate.setText("Create");
             }
