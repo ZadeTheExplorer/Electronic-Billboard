@@ -179,33 +179,29 @@ public class ServerRespond {
             System.out.println("retrieved all billboards");
             oos.writeObject(allBillboards);
             oos.flush();
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
         }
     }
+
     public void getBillboardData(String billboardName) throws IOException {
         try{
             String[][] billboardData = Database.RetrieveData(statement, "Call displayBillboard('" + billboardName + "')");
             System.out.println("Retrieved data of billboard: " + billboardName);
             oos.writeObject(billboardData);
             oos.flush();
-            oos.writeObject("Success");
-            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
         }
     }
+
     public void displayAllUsers() throws IOException {
         try{
             String[][] allUsers = Database.RetrieveData(statement, "Call displayUsers();");
             System.out.println("Retrieved all users");
             oos.writeObject(allUsers);
-            oos.flush();
-            oos.writeObject("Success");
             oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
@@ -220,8 +216,6 @@ public class ServerRespond {
             String[][] allSchedules = Database.RetrieveData(statement, "Call displayAllSchedules();");
             System.out.println("Retrieved all Schedules");
             oos.writeObject(allSchedules);
-            oos.flush();
-            oos.writeObject("Success");
             oos.flush();
         }  catch (SQLException e){
             oos.writeObject(e);

@@ -607,11 +607,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             System.out.println("[SERVER] " + ((SQLException) o).getMessage());
             return false;
         }
-        else if (o.equals("Success")){
-            System.out.println("[SERVER] Execute action successfully");
-            return true;
-        }
-        return false;
+        return true;
     }
 
     public static void getBillboardData(){
@@ -619,13 +615,13 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             output.writeObject(new DisplayAllBillboardsRequest(token));
             output.flush();
             Object list = input.readObject();
-            String[][] table = (String[][]) list;
-            billBoardData = new Object[table.length - 1][table[0].length];
-            for(int i = 0; i < table.length - 1; i++){
-                billBoardData[i] = table[i+1];
+            if(serverRespondHandler(list)){
+                String[][] table = (String[][]) list;
+                billBoardData = new Object[table.length - 1][table[0].length];
+                for(int i = 0; i < table.length - 1; i++){
+                    billBoardData[i] = table[i+1];
+                }
             }
-            System.out.println("[ControlPanel] Sending Display all Billboards Request");
-            serverRespondHandler(input.readObject());
         } catch (IOException | ClassNotFoundException ioException) {
             System.out.println("ERROR");
         }
@@ -677,7 +673,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 for(int i = 0; i < table.length - 1; i++){
                     userData[i] = table[i+1];
                 }
-                serverRespondHandler(input.readObject());
             }
         } catch (IOException | ClassNotFoundException ioException) {
 
@@ -735,6 +730,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             output.flush();
             Object list = input.readObject();
             if(serverRespondHandler(list)){
+
                 String[][] table = (String[][]) list;
                 System.out.println(Arrays.deepToString(table));
                 scheduleData = new Object[table.length - 1][table[0].length];
@@ -742,7 +738,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                     scheduleData[i] = table[i+1];
                 }
                 System.out.println("[ControlPanel] Sending Display all schedules Request");
-                serverRespondHandler(input.readObject());
+
             }
         } catch (IOException | ClassNotFoundException ioException) {
             System.out.println("ERROR");
