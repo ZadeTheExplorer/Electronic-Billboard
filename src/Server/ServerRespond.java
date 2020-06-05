@@ -184,6 +184,7 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
     public void getBillboardData(String billboardName) throws IOException {
         try{
             String[][] billboardData = Database.RetrieveData(statement, "Call displayBillboard('" + billboardName + "')");
@@ -195,6 +196,7 @@ public class ServerRespond {
             oos.flush();
         }
     }
+
     public void displayAllUsers() throws IOException {
         try{
             String[][] allUsers = Database.RetrieveData(statement, "Call displayUsers();");
@@ -238,6 +240,8 @@ public class ServerRespond {
             String query = "Call deleteBillboard('"+billboard  +"');";
             statement.execute(query);
             System.out.println("delete billboard " +billboard);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -249,6 +253,8 @@ public class ServerRespond {
             String query = "Call editBillboard('"+ billboard.getName()+ "', '"+billboard.getCreator() + "', '"+ billboard.getBackgroundColor()+"', '"+billboard.getMessageColor()+
                     "', '" + billboard.getInformationColor() + "', '" +billboard.getPicture()+"', '"+billboard.getMessage()+"', '"+billboard.getInformation() + "');";
             statement.execute(query);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -258,6 +264,8 @@ public class ServerRespond {
         try {
             String addUserQuery = "Call addUser('"+user.getUserName()+ "', '"+user.getSalt() +"', '"+user.getSaltPass()+"', '"+ user.getPrivilege()+"')";
             statement.execute(addUserQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -267,6 +275,8 @@ public class ServerRespond {
         try {
             String deleteUserQuery = "Call deleteUser('" +username +"');";
             statement.execute(deleteUserQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -276,6 +286,8 @@ public class ServerRespond {
         try {
             String getUserPrivilegeQuery = "Call getUserPrivileges('" +username +"');";
             statement.execute(getUserPrivilegeQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -291,6 +303,8 @@ public class ServerRespond {
             }
             String setUserPrivilegeQuery = "Call setUserPrivileges('" + username +"', '"+ permissions+ "');";
             statement.execute(setUserPrivilegeQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -303,6 +317,8 @@ public class ServerRespond {
             String saltedPassword = User.saltedPassword(hashedPass, salt);
             String setUserPrivilegeQuery = "Call updatePassword('" + username + "', '" + salt + "', '"+ saltedPassword+"');";
             statement.execute(setUserPrivilegeQuery);
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e) {
             oos.writeObject(e);
             oos.flush();
@@ -318,6 +334,8 @@ public class ServerRespond {
             statement.setTime(3, duration);
             statement.executeUpdate();
 
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
@@ -331,6 +349,8 @@ public class ServerRespond {
             deleteScheduleStatement.setTime(2, start);
             deleteScheduleStatement.executeUpdate();
 
+            oos.writeObject("Success");
+            oos.flush();
         } catch (SQLException e){
             oos.writeObject(e);
             oos.flush();
