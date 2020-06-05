@@ -3,7 +3,7 @@ package GUI;
 import ElectronicBillboardObject.Billboard;
 import ElectronicBillboardObject.User;
 import Request.*;
-import ElectronicBillboardObject.User;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -13,8 +13,6 @@ import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -57,7 +55,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JTextField tfUserPassword;
     private JTextField tfUserPrivilege;
     private JTextField tfScheduleBillBoard;
-    private JTextField tfScheduleTimestamp;
+    private JTextField tfScheduleUsername;
+    private JTextField tfScheduleStart;
+    private JTextField tfScheduleDuration;
+    private JTextField tfScheduleDayOfWeek;
     private JPanel pnlSchedule;
     private JPanel pnlUserManagement;
     private JPanel pnlNewBillBoard;
@@ -103,22 +104,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         setLocationRelativeTo(null);
         lblName = createLabel(Color.WHITE,"Bill Board Control Panel");
 
-        tfBillboardName = new JTextField();
-        tfBillboardName.setEditable(false);
-        tfBillboardUsername = new JTextField();
-        tfBillboardUsername.setEditable(false);
-        tfBillboardBGColor = new JTextField();
-        tfBillboardBGColor.setEditable(false);
-        tfBillboardTitleColor = new JTextField();
-        tfBillboardTitleColor.setEditable(false);
-        tfBillboardDescriptionColor = new JTextField();
-        tfBillboardDescriptionColor.setEditable(false);
-        tfBillboardURL = new JTextField();
-        tfBillboardURL.setEditable(false);
-        tfBillboardTitle= new JTextField();
-        tfBillboardTitle.setEditable(false);
-        tfBillboardDescription = new JTextField();
-        tfBillboardDescription.setEditable(false);
+        tfBillboardName = createTextField();
+        tfBillboardUsername = createTextField();
+        tfBillboardBGColor = createTextField();
+        tfBillboardTitleColor = createTextField();
+        tfBillboardDescriptionColor = createTextField();
+        tfBillboardURL = createTextField();
+        tfBillboardTitle= createTextField();
+        tfBillboardDescription = createTextField();
 
         tfNewBillboardName = new JTextField();
         tfNewBillboardUsername = new JTextField();
@@ -129,21 +122,15 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfNewBillboardTitle = new JTextField();
         tfNewBillboardDescription = new JTextField();
 
-        tfUserID = new JTextField();
-        tfUserID.setEditable(false);
-        tfUserUsername = new JTextField();
-        tfUserUsername.setEditable(false);
-        tfUserName = new JTextField();
-        tfUserName.setEditable(false);
-        tfUserPassword = new JTextField();
-        tfUserPassword.setEditable(false);
-        tfUserPrivilege = new JTextField();
-        tfUserPrivilege.setEditable(false);
+        tfUserName = createTextField();
+        tfUserPassword = createTextField();
+        tfUserPrivilege = createTextField();
 
-        tfScheduleBillBoard = new JTextField();
-        tfScheduleBillBoard.setEditable(false);
-        tfScheduleTimestamp = new JTextField();
-        tfScheduleTimestamp.setEditable(false);
+        tfScheduleBillBoard = createTextField();
+        tfScheduleUsername = createTextField();
+        tfScheduleStart = createTextField();
+        tfScheduleDuration = createTextField();
+        tfScheduleDayOfWeek = createTextField();
 
         pnlMenu = createPanel(Color.LIGHT_GRAY);
         pnlSchedule = createPanel(Color.WHITE);
@@ -154,7 +141,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnSchedule = createButton("Schedule");
         btnNewBillBoard = createButton("Creating Billboard");
         btnUserManagement = createButton("User Management");
-        //jTable = createTable();
+
         ///Components in specific button click
         //Billboard
         btnDeleteBb = createButton("Delete");
@@ -437,24 +424,23 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlBillBoardScheduleList.setBorder(BorderFactory.createTitledBorder("Schedule Information"));
         //pnlBillBoardScheduleList.setPreferredSize(new Dimension(1,80));
 
-        JTable scheduleTable = createTable(new String[]{"ElectronicBillboardObject","Schedule"}, new Object[][] {
-                {"Billboard 1","Monday"},
-                {"Billboard 2","Tuesday"},
-                {"Billboard 3","Wednesday"},
-                {"Billboard 4","Thursday"},
-                {"Billboard 5","Friday"}
-        });
-
+        String[] scheduleTableCols = new String[]{"Billboard Name","Username","Start","Duration","Day Of Week"};
+        scheduleTable = createTable(scheduleTableCols,scheduleData);
+        modelTableSchedule = new DefaultTableModel(scheduleData,scheduleTableCols);
+        scheduleTable.setModel(modelTableSchedule);
         JScrollPane schedulePane = new JScrollPane(scheduleTable);
         schedulePane.setPreferredSize(new Dimension(500,200));
+        centerRowData(scheduleTable);
         ListSelectionModel modelTableSchedule = scheduleTable.getSelectionModel();
         modelTableSchedule.addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent e) {
-                setValueScheduleInfo(scheduleTable);
+                if(!e.getValueIsAdjusting()){
+                    setValueScheduleInfo(scheduleTable);
+                }
             }
         });
 
-        JPanel pnlBillBoardScheduleInformation = new JPanel(new GridLayout(0,2,1,1));
+        JPanel pnlBillBoardScheduleInformation = new JPanel(new GridLayout(0,5,1,1));
         pnlBillBoardScheduleInformation.setOpaque(true);
         pnlBillBoardScheduleInformation.setBorder(BorderFactory.createTitledBorder("Schedule Information"));
         pnlBillBoardScheduleInformation.setPreferredSize(new Dimension(1,80));
@@ -464,14 +450,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         pnlBillBoardScheduleControl.setBorder(BorderFactory.createTitledBorder("Command Panel"));
         pnlBillBoardScheduleControl.setPreferredSize(new Dimension(1,80));
 
+        String[] scheduleLabels = new String[] {"Billboard","Username","Start","Duration","DayName"};
+        addToPanelWithLabelArray(scheduleLabels,pnlBillBoardScheduleInformation,constraints);
+        JTextField[] schedulesTextFields = new JTextField[]{tfScheduleBillBoard,tfScheduleUsername,tfScheduleStart
+        ,tfScheduleDuration,tfScheduleDayOfWeek};
+        addToPanelWithComponentArray(schedulesTextFields,pnlBillBoardScheduleInformation,constraints);
 
-        addToPanel(pnlBillBoardScheduleInformation, createLabel(Color.BLACK, "ElectronicBillboardObject"),constraints,0,0,1,1);
-        addToPanel(pnlBillBoardScheduleInformation, createLabel(Color.BLACK,"Schedule"),constraints,0,0,1,1);
-        addToPanel(pnlBillBoardScheduleInformation, tfScheduleBillBoard,constraints,0,0,1,1);
-        addToPanel(pnlBillBoardScheduleInformation, tfScheduleTimestamp,constraints,0,1,1,1);
-
-        addToPanel(pnlBillBoardScheduleControl,btnEditSchedule,constraints,0,1,1,1);
-        addToPanel(pnlBillBoardScheduleControl,btnDeleteSchedule,constraints,0,1,1,1);
+        JButton[] scheduleButtons = new JButton[]{btnEditSchedule,btnDeleteSchedule};
+        addToPanelWithComponentArray(scheduleButtons,pnlBillBoardScheduleControl,constraints);
 
         addToPanel(pnlBillBoardScheduleList, schedulePane, constraints, 0,0,1,1);
 
@@ -524,6 +510,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         lbl.setBackground(c);
         lbl.setText(text);
         return lbl;
+    }
+
+    private JTextField createTextField(){
+        JTextField textField = new JTextField();
+        textField.setEditable(false);
+        return textField;
     }
 
     private JPanel createPanel(Color c) {
@@ -664,6 +656,21 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    public static void getScheduleData(){
+        try{
+            output.writeObject(new DisplayAllSchedulesRequest());
+            output.flush();
+            Object list = input.readObject();
+            String[][] table = (String[][]) list;
+            System.out.println(Arrays.deepToString(table));
+            scheduleData = new Object[table.length - 1][table[0].length];
+            for(int i = 0; i < table.length - 1; i++){
+                scheduleData[i] = table[i+1];
+            }
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
+    }
 
 
     @Override
@@ -686,6 +693,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         
         getBillboardData();
         getUserData();
+        getScheduleData();
         SwingUtilities.invokeLater(new ControlPanel("BillboardControlPanel"));
 
 
@@ -806,9 +814,15 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             if(btnUserEdit.getText().compareTo("Edit") == 0){
                 editUser(true);
                 btnUserEdit.setText("Save");
-
+                lblUserPassword.setVisible(true);
+                tfUserPassword.setVisible(true);
             }else{
+                modelTableUser.setValueAt(tfUserPrivilege.getText(),userTable.getSelectedRow(),1);
+                System.out.println(tfUserPrivilege.getText());
+                updateAUserPassword(userTable.getValueAt(userTable.getSelectedRow(),0).toString(),tfUserPassword.getText());
                 editUser(false);
+                lblUserPassword.setVisible(false);
+                tfUserPassword.setVisible(false);
                 btnUserEdit.setText("Edit");
             }
         }
@@ -891,7 +905,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public void editSchedule(boolean bool){
         tfScheduleBillBoard.setEditable(bool);
-        tfScheduleTimestamp.setEditable(bool);
+        tfScheduleUsername.setEditable(bool);
         btnEditSchedule.setText("Edit");
     }
 
@@ -921,7 +935,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void setValueScheduleInfo(JTable table){
-        JTextField[] textFields = new JTextField[]{tfScheduleBillBoard,tfScheduleTimestamp};
+        JTextField[] textFields = new JTextField[]{tfScheduleBillBoard, tfScheduleUsername};
         setTextFields(scheduleTable,textFields);
         editSchedule(false);
         btnUserCreate.setText("Create");
