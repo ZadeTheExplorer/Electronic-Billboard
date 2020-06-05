@@ -37,6 +37,7 @@ public class ControlPanelHandler extends Thread {
             try {
                 // receive the answer from client
                 received = ois.readObject();
+                System.out.println(received);
 
                 if (received.equals("Exit")) {
                     System.out.println("[ControlPanel] " + this.s + " sends exit...");

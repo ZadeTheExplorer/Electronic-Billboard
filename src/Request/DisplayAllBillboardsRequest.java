@@ -1,8 +1,12 @@
 package Request;
 
+import Server.SessionToken;
+
 import java.io.Serializable;
 
-public class DisplayAllBillboardsRequest implements Serializable {
+public class DisplayAllBillboardsRequest extends Request implements Serializable {
 
-    public DisplayAllBillboardsRequest() {}
+    public DisplayAllBillboardsRequest(SessionToken token) {
+        super(token);
+    }
 }

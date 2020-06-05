@@ -1,12 +1,15 @@
 package Request;
 
+import Server.SessionToken;
+
 import java.io.Serializable;
 import java.sql.Time;
 
-public class DeleteScheduleRequest implements Serializable {
+public class DeleteScheduleRequest extends Request implements Serializable {
     private String billboardName;
     private Time startTime;
-    public DeleteScheduleRequest(String billboardname, Time start){
+    public DeleteScheduleRequest(String billboardname, Time start, SessionToken token){
+        super(token);
         this.billboardName = billboardname;
         this.startTime = start;
     }

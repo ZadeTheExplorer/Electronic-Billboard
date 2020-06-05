@@ -114,16 +114,16 @@ public class Login extends JFrame implements Runnable{
                     if(privileges.contains("Schedule Billboard")){
                         listOfPrivileges.add("Schedule Billboard");
                     }
-                    new SessionToken(listOfPrivileges);
+                    SessionToken token = new SessionToken(listOfPrivileges);
 
-                    System.out.println();
-                    System.out.println("Retrieved privileges of this user: " + listOfPrivileges.toString() +"\nCreated token for this session!");
                     //TODO
                     JOptionPane.showMessageDialog(new JFrame(),"Login successfully!");
-                    ControlPanel.main();
-
+                    output.writeObject("Exit");
+                    output.flush();
+                    output.close();
+                    input.close();
                     dispose();
-                    //System.exit(0);
+                    ControlPanel.start(token);
                 }
                 System.out.println("End of a login session");
             } catch (IOException | ClassNotFoundException | SQLException ex) {

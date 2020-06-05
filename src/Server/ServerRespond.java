@@ -25,17 +25,19 @@ public class ServerRespond {
 
     public void handle() throws SQLException, IOException, NoSuchAlgorithmException {
         if (request instanceof AddBillboardRequest){
-            if(!SessionToken.canCreateBillboard()){
+            AddBillboardRequest post = (AddBillboardRequest) request;
+            if(!post.getSessionToken().canCreateBillboard()){
                 tokenErrorHandler();
             } else{
-                addBillboard(((AddBillboardRequest) request).getBillboard());
+                addBillboard(post.getBillboard());
             }
         }
         if (request instanceof DeleteBillboardRequest){
-            if (!SessionToken.canEditBillboards()){
+            DeleteBillboardRequest post = (DeleteBillboardRequest) request;
+            if (!post.getSessionToken().canEditBillboards()){
                 tokenErrorHandler();
             } else {
-                deleteBillboard(((DeleteBillboardRequest) request).getBillboard());
+                deleteBillboard(post.getBillboard());
             }
         }
         if(request instanceof DisplayAllBillboardsRequest){
@@ -48,74 +50,83 @@ public class ServerRespond {
             currentBillboard(((CurrentBillboardRequest) request).getTime());
         }
         if(request instanceof EditBillboardRequest) {
-            if(!SessionToken.canEditBillboards()){
+            EditBillboardRequest post = (EditBillboardRequest) request;
+            if(!post.getSessionToken().canEditBillboards()){
                 tokenErrorHandler();
             } else{
-                EditBillboard(((EditBillboardRequest) request).getBillboard());
+                EditBillboard(post.getBillboard());
             }
         }
         if(request instanceof AddUserResquest) {
-            if(!SessionToken.canEditUser()){
+            AddUserResquest post = (AddUserResquest) request;
+            if(!post.getSessionToken().canEditUser()){
                 tokenErrorHandler();
             }else {
-                addUser(((AddUserResquest) request).getUser());
+                addUser(post.getUser());
             }
         }
         if(request instanceof DeleteUserRequest) {
-            if(!SessionToken.canEditUser()){
+            DeleteUserRequest post = (DeleteUserRequest) request;
+            if(!post.getSessionToken().canEditUser()){
                 tokenErrorHandler();
             }else {
-                deleteUser(((DeleteUserRequest) request).getUsername());
+                deleteUser(post.getUsername());
             }
         }
         if(request instanceof DisplayAllUsersRequest) {
-            if(!SessionToken.canEditUser()){
+            DisplayAllUsersRequest post = (DisplayAllUsersRequest) request;
+            if(!post.getSessionToken().canEditUser()){
                 tokenErrorHandler();
             }else {
                 displayAllUsers();
             }
         }
         if(request instanceof GetUserPrivilegesRequest){
-            if(!SessionToken.canEditUser()){
+            GetUserPrivilegesRequest post = (GetUserPrivilegesRequest) request;
+            if(!post.getSessionToken().canEditUser()){
             tokenErrorHandler();
             }else {
-                getUserPrivilege(((GetUserPrivilegesRequest) request).getUsername());
+                getUserPrivilege(post.getUsername());
             }
         }
         if(request instanceof SetUserPrivilegesRequest){
-            if(!SessionToken.canEditUser()){
+            SetUserPrivilegesRequest post = (SetUserPrivilegesRequest) request;
+            if(!post.getSessionToken().canEditUser()){
                 tokenErrorHandler();
             }else {
-                setUserPrivilege(((SetUserPrivilegesRequest) request).getUsername(),((SetUserPrivilegesRequest) request).getPrivileges());
+                setUserPrivilege(post.getUsername(), post.getPrivileges());
             }
         }
         if(request instanceof SetUserPassword) {
-            if(!SessionToken.canEditUser()){
+            SetUserPassword post = (SetUserPassword) request;
+            if(!post.getSessionToken().canEditUser()){
                 tokenErrorHandler();
             }else {
-                setUserPassword(((SetUserPassword) request).getUsername(),((SetUserPassword) request).getPassword());
+                setUserPassword(post.getUsername(), post.getPassword());
             }
         }
         if(request instanceof DisplayAllSchedulesRequest){
-            if(!SessionToken.canScheduleBillboard()){
+            DisplayAllSchedulesRequest post = (DisplayAllSchedulesRequest) request;
+            if(!post.getSessionToken().canScheduleBillboard()){
                 tokenErrorHandler();
             }else {
                 displayAllSchedules();
             }
         }
         if(request instanceof SetScheduleRequest){
-            if(!SessionToken.canScheduleBillboard()){
+            SetScheduleRequest post = (SetScheduleRequest) request;
+            if(!post.getSessionToken().canScheduleBillboard()){
                 tokenErrorHandler();
             }else {
-                SetScheduleRequest post = (SetScheduleRequest) request;
                 setSchedule(post.getBillboardName(), post.getStartTime(), post.getDuration());
             }
         }
         if(request instanceof DeleteScheduleRequest){
-            if(!SessionToken.canScheduleBillboard()){
+
+            DeleteScheduleRequest post = (DeleteScheduleRequest) request;
+            if(!post.getSessionToken().canScheduleBillboard()){
                 tokenErrorHandler();
             }else {
-                DeleteScheduleRequest post = (DeleteScheduleRequest) request;
                 deleteSchedule(post.getBillboardName(), post.getStartTime());
             }
         }
@@ -124,10 +135,11 @@ public class ServerRespond {
             login(post.getUsername(), post.getHashPassword());
         }
         if(request instanceof DeleteUserRequest){
-            if(!SessionToken.canEditUser()){
+            DeleteUserRequest post = (DeleteUserRequest) request;
+            if(!post.getSessionToken().canEditUser()){
                 tokenErrorHandler();
             } else {
-                deleteUser(((DeleteUserRequest) request).getUsername());
+                deleteUser(post.getUsername());
             }
         }
     }
@@ -323,9 +335,10 @@ public class ServerRespond {
             oos.flush();
         }
         else if(userInfo[1][2].compareTo(User.saltedPassword(hashedPassword,userInfo[1][1])) == 0){
-        oos.writeObject(userInfo[1][3]);
-        System.out.println(userInfo[1][3]);
-        oos.flush();
+            oos.writeObject(userInfo[1][3]);
+            System.out.println(userInfo[1][3]);
+            oos.flush();
+
         } else {
             oos.writeObject("Fail");
             System.out.println("Login fail!");

@@ -1,30 +1,26 @@
 package Server;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SessionToken {
-    private static String[] privileges;
-    private static SessionToken instance;
+public class SessionToken implements Serializable {
+    private String[] privileges;
     public SessionToken(ArrayList<String> listOfPrivileges){
-        if(instance == null){
-            privileges = listOfPrivileges.toArray(new String[listOfPrivileges.size()]);
-            instance = this;
-        }
+        this.privileges = listOfPrivileges.toArray(new String[listOfPrivileges.size()]);
     }
-    public static SessionToken getInstance() {
-        return instance;
-    }
-    public static boolean canEditUser(){
+
+    public boolean canEditUser(){
+        System.out.println(Arrays.toString(privileges));
         return Arrays.asList(privileges).contains("Edit Users");
     }
-    public static boolean canCreateBillboard(){
+    public boolean canCreateBillboard(){
         return Arrays.asList(privileges).contains("Create Billboard");
     }
-    public static boolean canEditBillboards(){
+    public boolean canEditBillboards(){
         return Arrays.asList(privileges).contains("Edit All Billboards");
     }
-    public static boolean canScheduleBillboard(){
+    public boolean canScheduleBillboard(){
         return Arrays.asList(privileges).contains("Schedule Billboard");
     }
 
