@@ -2,7 +2,7 @@ package GUI;
 
 import ElectronicBillboardObject.Billboard;
 import Request.*;
-
+import ElectronicBillboardObject.User;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
