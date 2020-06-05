@@ -144,11 +144,11 @@ BEGIN
 END $$
 
 CREATE TABLE  IF NOT EXISTS `electronicBB`.`schedules` (
-  `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `billboard_name` varchar(45) NOT NULL,
   `start_time` TIME NOT NULL,
   `duration` TIME NOT NULL,
   `weekday` varchar(10) NOT NULL,
+  CONSTRAINT PK_schedules PRIMARY KEY (billboard_name, start_time),
   FOREIGN KEY (billboard_name) REFERENCES billboards.name (billboard_name)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
 
@@ -161,17 +161,12 @@ END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`getScheduleInfo`; $$
 
-CREATE PROCEDURE `electronicBB`.`getScheduleInfo` (IN id int(3))
+CREATE PROCEDURE `electronicBB`.`getScheduleInfo` (IN billboard_name varchar(50))
 BEGIN
-    SELECT * FROM schedules WHERE schedules.id = id;
+    SELECT * FROM schedules WHERE schedules.billboard_name = billboard_name;
 END $$
 
-DROP PROCEDURE IF EXISTS `electronicBB`.`getScheduleIdByBillboardName`; $$
 
-CREATE PROCEDURE `electronicBB`.`getScheduleIdByBillboardName` (IN id int(3))
-BEGIN
-    SELECT id FROM schedules WHERE schedules.billboard_name = name;
-END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`addSchedule`; $$
 
@@ -193,14 +188,14 @@ END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`updateStart`; $$
 
-CREATE PROCEDURE `electronicBB`.`updateStart` (IN id INT, IN newStart_time TIME)
+CREATE PROCEDURE `electronicBB`.`updateStart` (IN billboard_name varchar(50),IN oldStart_time TIME, IN newStart_time TIME)
 BEGIN
-  UPDATE schedules SET schedules.start_time=newStart_time WHERE schedules.id=id;
+  UPDATE schedules SET schedules.start_time=newStart_time WHERE schedules.start_time=oldStart_time AND schedules.billboard_name = billboard_name;
 END $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`updateDuration`; $$
 
-CREATE PROCEDURE `electronicBB`.`updateDuration` (IN id INT, IN duration TIME)
+CREATE PROCEDURE `electronicBB`.`updateDuration` (IN billboard_name varchar(50),IN startTime TIME, IN duration TIME)
 BEGIN
-  UPDATE schedules SET schedules.duration=duration WHERE schedules.id=id;
+  UPDATE schedules SET schedules.duration=duration WHERE schedules.start_time=startTime AND schedules.billboard_name = billboard_name;
 END
