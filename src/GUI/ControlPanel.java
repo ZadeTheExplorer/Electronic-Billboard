@@ -19,6 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.*;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -55,8 +56,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JTextField tfUserName;
     private JTextField tfUserPassword;
     private JTextField tfUserPrivilege;
-    private JTextField tfScheduleBillBoard;
-    private JTextField tfScheduleUsername;
+    private JTextField tfScheduleID;
+    private JTextField tfScheduleBillboardName;
     private JTextField tfScheduleStart;
     private JTextField tfScheduleDuration;
     private JTextField tfScheduleDayOfWeek;
@@ -230,7 +231,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         initializeUserPanel(constraints);
 
         //CREATE SCHEDULE TABLE
-        String[] scheduleTableCols = new String[]{"Billboard Name","Username","Start","Duration","Day Of Week"};
+        String[] scheduleTableCols = new String[]{"Schedule ID","Billboard Name","Start","Duration","Day Of Week"};
         scheduleTable = createTable(scheduleTableCols,scheduleData);
         modelTableSchedule = new DefaultTableModel(scheduleData,scheduleTableCols);
         scheduleTable.setModel(modelTableSchedule);
@@ -248,7 +249,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
         String[] scheduleLabels = new String[] {"Billboard","Username","Start","Duration","DayName"};
         addToPanelWithLabelArray(scheduleLabels,pnlBillBoardScheduleInformation,constraints);
-        JTextField[] schedulesTextFields = new JTextField[]{tfScheduleBillBoard,tfScheduleUsername,tfScheduleStart
+        JTextField[] schedulesTextFields = new JTextField[]{tfScheduleID, tfScheduleBillboardName,tfScheduleStart
         ,tfScheduleDuration,tfScheduleDayOfWeek};
         addToPanelWithComponentArray(schedulesTextFields,pnlBillBoardScheduleInformation,constraints);
 
@@ -295,8 +296,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         tfUserPassword = createTextField();
         tfUserPassword.setVisible(false);
         tfUserPrivilege = createTextField();
-        tfScheduleBillBoard = createTextField();
-        tfScheduleUsername = createTextField();
+        tfScheduleID = createTextField();
+        tfScheduleBillboardName = createTextField();
         tfScheduleStart = createTextField();
         tfScheduleDuration = createTextField();
         tfScheduleDayOfWeek = createTextField();
@@ -744,9 +745,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    public static void createASchedule(String billboardName, Time start, Time duration){
+    public static void createASchedule(String billboardName, Time start, Time duration, String dayOfWeek){
         try{
-            output.writeObject(new SetScheduleRequest(billboardName,start,duration,token));
+            output.writeObject(new SetScheduleRequest(billboardName,start,duration,dayOfWeek,token));
             output.flush();
             System.out.println("[ControlPanel] Sending Schedule Create Request");
             serverRespondHandler(input.readObject());
@@ -996,20 +997,21 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 editSchedule(true);
                 btnCreateSchedule.setText("Save");
             }else{
-                JTextField[] textFields = new JTextField[]{tfScheduleBillBoard,tfScheduleUsername,tfScheduleStart,
+                JTextField[] textFields = new JTextField[]{tfScheduleID, tfScheduleBillboardName,tfScheduleStart,
                 tfScheduleDuration,tfScheduleDayOfWeek};
                 if(checkEmptyInput(textFields)){
                     alertEmptyInput();
                 }else{
                     editSchedule(false);
                     btnCreateSchedule.setText("Create");
-                    createASchedule(tfScheduleBillBoard.getText(),Time.valueOf(tfScheduleStart.getText()),Time.valueOf(tfScheduleDuration.getText()));
+                    createASchedule(tfScheduleBillboardName.getText(),Time.valueOf(tfScheduleStart.getText()),Time.valueOf(tfScheduleDuration.getText()),
+                            tfScheduleDayOfWeek.getText());
                 }
             }
         }
         else if(e.getSource() == btnDeleteSchedule){
             try{
-                JTextField[] textFields = new JTextField[]{tfScheduleBillBoard,tfScheduleUsername,
+                JTextField[] textFields = new JTextField[]{tfScheduleID, tfScheduleBillboardName,
                 tfScheduleStart,tfScheduleDuration,tfScheduleDayOfWeek};
                 deleteASchedule(tfBillboardName.getText(),Time.valueOf(tfScheduleStart.getText()));
                 clearInputValues(textFields);
@@ -1052,8 +1054,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void editSchedule(boolean bool){
-        tfScheduleBillBoard.setEditable(bool);
-        tfScheduleUsername.setEditable(bool);
+        tfScheduleID.setEditable(bool);
+        tfScheduleBillboardName.setEditable(bool);
         tfScheduleStart.setEditable(bool);
         tfScheduleDuration.setEditable(bool);
         tfScheduleDayOfWeek.setEditable(bool);
@@ -1085,7 +1087,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void setValueScheduleInfo(JTable table){
-        JTextField[] textFields = new JTextField[]{tfScheduleBillBoard, tfScheduleUsername, tfScheduleStart,
+        JTextField[] textFields = new JTextField[]{tfScheduleID, tfScheduleBillboardName, tfScheduleStart,
         tfScheduleDuration,tfScheduleDayOfWeek};
         setTextFields(scheduleTable,textFields);
         editSchedule(false);

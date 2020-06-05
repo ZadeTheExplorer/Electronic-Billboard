@@ -122,7 +122,7 @@ public class ServerRespond {
             if(!post.getSessionToken().canScheduleBillboard()){
                 tokenErrorHandler();
             }else {
-                setSchedule(post.getBillboardName(), post.getStartTime(), post.getDuration());
+                setSchedule(post.getBillboardName(), post.getStartTime(), post.getDuration(), post.getDayOfWeek());
             }
         }
         if(request instanceof DeleteScheduleRequest){
@@ -325,13 +325,14 @@ public class ServerRespond {
         }
     }
     //TODO: STORE START_TIME AND DURATION AS Java.Sql.Time
-    public void setSchedule(String billboardName, Time start, Time duration) throws IOException {
+    public void setSchedule(String billboardName, Time start, Time duration, String dayOfWeek) throws IOException {
         try {
 
-            CallableStatement statement = connection.prepareCall("Call addSchedule(?,?,?)");
+            CallableStatement statement = connection.prepareCall("Call addSchedule(?,?,?,?)");
             statement.setString(1, billboardName);
             statement.setTime(2, start);
             statement.setTime(3, duration);
+            statement.setString(4, dayOfWeek);
             statement.executeUpdate();
 
             oos.writeObject("Success");
