@@ -553,14 +553,24 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         jButton.addActionListener(this);
         return jButton;
     }
+    public static void serverRespondHandler(Object o){
+        if(o.equals("No Permission")){
+            //TODO
+        }
+        // Error from server
+        else if ( o instanceof SQLException) {
 
+        }
+        else if (o.equals("Success")){
+
+        }
+    }
     public static void getBillboardData(){
         try{
             output.writeObject(new DisplayAllBillboardsRequest());
             output.flush();
             Object list = input.readObject();
             String[][] table = (String[][]) list;
-            System.out.println(Arrays.deepToString(table));
             billBoardData = new Object[table.length - 1][table[0].length];
             for(int i = 0; i < table.length - 1; i++){
                 billBoardData[i] = table[i+1];
@@ -594,8 +604,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new AddBillboardRequest(billboard));
             output.flush();
+            //TODO: Example
+            serverRespondHandler(input.readObject());
+
             System.out.println("Created!");
-        } catch (IOException ioException) {
+        } catch (IOException | ClassNotFoundException ioException) {
             System.out.println(ioException);
         }
     }
@@ -606,7 +619,6 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             output.flush();
             Object list = input.readObject();
             String[][] table = (String[][]) list;
-            System.out.println(Arrays.deepToString(table));
             userData = new Object[table.length - 1][table[0].length];
             for(int i = 0; i < table.length - 1; i++){
                 userData[i] = table[i+1];
@@ -646,11 +658,11 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
-    public static void updateAUserPrivilege(String username, String password){
+    public static void updateAUserPrivilege(String username, String[] privileges){
         try{
-            output.writeObject(new SetUserPrivilegesRequest(username));
+            output.writeObject(new SetUserPrivilegesRequest(username, privileges));
             output.flush();
-            System.out.println("Update Password!");
+            System.out.println("Updated Privileges!");
         } catch (IOException ioException) {
             System.out.println(ioException);
         }

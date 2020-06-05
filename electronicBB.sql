@@ -86,7 +86,7 @@ CREATE TABLE  IF NOT EXISTS `electronicBB`.`billboards` (
   `information_color` varchar(7) default '#000000',
   `url` varchar(200),
   `message` varchar(100) default '',
-  `information` varchar(100) default ''
+  `information` varchar(300) default ''
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; $$
 
 DROP PROCEDURE IF EXISTS `electronicBB`.`displayAllBillboards`; $$
@@ -120,7 +120,7 @@ END $$
 DROP PROCEDURE IF EXISTS `electronicBB`.`addBillboard`; $$
 
 CREATE PROCEDURE `electronicBB`.`addBillboard` (IN name varchar(45), IN user_name varchar(45), IN background_color varchar(7),IN message_color VARCHAR(7),
-                                            IN information_color varchar(7), IN url varchar(200), IN message varchar(100), IN information varchar(100))
+                                            IN information_color varchar(7), IN url varchar(200), IN message varchar(100), IN information varchar(300))
 BEGIN
   INSERT INTO billboards VALUES(name, user_name, background_color, message_color, information_color, url, message, information);
 END $$

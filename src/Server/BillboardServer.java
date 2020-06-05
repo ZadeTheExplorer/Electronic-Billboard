@@ -84,12 +84,6 @@ public class BillboardServer {
         ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
         Object o = ois.readObject();
 
-//        if(o.equals("Client1")){
-//            System.out.println("Start new thread for CLIENT");
-//            Thread t = new ClientHandler(s, ois, oos);
-//            t.start();
-//            System.out.println("start CLIENT");
-//        }
         if(o.equals("Viewer")){
             System.out.println("Start new thread for Viewer");
             Thread viewerThread = new ViewerHandler(s, ois, oos);

@@ -4,27 +4,32 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SessionToken {
-    private String[] privileges;
-    private SessionToken instance;
+    private static String[] privileges;
+    private static SessionToken instance;
     public SessionToken(ArrayList<String> listOfPrivileges){
         if(instance == null){
-            this.privileges = listOfPrivileges.toArray(new String[listOfPrivileges.size()]);
+            privileges = listOfPrivileges.toArray(new String[listOfPrivileges.size()]);
+            instance = this;
         }
     }
-    public SessionToken getInstance() {
+    public static SessionToken getInstance() {
         return instance;
     }
-    public boolean canEditUser(){
+    public static boolean canEditUser(){
         return Arrays.asList(privileges).contains("Edit Users");
     }
-    public boolean canCreateBillboard(){
+    public static boolean canCreateBillboard(){
         return Arrays.asList(privileges).contains("Create Billboard");
     }
-    public boolean canEditBillboards(){
+    public static boolean canEditBillboards(){
         return Arrays.asList(privileges).contains("Edit All Billboards");
     }
-    public boolean canScheduleBillboard(){
+    public static boolean canScheduleBillboard(){
         return Arrays.asList(privileges).contains("Schedule Billboard");
     }
 
+    @Override
+    public String toString() {
+        return Arrays.toString(privileges);
+    }
 }
