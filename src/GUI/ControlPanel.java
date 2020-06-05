@@ -91,7 +91,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     private JButton btnUserEdit;
     private JButton btnUserCreate;
     private JButton btnDeleteSchedule;
-    private JButton btnEditSchedule;
+    private JButton btnCreateSchedule;
     private JButton btnLogOut;
 
 
@@ -252,7 +252,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         ,tfScheduleDuration,tfScheduleDayOfWeek};
         addToPanelWithComponentArray(schedulesTextFields,pnlBillBoardScheduleInformation,constraints);
 
-        JButton[] scheduleButtons = new JButton[]{btnEditSchedule,btnDeleteSchedule};
+        JButton[] scheduleButtons = new JButton[]{btnCreateSchedule,btnDeleteSchedule};
         addToPanelWithComponentArray(scheduleButtons,pnlBillBoardScheduleControl,constraints);
 
         addToPanel(pnlBillBoardScheduleList, schedulePane, constraints, 0,0,1,1);
@@ -344,11 +344,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         btnUserCreate.setFocusPainted(false);
 
         //Schedule Buttons
+        btnCreateSchedule = createButton("Create");
+        btnCreateSchedule.setBackground(Color.GREEN);
         btnDeleteSchedule = createButton("Delete");
         btnDeleteSchedule.setBackground(Color.RED);
-        btnEditSchedule = createButton("Edit");
-        btnEditSchedule.setBackground(Color.YELLOW);
-        btnEditSchedule.setFocusPainted(false);
 
         btnBillboard.setPreferredSize(new Dimension(200,100));
         btnBillboard.setBorderPainted(false);
@@ -745,6 +744,28 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         }
     }
 
+    public static void createASchedule(String billboardName, Time start, Time duration){
+        try{
+            output.writeObject(new SetScheduleRequest(billboardName,start,duration,token));
+            output.flush();
+            System.out.println("[ControlPanel] Sending Schedule Create Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
+    }
+
+    public static void deleteASchedule(String billboardName, Time start){
+        try{
+            output.writeObject(new DeleteScheduleRequest(billboardName,start,token));
+            output.flush();
+            System.out.println("[ControlPanel] Sending Schedule Delete Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
+            System.out.println("ERROR");
+        }
+    }
+
 
     @Override
     public void run() {
@@ -834,14 +855,10 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 String billboardName = billboardTable.getValueAt(billboardTable.getSelectedRow(), 0).toString();
                 deleteABillboard(billboardName);
                 modelTableBillboard.removeRow(billboardTable.getSelectedRow());
-                tfBillboardName.setText(null);
-                tfBillboardUsername.setText(null);
-                tfBillboardBGColor.setText(null);
-                tfBillboardTitleColor.setText(null);
-                tfBillboardDescriptionColor.setText(null);
-                tfBillboardURL.setText(null);
-                tfBillboardTitle.setText(null);
-                tfBillboardDescription.setText(null);
+                JTextField[] textFields = new JTextField[]{tfBillboardName,tfBillboardUsername,
+                        tfBillboardBGColor,tfBillboardTitleColor,tfBillboardDescriptionColor,
+                        tfBillboardURL,tfBillboardTitle,tfBillboardDescription};
+                clearInputValues(textFields);
             }catch (ArrayIndexOutOfBoundsException outOfBoundsException){
                 alertUnselectedRow();
             }
@@ -869,12 +886,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                                 ,tfBillboardURL.getText(),tfBillboardTitle.getText()
                                 ,tfBillboardDescription.getText());
                         editABillboard(target);
+                        editBillBoard(false);
+                        btnEditBb.setText("Edit");
                     }
                 }catch (IndexOutOfBoundsException indexOutOfBoundsException){
                     alertUnselectedRow();
                 }
-                editBillBoard(false);
-                btnEditBb.setText("Edit");
             }
         }
         //CREATE NEW BILLBOARD
@@ -918,15 +935,14 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                         modelTableUser.setValueAt(tfUserPrivilege.getText(),userTable.getSelectedRow(),1);
                         System.out.println(tfUserPrivilege.getText());
                         updateAUserPassword(userTable.getValueAt(userTable.getSelectedRow(),0).toString(),tfUserPassword.getText());
-
+                        editUser(false);
+                        lblUserPassword.setVisible(false);
+                        tfUserPassword.setVisible(false);
+                        btnUserEdit.setText("Edit");
                     }catch (IndexOutOfBoundsException indexOutOfBoundsException){
                         alertUnselectedRow();
                     }
                 }
-                editUser(false);
-                lblUserPassword.setVisible(false);
-                tfUserPassword.setVisible(false);
-                btnUserEdit.setText("Edit");
             }
         }
         //CREATE NEW USER
@@ -974,14 +990,31 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 tfUserName.setText(null);
                 tfUserPassword.setText(null);
         }
-
-        else if(e.getSource() == btnEditSchedule){
-            if(btnEditSchedule.getText().compareTo("Edit") == 0){
+        //CREATE NEW SCHEDULE
+        else if(e.getSource() == btnCreateSchedule){
+            if(btnCreateSchedule.getText().compareTo("Create") == 0){
                 editSchedule(true);
-                btnEditSchedule.setText("Save");
+                btnCreateSchedule.setText("Save");
             }else{
-                editSchedule(false);
-                btnEditSchedule.setText("Edit");
+                JTextField[] textFields = new JTextField[]{tfScheduleBillBoard,tfScheduleUsername,tfScheduleStart,
+                tfScheduleDuration,tfScheduleDayOfWeek};
+                if(checkEmptyInput(textFields)){
+                    alertEmptyInput();
+                }else{
+                    editSchedule(false);
+                    btnCreateSchedule.setText("Create");
+                    createASchedule(tfScheduleBillBoard.getText(),Time.valueOf(tfScheduleStart.getText()),Time.valueOf(tfScheduleDuration.getText()));
+                }
+            }
+        }
+        else if(e.getSource() == btnDeleteSchedule){
+            try{
+                JTextField[] textFields = new JTextField[]{tfScheduleBillBoard,tfScheduleUsername,
+                tfScheduleStart,tfScheduleDuration,tfScheduleDayOfWeek};
+                deleteASchedule(tfBillboardName.getText(),Time.valueOf(tfScheduleStart.getText()));
+                clearInputValues(textFields);
+            }catch (IndexOutOfBoundsException indexOutOfBoundsException){
+                alertUnselectedRow();
             }
         }
     }
@@ -1021,7 +1054,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     public void editSchedule(boolean bool){
         tfScheduleBillBoard.setEditable(bool);
         tfScheduleUsername.setEditable(bool);
-        btnEditSchedule.setText("Edit");
+        tfScheduleStart.setEditable(bool);
+        tfScheduleDuration.setEditable(bool);
+        tfScheduleDayOfWeek.setEditable(bool);
     }
 
     public void setUpdateValue(TableModel tableModel, JTable table, JTextField[] textFields){
@@ -1050,7 +1085,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void setValueScheduleInfo(JTable table){
-        JTextField[] textFields = new JTextField[]{tfScheduleBillBoard, tfScheduleUsername};
+        JTextField[] textFields = new JTextField[]{tfScheduleBillBoard, tfScheduleUsername, tfScheduleStart,
+        tfScheduleDuration,tfScheduleDayOfWeek};
         setTextFields(scheduleTable,textFields);
         editSchedule(false);
         btnUserCreate.setText("Create");
@@ -1065,7 +1101,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public boolean checkEmptyInput(JTextField[] inputs){
-        for(int i = 1 ; i < inputs.length ; i++){
+        for(int i = 0 ; i < inputs.length ; i++){
             if(inputs[i].getText().compareTo("") == 0){
                 return true;
             }
@@ -1074,7 +1110,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
 
     public void clearInputValues(JTextField[] inputs){
-        for(int i = 1; i < inputs.length; i ++){
+        for(int i = 0; i < inputs.length; i ++){
             inputs[i].setText(null);
         }
     }
