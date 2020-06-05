@@ -3,6 +3,7 @@ package GUI;
 import ElectronicBillboardObject.Billboard;
 import ElectronicBillboardObject.User;
 import Request.*;
+import Server.SessionToken;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -24,8 +25,10 @@ import java.util.Arrays;
 public class ControlPanel extends JFrame implements ActionListener, Runnable {
     public static final int WIDTH = 1000;
     public static final int HEIGHT = 700;
+    private static Socket socket;
     static ObjectOutputStream output;
     static ObjectInputStream input;
+    private static SessionToken token;
     private static Object[][] billBoardData;
     private static Object[][] userData;
     private static Object[][] scheduleData;
@@ -93,8 +96,12 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 //    ResultSet result = st.executeQuery();
 
 
-    public ControlPanel(String title) throws SQLException {
+    public ControlPanel(String title) throws SQLException, IOException {
         super(title);
+        socket = new Socket("localhost", 1234);
+        output = new ObjectOutputStream(socket.getOutputStream());
+        input = new ObjectInputStream(socket.getInputStream());
+
     }
 
     private void createGUI() {
@@ -567,7 +574,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     }
     public static void getBillboardData(){
         try{
-            output.writeObject(new DisplayAllBillboardsRequest());
+            output.writeObject(new DisplayAllBillboardsRequest(token));
             output.flush();
             Object list = input.readObject();
             String[][] table = (String[][]) list;
@@ -582,7 +589,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void deleteABillboard(String billboardName){
         try{
-            output.writeObject(new DeleteBillboardRequest(billboardName));
+            output.writeObject(new DeleteBillboardRequest(billboardName, token));
             output.flush();
             System.out.println("Deleted!");
         } catch (IOException ioException) {
@@ -592,7 +599,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void editABillboard(Billboard billboard){
         try{
-            output.writeObject(new EditBillboardRequest(billboard));
+            output.writeObject(new EditBillboardRequest(billboard, token));
             output.flush();
             System.out.println("Edited!");
         } catch (IOException ioException) {
@@ -602,7 +609,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void createABillboard(Billboard billboard){
         try{
-            output.writeObject(new AddBillboardRequest(billboard));
+            output.writeObject(new AddBillboardRequest(billboard, token));
             output.flush();
             //TODO: Example
             serverRespondHandler(input.readObject());
@@ -615,22 +622,25 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void getUserData(){
         try{
-            output.writeObject(new DisplayAllUsersRequest());
+            output.writeObject(new DisplayAllUsersRequest(token));
             output.flush();
+            System.out.println("[ControlPanel] Waiting for Server respond...");
             Object list = input.readObject();
+            System.out.println(list);
             String[][] table = (String[][]) list;
             userData = new Object[table.length - 1][table[0].length];
             for(int i = 0; i < table.length - 1; i++){
                 userData[i] = table[i+1];
             }
         } catch (IOException | ClassNotFoundException ioException) {
+
             System.out.println("ERROR");
         }
     }
 
     public static void createAUser(User user){
         try{
-            output.writeObject(new AddUserResquest(user));
+            output.writeObject(new AddUserResquest(user, token));
             output.flush();
             System.out.println("Created!");
         } catch (IOException ioException) {
@@ -640,7 +650,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void deleteAUser(String username){
         try{
-            output.writeObject(new DeleteUserRequest(username));
+            output.writeObject(new DeleteUserRequest(username, token));
             output.flush();
             System.out.println("Deleted User!");
         } catch (IOException ioException) {
@@ -650,7 +660,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void updateAUserPassword(String username, String password){
         try{
-            output.writeObject(new SetUserPassword(username,password));
+            output.writeObject(new SetUserPassword(username,password, token));
             output.flush();
             System.out.println("Update Password!");
         } catch (IOException ioException) {
@@ -660,7 +670,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void updateAUserPrivilege(String username, String[] privileges){
         try{
-            output.writeObject(new SetUserPrivilegesRequest(username, privileges));
+            output.writeObject(new SetUserPrivilegesRequest(username, privileges, token));
             output.flush();
             System.out.println("Updated Privileges!");
         } catch (IOException ioException) {
@@ -670,7 +680,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void getScheduleData(){
         try{
-            output.writeObject(new DisplayAllSchedulesRequest());
+            output.writeObject(new DisplayAllSchedulesRequest(token));
             output.flush();
             Object list = input.readObject();
             String[][] table = (String[][]) list;
@@ -690,7 +700,19 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         createGUI();
 
     }
+    public static void start(SessionToken token) throws SQLException, IOException, ClassNotFoundException {
+        ControlPanel controlPanel = new ControlPanel("BillboardControlPanel");
+        ControlPanel.token =token;
+        output.writeObject("ControlPanel");
+        output.flush();
+        System.out.println("Identified!");
+        System.out.println(input.readObject());
 
+        getBillboardData();
+        getUserData();
+        getScheduleData();
+        SwingUtilities.invokeLater(controlPanel);
+    }
     //TODO: GET THE WHOLE COLUMN
     public static void main() throws SQLException, IOException, ClassNotFoundException {
         Socket socketControlPanel = new Socket("localhost", 1234);

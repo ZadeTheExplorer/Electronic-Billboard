@@ -92,13 +92,6 @@ public class Database {
             }
         }
 
-        String[] result = new String[pointer];
-        for(int i = 0; i < column.length; i ++){
-            if(column[i] != null){
-                result[i] = column[i];
-            }
-        }
-        System.out.println(Arrays.toString(result));
         return column;
     }
     //TODO: USE THIS WHEN SELECT * FROM A TABLE OR MULTI COLs
@@ -129,14 +122,14 @@ public class Database {
         String[][] newTable = new String[table.size()][columnCount];
         //print result
         for( int i=0; i< table.size(); i++ ){
-            for( String s: table.get(i)){
-                System.out.print( " " + s );
-
-            }
+//            for( String s: table.get(i)){
+//                System.out.print( " " + s );
+//
+//            }
             newTable[i] = table.get(i);
-            System.out.println();
+//            System.out.println();
         }
-        System.out.println(Arrays.deepToString(newTable));
+//        System.out.println(Arrays.deepToString(newTable));
         return newTable;
     }
     //TODO: USE THIS WHEN PRINT RETURN OF A STATEMENT's EXECUTION

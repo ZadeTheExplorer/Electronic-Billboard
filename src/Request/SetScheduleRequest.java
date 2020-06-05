@@ -1,14 +1,17 @@
 package Request;
 
+import Server.SessionToken;
+
 import java.io.Serializable;
 import java.sql.Time;
 
-public class SetScheduleRequest implements Serializable {
+public class SetScheduleRequest extends Request implements Serializable {
     private int scheduleId;
     private String billboardName;
     private Time startTime;
     private Time duration;
-    public SetScheduleRequest(int scheduleId, String billboardName, Time startTime, Time duration){
+    public SetScheduleRequest(int scheduleId, String billboardName, Time startTime, Time duration, SessionToken token){
+        super(token);
         this.scheduleId = scheduleId;
         this.billboardName = billboardName;
         this.startTime = startTime;
