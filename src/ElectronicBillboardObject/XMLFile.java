@@ -13,10 +13,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class XMLFile {
-    public static final String xmlFilePath = System.getProperty("user.dir").toString() + "src\\Billboard\\exportedXML.xml";
+    public static String xmlFilePath;
     public XMLFile(){};
     //TODO: Implement NULL input for element
     public static void create(Billboard billboard){
+        xmlFilePath = System.getProperty("user.dir").toString() + "src\\"+billboard.getName()+".xml";
         try {
             //TODO: import billboard elements to the XML file
 
@@ -29,27 +30,27 @@ public class XMLFile {
             // root element
             Element root = document.createElement("billboard");
             document.appendChild(root);
-            root.setAttribute("background","#0000FF");
+            root.setAttribute("background",billboard.getBackgroundColor());
 
             // message element
             Element message = document.createElement("message");
-            message.appendChild(document.createTextNode("message default"));
+            message.appendChild(document.createTextNode(billboard.getMessage()));
             root.appendChild(message);
-            message.setAttribute("colour", "#FFFF00");
+            message.setAttribute("colour", billboard.getMessageColor());
 
             // picture element
             Element picture = document.createElement("picture");
             root.appendChild(picture);
             Attr urlAttr = document.createAttribute("url");
             picture.setAttributeNode(urlAttr);
-            Attr dataAttr = document.createAttribute("data");
-            picture.setAttributeNode(dataAttr);
+//            Attr dataAttr = document.createAttribute("data");
+//            picture.setAttributeNode(dataAttr);
 
             // message element
             Element information = document.createElement("information");
-            information.appendChild(document.createTextNode("information default"));
+            information.appendChild(document.createTextNode(billboard.getInformation()));
             root.appendChild(information);
-            information.setAttribute("colour", "#00FFFF");
+            information.setAttribute("colour", billboard.getInformationColor());
 
             // create the xml file
             //transform the DOM Object to an XML File

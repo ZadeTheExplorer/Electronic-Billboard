@@ -47,7 +47,7 @@ public class ControlPanelHandler extends Thread {
                     System.out.println("Connection closed");
                     break;
                 }
-                ServerRespond res = new ServerRespond(received, oos);
+                ServerRespond res = new ServerRespond(received, oos, ois);
                 res.handle();
 
             } catch (IOException | ClassNotFoundException | SQLException | NoSuchAlgorithmException e) {

@@ -121,13 +121,12 @@ public class BillboardServer {
 
         BillboardServer server = BillboardServer.getInstance();
 
-
         System.out.println("[SERVER] Waiting for client connection...");
 
         //TODO: UNCOMMENT IF THIS IS FIRST RUN
         //Database.init();
 
-        try{
+        try {
 //            while(true){
 //                server.hasSlotSocket();
 //            }

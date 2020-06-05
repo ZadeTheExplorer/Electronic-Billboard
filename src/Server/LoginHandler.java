@@ -50,7 +50,7 @@ public class LoginHandler extends Thread {
                     System.out.println("Connection closed");
                     break;
                 }
-                ServerRespond res = new ServerRespond(received, oos);
+                ServerRespond res = new ServerRespond(received, oos, ois);
                 res.handle();
 
             } catch (NoSuchAlgorithmException | IOException | SQLException | ClassNotFoundException e) {

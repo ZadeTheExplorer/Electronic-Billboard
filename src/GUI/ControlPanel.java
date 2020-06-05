@@ -30,8 +30,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
     static ObjectInputStream input;
     private static SessionToken token;
     private static Object[][] billBoardData;
-    private static Object[][] userData;
-    private static Object[][] scheduleData;
+    private static Object[][] userData = null;
+    private static Object[][] scheduleData = null;
     private JPanel pnlMenu;
     private JPanel pnlCenter;
     private JLabel lblName;
@@ -596,18 +596,24 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         jButton.addActionListener(this);
         return jButton;
     }
-    public static void serverRespondHandler(Object o){
+
+    public static boolean serverRespondHandler(Object o){
         if(o.equals("No Permission")){
-            //TODO
+            System.out.println("[SERVER] User do not have permision to execute this");
+            return false;
         }
         // Error from server
         else if ( o instanceof SQLException) {
-
+            System.out.println("[SERVER] " + ((SQLException) o).getMessage());
+            return false;
         }
         else if (o.equals("Success")){
-
+            System.out.println("[SERVER] Execute action successfully");
+            return true;
         }
+        return false;
     }
+
     public static void getBillboardData(){
         try{
             output.writeObject(new DisplayAllBillboardsRequest(token));
@@ -618,6 +624,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             for(int i = 0; i < table.length - 1; i++){
                 billBoardData[i] = table[i+1];
             }
+            System.out.println("[ControlPanel] Sending Display all Billboards Request");
+            serverRespondHandler(input.readObject());
         } catch (IOException | ClassNotFoundException ioException) {
             System.out.println("ERROR");
         }
@@ -627,8 +635,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new DeleteBillboardRequest(billboardName, token));
             output.flush();
-            System.out.println("Deleted!");
-        } catch (IOException ioException) {
+            System.out.println("[ControlPanel] Sending Delete Billboard Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
             System.out.println("ERROR");
         }
     }
@@ -637,8 +646,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new EditBillboardRequest(billboard, token));
             output.flush();
-            System.out.println("Edited!");
-        } catch (IOException ioException) {
+            System.out.println("[ControlPanel] Sending Edit Billboard Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
             System.out.println(ioException);
         }
     }
@@ -647,10 +657,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new AddBillboardRequest(billboard, token));
             output.flush();
-            //TODO: Example
+            System.out.println("[ControlPanel] Sending Create Billboard Request");
             serverRespondHandler(input.readObject());
-
-            System.out.println("Created!");
         } catch (IOException | ClassNotFoundException ioException) {
             System.out.println(ioException);
         }
@@ -658,15 +666,18 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
 
     public static void getUserData(){
         try{
+            System.out.println("[ControlPanel] Sending Display all users Request");
             output.writeObject(new DisplayAllUsersRequest(token));
             output.flush();
             System.out.println("[ControlPanel] Waiting for Server respond...");
             Object list = input.readObject();
-            System.out.println(list);
-            String[][] table = (String[][]) list;
-            userData = new Object[table.length - 1][table[0].length];
-            for(int i = 0; i < table.length - 1; i++){
-                userData[i] = table[i+1];
+            if(serverRespondHandler(list)){
+                String[][] table = (String[][]) list;
+                userData = new Object[table.length - 1][table[0].length];
+                for(int i = 0; i < table.length - 1; i++){
+                    userData[i] = table[i+1];
+                }
+                serverRespondHandler(input.readObject());
             }
         } catch (IOException | ClassNotFoundException ioException) {
 
@@ -678,8 +689,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new AddUserResquest(user, token));
             output.flush();
-            System.out.println("Created!");
-        } catch (IOException ioException) {
+            System.out.println("[ControlPanel] Sending Display Create User Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
             System.out.println(ioException);
         }
     }
@@ -688,8 +700,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new DeleteUserRequest(username, token));
             output.flush();
-            System.out.println("Deleted User!");
-        } catch (IOException ioException) {
+            System.out.println("[ControlPanel] Sending Delete user Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
             System.out.println(ioException);
         }
     }
@@ -698,8 +711,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new SetUserPassword(username,password, token));
             output.flush();
-            System.out.println("Update Password!");
-        } catch (IOException ioException) {
+            System.out.println("[ControlPanel] Sending Update password Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
             System.out.println(ioException);
         }
     }
@@ -708,8 +722,9 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         try{
             output.writeObject(new SetUserPrivilegesRequest(username, privileges, token));
             output.flush();
-            System.out.println("Updated Privileges!");
-        } catch (IOException ioException) {
+            System.out.println("[ControlPanel] Sending Update User Privileges Request");
+            serverRespondHandler(input.readObject());
+        } catch (IOException | ClassNotFoundException ioException) {
             System.out.println(ioException);
         }
     }
@@ -719,11 +734,15 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
             output.writeObject(new DisplayAllSchedulesRequest(token));
             output.flush();
             Object list = input.readObject();
-            String[][] table = (String[][]) list;
-            System.out.println(Arrays.deepToString(table));
-            scheduleData = new Object[table.length - 1][table[0].length];
-            for(int i = 0; i < table.length - 1; i++){
-                scheduleData[i] = table[i+1];
+            if(serverRespondHandler(list)){
+                String[][] table = (String[][]) list;
+                System.out.println(Arrays.deepToString(table));
+                scheduleData = new Object[table.length - 1][table[0].length];
+                for(int i = 0; i < table.length - 1; i++){
+                    scheduleData[i] = table[i+1];
+                }
+                System.out.println("[ControlPanel] Sending Display all schedules Request");
+                serverRespondHandler(input.readObject());
             }
         } catch (IOException | ClassNotFoundException ioException) {
             System.out.println("ERROR");
@@ -741,7 +760,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
         ControlPanel.token =token;
         output.writeObject("ControlPanel");
         output.flush();
-        System.out.println("Identified!");
+        System.out.println("[ControlPanel] Connecting to Server...");
         System.out.println(input.readObject());
 
         getBillboardData();
@@ -899,6 +918,8 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 btnUserEdit.setText("Save");
                 lblUserPassword.setVisible(true);
                 tfUserPassword.setVisible(true);
+
+
             }else{
                 JTextField[] textFields = new JTextField[]{tfUserName,tfUserPrivilege,tfUserPassword};
                 if(checkEmptyInput(textFields)){
@@ -925,6 +946,7 @@ public class ControlPanel extends JFrame implements ActionListener, Runnable {
                 editUser(true);
                 lblUserPassword.setVisible(true);
                 tfUserPassword.setVisible(true);
+                tfUserName.setEditable(true);
                 tfUserName.setText(null);
                 tfUserPassword.setText(null);
                 tfUserPrivilege.setText(null);
