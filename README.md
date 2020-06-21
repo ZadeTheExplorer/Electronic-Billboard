@@ -23,7 +23,7 @@ Log in to access the Control Panel, using default username and password: "admin"
 
 * **Jaden Bui** - [JadenBui](https://github.com/JadenBui)
 * **Edward Duong** - [Edward Duong](https://github.com/EdwardDuong)
-* **Patrick Ha** - [Patrick Ha](https://github.com/ZadeTheExplorer)
+* **Patrick Ha** - [Sy Tri Ha](https://github.com/ZadeTheExplorer)
 
 ## License
 
