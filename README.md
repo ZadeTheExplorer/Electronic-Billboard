@@ -4,7 +4,7 @@ Electronic-ElectronicBillboardObject is an application built on Java to provide 
 
 ## Getting Started
 
-Clone or download the respository. 
+Clone or download the repository. 
 
 ### Running the application
 
